@@ -14,5 +14,6 @@ python3 sil_color.py        # cor do vidro (sem textos/brilhos)
 python3 build_assets.py     # textos, logo gestãorh
 python3 build_silhouette_v2.py  # silhueta oficial (vetor .ai + cor do card)
 python3 build_plate.py      # placa da aura (KV limpo)
+python3 soften_plate.py     # suaviza a luz dura do lado esquerdo
 python3 render_video.py 4   # quadros -> chunks ffv1
 ./mux.sh "$HERE/../mais-admirados-2026-logo-motion.mp4"
