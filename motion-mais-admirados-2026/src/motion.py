@@ -94,11 +94,11 @@ class Assets:
         self.p_int = rng.uniform(0.25, 1.0, n)
         self.p_w = rng.choice([1, 1, 1, 2], n)
         # floating dust (slow-motion feel)
-        m = 140
+        m = 60
         self.d_xy = np.c_[rng.uniform(0, W, m), rng.uniform(0, H, m)]
-        self.d_v = rng.normal(0, 1, (m, 2)) * np.array([14, 8])
-        self.d_size = rng.uniform(0.8, 2.6, m)
-        self.d_int = rng.uniform(0.15, 0.6, m)
+        self.d_v = rng.normal(0, 1, (m, 2)) * np.array([9, 5])
+        self.d_size = rng.uniform(1.6, 4.8, m)
+        self.d_int = rng.uniform(0.05, 0.22, m)
         self.d_ph = rng.uniform(0, 2 * np.pi, m)
         # angular noise for the reveal edge
         self.ang_noise = [(rng.uniform(0.3, 1.0), int(f), rng.uniform(0, 2 * np.pi)) for f in [3, 5, 7, 11, 17, 23, 31, 43]]
@@ -224,20 +224,25 @@ def render_particles(t, c_dst, glow):
     col = g[..., None] * np.array([1.0, 0.86, 0.45], np.float32) + c[..., None] * np.array([0.65, 0.88, 1.0], np.float32)
     glow += col * 0.6
 
-def render_dust(t, out, zb):
+def render_dust(t, out, zb, c=None, z=1.0):
+    """Soft out-of-focus light particles (bokeh) drifting slowly; kept away from the logo."""
     a = assets()
     vis = smooth(lin(t, T['burst'] + 0.6, T['burst_end'] + 0.5)) * (1 - 0.5 * smooth(lin(t, T['fade_out0'], T['end'])))
     if vis <= 0: return
     tt = max(0.0, t - T['burst'])
     pos = a.d_xy + a.d_v * tt
     pos[:, 0] %= W; pos[:, 1] %= H
-    buf = np.zeros((H, W), np.uint8)
+    buf = np.zeros((H // 2, W // 2), np.float32)
     for i in range(len(pos)):
-        tw = 0.6 + 0.4 * math.sin(tt * 1.7 + a.d_ph[i])
-        v = int(255 * a.d_int[i] * tw * vis)
-        cv2.circle(buf, (int(pos[i, 0] * 4), int(pos[i, 1] * 4)), int(a.d_size[i] * 4 * zb), v, -1, cv2.LINE_AA, shift=2)
-    b = cv2.GaussianBlur(buf.astype(np.float32) / 255., (0, 0), 1.2)
-    out += b[..., None] * np.array([0.95, 0.88, 0.62], np.float32) * 0.55
+        tw = 0.7 + 0.3 * math.sin(tt * 1.3 + a.d_ph[i])
+        rad = a.d_size[i] * zb
+        cv2.circle(buf, (int(pos[i, 0] * 2), int(pos[i, 1] * 2)), int(max(1, rad) * 8), float(a.d_int[i] * tw * vis), -1, cv2.LINE_AA, shift=4)
+    b = cv2.GaussianBlur(buf, (0, 0), 1.6)
+    b = cv2.resize(b, (W, H), interpolation=cv2.INTER_LINEAR)
+    if c is not None:
+        rr = ((a.xx - c[0]) / (300.0 * z)) ** 2 + ((a.yy - c[1]) / (470.0 * z)) ** 2
+        b = b * np.clip(rr - 0.6, 0, 1)
+    out += b[..., None] * np.array([0.95, 0.90, 0.70], np.float32)
 
 # ----------------------------------------------------------------- rays
 def ray_growth(t):
@@ -535,7 +540,7 @@ def render_frame(t, preview_scale=1.0):
         bg = bg * (1 - al[..., None]) + rgb
     render_silhouette(t, z, c, bg, glow)
     render_text(t, z, c, bg, glow)
-    render_dust(t, bg, zb)
+    render_dust(t, bg, zb, c, z)
     # glow / bloom
     if glow.max() > 0:
         small = cv2.resize(glow, (W // 4, H // 4), interpolation=cv2.INTER_AREA)
@@ -552,9 +557,11 @@ def render_frame(t, preview_scale=1.0):
     bg = np.maximum(bg, 0)
     bg = 1 - np.exp(-bg * 1.08) if False else np.where(bg < 0.8, bg, 0.8 + 0.2 * np.tanh((bg - 0.8) / 0.2))
     # grain
-    g = a.grain_rng.normal(0, 1, (H // 2, W // 2)).astype(np.float32)
-    g = cv2.resize(g, (W, H), interpolation=cv2.INTER_LINEAR)
-    bg = bg + g[..., None] * 0.010
+    gf = a.grain_rng.normal(0, 1, (H, W)).astype(np.float32)
+    gc = cv2.resize(a.grain_rng.normal(0, 1, (H // 2, W // 2)).astype(np.float32), (W, H), interpolation=cv2.INTER_LINEAR)
+    g = 0.65 * gf + 0.55 * gc
+    lum = bg.mean(2)
+    bg = bg + (g * np.minimum(0.006 + 0.008 * np.sqrt(np.clip(lum, 0, 1)), 0.0085))[..., None]
     # vignette (subtle) & fades
     fade = smooth(lin(t, 0.0, 0.7)) * (1 - smooth(lin(t, T['fade_out0'], T['end'] - 0.05)))
     bg = bg * fade

@@ -24,7 +24,11 @@ O giro de 360° termina no drop da música (18,9 s da faixa), por isso a revela�
 
 Tudo é gerado por código (Python, NumPy e OpenCV, com encode no ffmpeg), a partir do KV e do print do logo:
 
-- **Aura**: é a própria aura do KV. O selo, os logos, o rodapé e o logo central foram removidos e o fundo atrás deles foi reconstruído, para animar só a luz. No lado esquerdo, a lâmina de luz de bordas duras (degrau escuro e risco branco) foi suavizada (`src/soften_plate.py`).
+- **Aura**: é a própria aura do KV. O selo, os logos, o rodapé e o logo central foram removidos e o fundo atrás deles foi reconstruído, para animar só a luz. Um passo de refino (`src/refine_plate.py`) faz o resto:
+  - limpa os resquícios dos raios e da silhueta antiga;
+  - suaviza as lâminas de luz de bordas duras (lado esquerdo, canto inferior direito e o risco do canto superior esquerdo);
+  - corrige uma costura vertical que já vinha do KV;
+  - remove a granulação estática, que passa a ser só a do render (uniforme e animada).
 - **Raios**: foram reconstruídos em vetor a partir do KV (90 raios a cada 4°, espiral de 2 braços, barras e linhas com as cores medidas), por isso continuam nítidos no zoom.
 - **Silhueta**: a forma é o vetor oficial (`input/silhoueta_trofeu.ai`). A cor e o brilho do vidro vêm do render do card "Quem você admira?" (`input/card_glass.png`), alinhado ao vetor com erro médio abaixo de 1 px. O shader de vidro líquido adiciona refração, borda de luz, brilho móvel e flare.
 - **Textos**: em Montserrat, com o mesmo peso, a mesma posição de cada letra e o degradê prata→branco de "MAIS ADMIRADOS".
