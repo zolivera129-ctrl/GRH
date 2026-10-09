@@ -10,7 +10,7 @@ A = BASE + 'assets/'
 W, H = 1920, 1080
 FPS = 30
 PIVOT = np.array([970.5, 533.5])          # KV-space pivot (ray burst centre)
-SIL_AXIS_X = 955.0                        # silhouette spin axis (KV x)
+SIL_AXIS_X = 955.6                        # silhouette spin axis (KV x)
 SIL_MID_Y = 540.0
 
 # ----------------------------------------------------------------- easing helpers
@@ -54,16 +54,15 @@ class Assets:
         self.dark = (c0 * (1 - tt) + c1 * tt).astype(np.float32)
         self.light = (self.plate - self.dark).astype(np.float32)
         self.xx, self.yy = xx, yy
-        s = np.load(A + 'silhouette_2x.npz')
-        self.s_mask = s['mask']; self.s_col = s['col'][..., ::-1].copy(); self.s_dist = s['dist']
+        s = np.load(A + 'silhouette_v2.npz')
+        self.s_mask = s['mask']; self.s_col = s['col']; self.s_dist = s['dist']
         self.s_gx = s['gx']; self.s_gy = s['gy']; self.s_box = s['box']; self.s_S = int(s['S'])
+        self.s_rim = s['rim']
         self.contour = s['contour']
-        # glass colour adjusted for transparency so that composite over plate matches KV
-        bx0, by0, bx1, by1 = self.s_box
-        bgp = cv2.resize(cv2.GaussianBlur(self.plate, (0, 0), 6)[by0:by1, bx0:bx1],
-                         (self.s_mask.shape[1], self.s_mask.shape[0]), interpolation=cv2.INTER_LINEAR)
-        self.glass_a = 0.62
-        adj = (self.s_col - (1 - self.glass_a) * bgp) / self.glass_a
+        self.flare_rest = s['flare']; self.glint_pos = s['glint']
+        # glass colour adjusted for transparency so the composite over the card background matches the card render
+        self.glass_a = 0.86
+        adj = (self.s_col - (1 - self.glass_a) * s['card_bg']) / self.glass_a
         self.s_coladj = np.clip(adj, 0, 1.2).astype(np.float32)
         # outward normal from distance field (asset space)
         d = cv2.GaussianBlur(self.s_dist, (0, 0), 2.0)
@@ -266,8 +265,8 @@ def render_rays(t, z, c):
 # ----------------------------------------------------------------- silhouette (liquid glass)
 def light_path_x(t):
     """x (KV) of the moving light along the top of the silhouette."""
-    xl, xr = 846.0, 1004.0
-    rest = 998.0
+    xl, xr = 852.0, 1010.0
+    rest = float(assets().flare_rest[0])
     t0, t1 = T['sweep0'], T['sweep_end']
     if t < T['sil_full'] - 0.4: return xl - 10
     if t < t0: return xl
@@ -332,9 +331,9 @@ def render_silhouette(t, z, c, bg, glow):
         ts = t + (si / nsub - 0.5) * (0.5 / FPS) if nsub > 1 else t
         ph = spin_angle(ts) if nsub > 1 else phi
         Hm, dst = sil_homography(ph, z, c)
-        res = warp_layers(Hm, dst, [a.s_mask, a.s_coladj, a.s_dist, a.s_nx, a.s_ny])
+        res = warp_layers(Hm, dst, [a.s_mask, a.s_coladj, a.s_dist, a.s_nx, a.s_ny, a.s_rim])
         if res is None: continue
-        (x0, y0, x1, y1), (m, col, dist, nx, ny) = res
+        (x0, y0, x1, y1), (m, col, dist, nx, ny, rimw) = res
         cphi = math.cos(ph)
         nx = nx * (1 if cphi >= 0 else -1)
         # appear: liquid wipe from bottom to top + blur-to-sharp
@@ -360,19 +359,17 @@ def render_silhouette(t, z, c, bg, glow):
         # thickness / edge darkening & lightening
         dsc = dist / a.s_S * z * max(0.08, abs(cphi)) ** 0.5   # screen-ish px from edge
         inner = np.exp(-dsc / 7.0)
-        glass = glass * (1 - 0.10 * inner[..., None]) + inner[..., None] * 0.10 * np.array([0.75, 0.92, 1.0], np.float32)
+        glass = glass * (1 - 0.04 * inner[..., None]) + inner[..., None] * 0.04 * np.array([0.75, 0.92, 1.0], np.float32)
         # rim light
         ldx = (c[0] + z * (lx - PIVOT[0])) - gx; ldy = (c[1] + z * (ly - PIVOT[1])) - gy
         ln = np.sqrt(ldx * ldx + ldy * ldy) + 1e-3
         facing = np.clip((nx * ldx + ny * ldy) / ln, 0, 1)
-        rim = np.exp(-dsc / 1.2) * (0.16 + 0.7 * facing ** 2)
-        # fixed cool rim along right edges (KV look)
-        rim += np.exp(-dsc / 1.1) * 0.14 * np.clip(nx, 0, 1)
-        rim_col = np.array([0.80, 0.95, 1.0], np.float32)
+        rim = np.exp(-dsc / 1.0) * (0.03 + 0.42 * rimw) + np.exp(-dsc / 1.2) * 0.28 * facing ** 2
+        rim_col = np.array([0.62, 0.90, 1.0], np.float32)
         # sheen from moving light: soft glow on glass near light
         light_on = smooth(lin(t, T['sil_full'] - 0.5, T['sil_full'] + 0.3))
         sig = 50.0 * z
-        sheen = np.exp(-(ldx * ldx + ldy * ldy) / (2 * sig * sig)) * 0.20 * light_on
+        sheen = np.exp(-(ldx * ldx + ldy * ldy) / (2 * sig * sig)) * 0.11 * light_on
         # spin sheen: band sweeping across the glass as it turns
         spin_sh = 0.0
         if T['spin_wind'] < t < T['spin_stop'] + 0.6:
@@ -383,7 +380,7 @@ def render_silhouette(t, z, c, bg, glow):
         lsx = c[0] + z * (lx - PIVOT[0])
         ub = (gx - lsx) + 0.30 * (gy - (c[1] + z * (ly - PIVOT[1])))
         sweeping = light_on * (1 - smooth(lin(t, T['sweep_end'] - 0.3, T['sweep_end'] + 0.6)))
-        band = np.exp(-(ub / (34.0 * z)) ** 2) * 0.16 * sweeping * np.exp(-np.maximum(gy - (c[1] + z * (ly - PIVOT[1])), 0) / (520.0 * z))
+        band = np.exp(-(ub / (34.0 * z)) ** 2) * 0.11 * sweeping * np.exp(-np.maximum(gy - (c[1] + z * (ly - PIVOT[1])), 0) / (520.0 * z))
         sh = sheen + spin_sh + band
         glass = glass + rim[..., None] * rim_col + np.asarray(sh, np.float32)[..., None] * np.array([0.95, 0.98, 1.0], np.float32)
         # edge-on brightening (glass edge catching light)
@@ -414,7 +411,7 @@ def render_silhouette(t, z, c, bg, glow):
         px = c[0] + z * ((SIL_AXIS_X - PIVOT[0]) + Xr * s); py = c[1] + z * ((ly - PIVOT[1]) * s + (SIL_MID_Y - PIVOT[1]) * (1 - s))
         draw_flare(glow, px, py, fl * appear, z, t)
         # lower-left static glint (KV detail)
-        gxk, gyk = 909.0, 703.0
+        gxk, gyk = float(a.glint_pos[0]) - 2.0, float(a.glint_pos[1])
         X = gxk - SIL_AXIS_X; Xr = X * math.cos(phi); Zd = X * math.sin(phi); s = 1500 / (1500 + Zd)
         qx = c[0] + z * ((SIL_AXIS_X - PIVOT[0]) + Xr * s); qy = c[1] + z * ((gyk - PIVOT[1]) * s + (SIL_MID_Y - PIVOT[1]) * (1 - s))
         gi = appear * (0.75 + 0.25 * math.sin(t * 2.1)) * (abs(math.cos(phi)) ** 3)
@@ -432,13 +429,15 @@ def draw_flare(glow, px, py, inten, z, t):
     halo = np.exp(-np.sqrt(r2) / 20.0) * 0.32 + np.exp(-np.sqrt(r2) / 50.0) * 0.06
     spikes = np.zeros_like(r2)
     rot = 0.10 * math.sin(t * 0.7)
-    for ang, length, wdt, amp in [(-0.30, 150, 1.1, 0.65), (1.27, 95, 1.0, 0.45), (0.55, 60, 0.9, 0.30), (2.35, 55, 0.9, 0.25)]:
+    for ang, length, wdt, amp in [(-0.42, 70, 1.0, 0.50), (2.62, 85, 1.1, 0.55), (1.20, 40, 0.9, 0.25), (0.50, 30, 0.8, 0.18)]:
         a_ = ang + rot
         ca, sa = math.cos(a_), math.sin(a_)
         u = dx * ca + dy * sa; v = -dx * sa + dy * ca
         spikes += amp * np.exp(-(v / wdt) ** 2) * np.exp(-np.abs(u) / (length * 0.33))
+    rs = np.random.default_rng(int(t * 30) % 7)
+    dust = (rs.random(r2.shape) > 0.985).astype(np.float32) * np.exp(-np.sqrt(r2) / 30.0) * 0.55
     f = (core + halo + spikes) * inten
-    glow[y0:y1, x0:x1] += f[..., None] * np.array([0.92, 0.97, 1.0], np.float32)
+    glow[y0:y1, x0:x1] += f[..., None] * np.array([0.92, 0.97, 1.0], np.float32) + (dust * inten)[..., None] * np.array([0.55, 0.90, 1.0], np.float32)
 
 def draw_glint(glow, px, py, inten, z):
     if inten <= 0.01: return

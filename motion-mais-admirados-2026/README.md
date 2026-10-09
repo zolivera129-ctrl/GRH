@@ -26,7 +26,7 @@ Tudo é gerado por código (Python, NumPy e OpenCV, com encode no ffmpeg), a par
 
 - **Aura**: é a própria aura do KV. O selo, os logos, o rodapé e o logo central foram removidos e o fundo atrás deles foi reconstruído, para animar só a luz.
 - **Raios**: foram reconstruídos em vetor a partir do KV (90 raios a cada 4°, espiral de 2 braços, barras e linhas com as cores medidas), por isso continuam nítidos no zoom.
-- **Silhueta**: o contorno foi traçado do KV e a cor do vidro veio do original, sem os textos por cima. O shader de vidro líquido tem refração, borda de luz, brilho móvel e flare.
+- **Silhueta**: a forma é o vetor oficial (`input/silhoueta_trofeu.ai`). A cor e o brilho do vidro vêm do render do card "Quem você admira?" (`input/card_glass.png`), alinhado ao vetor com erro médio abaixo de 1 px. O shader de vidro líquido adiciona refração, borda de luz, brilho móvel e flare.
 - **Textos**: em Montserrat, com o mesmo peso, a mesma posição de cada letra e o degradê prata→branco de "MAIS ADMIRADOS".
 - **Logo gestãorh**: extraído do KV e vetorizado por super-resolução.
 
@@ -41,7 +41,8 @@ mkdir -p build/work && cp /caminho/Alex_MakeMusic_-_Moon_Party.mp3 build/work/mu
 
 - `src/motion.py`: compositor e linha do tempo. A tabela `T` define os tempos de cada cena e `T_DROP` marca o drop da música.
 - `src/rays.py`: raios do logo em vetor.
-- `src/trace_sil.py`, `src/sil_color.py`, `src/build_assets.py` e `src/build_plate.py`: preparação dos elementos a partir de `input/kv.png`.
+- `src/build_silhouette_v2.py`: silhueta oficial (vetor + cor do card).
+- `src/trace_sil.py`, `src/sil_color.py`, `src/build_assets.py` e `src/build_plate.py`: preparação dos outros elementos a partir de `input/kv.png`.
 - `src/still.py 13.5 20`: renderiza quadros avulsos para conferência.
 
 A trilha não está versionada no repositório por causa da licença da Artlist.
