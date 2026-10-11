@@ -1,0 +1,306 @@
+/* Universo Visual · Brandcenter Gestão RH */
+
+/* Base */
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #FFFFFF; }
+a { color: #CC003D; }
+a:hover { color: #451531; }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid #CC003D; outline-offset: 2px; }
+
+/* Menu lateral fixo em telas largas */
+@media (min-width: 880px) {
+  .uv-sidenav { position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow-y: auto; }
+}
+
+/* No celular o índice do topo faz a navegação; o menu lateral fica só com as páginas */
+@media (max-width: 879px) {
+  .uv-sidenav { padding-bottom: 12px !important; }
+  .uv-sidenav > div:nth-child(n+2) { display: none !important; }
+}
+
+/* Movimento */
+@keyframes grh-spin{to{transform:rotate(360deg)}}
+@keyframes grh-ring{0%{transform:scale(.8);opacity:.75}100%{transform:scale(2);opacity:0}}
+@keyframes grh-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes grh-drift{0%,100%{transform:translate(0,0)}50%{transform:translate(16px,-12px)}}
+@keyframes grh-drift-b{0%,100%{transform:translate(0,0)}50%{transform:translate(-14px,10px)}}
+@keyframes grh-draw{0%{stroke-dashoffset:320}45%,100%{stroke-dashoffset:0}}
+@keyframes grh-bar{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+@keyframes grh-marquee{to{transform:translateX(-50%)}}
+@keyframes grh-zoom{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes gb-map-side{0%,100%{transform:scaleX(1)}40%,58%{transform:scaleX(0)}}
+@keyframes gb-map-mid{0%,100%{transform:scaleX(1)}40%,58%{transform:scaleX(.3)}}
+@keyframes gb-nod{0%,100%{transform:rotate(0deg)}22%{transform:rotate(11deg)}48%{transform:rotate(0deg)}68%{transform:rotate(7deg)}}
+@keyframes gb-spin3{0%{transform:rotate(0deg)}33.33%{transform:rotate(360deg)}66.66%{transform:rotate(720deg)}100%{transform:rotate(1080deg)}}
+@keyframes gb-star{0%,13%{opacity:1;transform:scale(1)}18%,81%{opacity:0;transform:scale(.55)}86%,100%{opacity:1;transform:scale(1)}}
+@keyframes gb-ball{0%,13%{opacity:0;transform:scale(.55)}18%,47%{opacity:1;transform:scale(1)}52%,100%{opacity:0;transform:scale(.55)}}
+@keyframes gb-racket{0%,47%{opacity:0;transform:scale(.55)}52%,81%{opacity:1;transform:scale(1)}86%,100%{opacity:0;transform:scale(.55)}}
+@keyframes gb-step{0%,100%{transform:rotate(14deg)}22%{transform:translate(-5px,-12px) rotate(22deg)}46%{transform:translate(5px,-11px) rotate(-10deg)}62%{transform:translate(0px,-13px) rotate(-12deg)}80%{transform:translate(0px,0px) rotate(0deg)}}
+@keyframes gb-ground{to{stroke-dashoffset:-48}}
+.gb{cursor:pointer}
+.gb-forum .gb-tail-l,.gb-forum .gb-tail-r{transition:transform .5s cubic-bezier(.6,0,.2,1)}
+.gb-forum .gb-tail-l{transform-origin:40px 88px}
+.gb-forum .gb-tail-r{transform-origin:80px 88px;transform:scale(0)}
+.gb-forum:is(:hover,:focus-visible) .gb-tail-l{transform:scale(0)}
+.gb-forum:is(:hover,:focus-visible) .gb-tail-r{transform:scale(1);transition-delay:.3s}
+.gb-regional .gb-map-l{transform-origin:48px 62px}
+.gb-regional .gb-map-m{transform-origin:60px 62px}
+.gb-regional .gb-map-r{transform-origin:72px 62px}
+.gb-regional:is(:hover,:focus-visible) .gb-map-l,.gb-regional:is(:hover,:focus-visible) .gb-map-r{animation:gb-map-side 1.5s cubic-bezier(.6,0,.3,1)}
+.gb-regional:is(:hover,:focus-visible) .gb-map-m{animation:gb-map-mid 1.5s cubic-bezier(.6,0,.3,1)}
+.gb-confraria .gb-cup{transform-origin:60px 60px;transition:transform .6s cubic-bezier(.3,1.5,.5,1)}
+.gb-confraria:is(:hover,:focus-visible) .gb-cup{transform:translateY(-14px) rotate(-11deg)}
+.gb-confraria .gb-spark{opacity:0;transition:opacity .25s}
+.gb-confraria:is(:hover,:focus-visible) .gb-spark{opacity:1;transition-delay:.3s}
+.gb-admirados .gb-face-a{transform-origin:32px 90px}
+.gb-admirados .gb-face-b{transform-origin:70px 90px}
+.gb-admirados:is(:hover,:focus-visible) .gb-face-a{animation:gb-nod .95s ease-in-out}
+.gb-admirados:is(:hover,:focus-visible) .gb-face-b{animation:gb-nod .95s ease-in-out .14s}
+.gb-connection .gb-drop-a,.gb-connection .gb-drop-b,.gb-connection .gb-neck{transition:transform .7s cubic-bezier(.78,0,.18,1),opacity .3s}
+.gb-connection .gb-drop-a{transform-origin:44px 44px}
+.gb-connection .gb-drop-b{transform-origin:84px 82px}
+.gb-connection .gb-neck{transform-origin:66px 65px}
+.gb-connection:is(:hover,:focus-visible) .gb-drop-a{transform:translate(16px,16px) scale(1.24)}
+.gb-connection:is(:hover,:focus-visible) .gb-drop-b{transform:translate(-24px,-22px) scale(2.17)}
+.gb-connection:is(:hover,:focus-visible) .gb-neck{transform:scale(0)}
+.gb-experience .gb-exp-spin,.gb-experience .gb-star,.gb-experience .gb-ball,.gb-experience .gb-racket{transform-origin:60px 60px}
+.gb-experience:is(:hover,:focus-visible) .gb-exp-spin{animation:gb-spin3 5.4s cubic-bezier(.65,0,.35,1) infinite}
+.gb-experience:is(:hover,:focus-visible) .gb-star{animation:gb-star 5.4s linear infinite}
+.gb-experience:is(:hover,:focus-visible) .gb-ball{animation:gb-ball 5.4s linear infinite}
+.gb-experience:is(:hover,:focus-visible) .gb-racket{animation:gb-racket 5.4s linear infinite}
+.gb-roadshow:is(:hover,:focus-visible) .gb-shoe{animation:gb-step 1.15s ease-in-out infinite}
+.gb-roadshow:is(:hover,:focus-visible) .gb-ground{animation:gb-ground .6s linear infinite}
+.grh-paused * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Padrões repetidos */
+.section-light {
+  box-sizing: border-box;
+  width: 100%;
+  background: #FFFFFF;
+  color: #061718;
+  font-family: 'Red Hat Display', system-ui, sans-serif;
+  padding: 88px 6% 96px;
+}
+.section-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px 48px;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: #535E5E;
+}
+.eyebrow-dash {
+  width: 20px;
+  height: 2px;
+  background: #CC003D;
+}
+.section-title {
+  margin: 14px 0 0;
+  font-size: 44px;
+  line-height: 1.05;
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+.section-lead {
+  margin: 0;
+  max-width: 400px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #535E5E;
+}
+.block-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-top: 20px;
+  border-top: 1px solid #061718;
+}
+.block-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.block-note {
+  margin: 0;
+  font-size: 13px;
+  color: #535E5E;
+}
+.caption-title {
+  font-weight: 700;
+  color: #061718;
+}
+.logo-circle {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: #CC003D;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-circle-neg {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: #061718;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-grh {
+  font-size: .534em;
+  transform: translateY(-.105em);
+}
+.logo-word {
+  font-size: .465em;
+  color: #CC003D;
+  transform: translateY(-.063em);
+}
+.logo-word-neg {
+  font-size: .465em;
+  color: #FFFFFF;
+  transform: translateY(-.063em);
+}
+.photo-tag {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  padding: 4px 8px;
+  background: rgba(6,23,24,.85);
+  color: #FFFFFF;
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+}
+.stack-4 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stack-20 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.row-wrap-8 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mono-11 {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+}
+.mono-muted {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  color: #535E5E;
+}
+.mono-muted-dark {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  color: #98A4AF;
+}
+.text-13-muted {
+  font-size: 13px;
+  color: #535E5E;
+}
+.text-13-dark {
+  font-size: 13px;
+  color: #B5BEC6;
+}
+.text-15-bold {
+  font-size: 15px;
+  font-weight: 700;
+}
+.text-16-bold {
+  font-size: 16px;
+  font-weight: 700;
+}
+.muted {
+  color: #535E5E;
+}
+.timeline-text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #B5BEC6;
+}
+.kicker-red {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: #CC003D;
+}
+.kicker {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: #535E5E;
+}
+.kicker-plain {
+  font-family: 'Red Hat Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #535E5E;
+  text-decoration: none;
+}
+.stack-2 {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stack-10 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.row-stretch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+.row-stretch-16 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 16px;
+}
+.mark-red {
+  font-weight: 700;
+  color: #CC003D;
+}
+.index-tile:hover, .index-tile-wide:hover { color: #FFFFFF; border-color: rgba(255,255,255,.55); }
