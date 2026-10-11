@@ -4,7 +4,7 @@
  * Roteiro (em loop):
  *   1. O símbolo original gira devagar no sentido horário.
  *   2. Ele dá um giro de 360° e vira uma bola de tênis.
- *   3. A bola quica rápido: amassa um pouco ao tocar o chão e sobe.
+ *   3. A bola pinga duas vezes: amassa um pouco a cada toque no chão.
  *   4. Enquanto sobe, a bola gira 360° e volta a ser o símbolo.
  *   5. O símbolo segue girando na mesma velocidade da bola.
  *   6. O símbolo vira um volante, que vira devagar para a direita e depois
@@ -54,24 +54,41 @@
 
   // ---- Linha do tempo (segundos) --------------------------------------------
 
-  var T = {
-    s2: 0.9,      // cena 2: giro de 360° e vira bola
-    s3: 1.75,     // cena 3: a bola cai
-    hit: 2.02,    // toca o chão
-    up: 2.12,     // cena 4: sobe girando e volta a ser o símbolo
-    s5: 2.85,     // cena 5: segue girando
-    s6: 3.35,     // cena 6: vira volante
-    wheel: 4.1,   // volante pronto, reto
-    right: 4.95,  // virou para a direita
-    left: 5.85,   // virou para a esquerda (curva)
-    s7: 6.1,      // cena 7: volta para a direita muito rápido
-    s8: 6.85,     // cena 8: borrão, desacelera e vira o símbolo
-    end: 8.3
-  };
-  var SCENES = [0, T.s2, T.s3, T.up, T.s5, T.s6, T.s7, T.s8];
+  // Quique: a bola cai do centro, pinga duas vezes e, na segunda subida, vira o símbolo.
+  var DROP = 16;          // altura da queda até o chão (unidades do viewBox)
+  var FALL = 0.32;        // duração da primeira queda
+  var G = 2 * DROP / (FALL * FALL);
+  var APEX1 = 2;          // altura do primeiro pingo (y: 0 é o centro, negativo é acima)
+  var APEX = -6;          // a última subida passa um pouco do centro
+  var V1 = Math.sqrt(2 * G * (DROP - APEX1));
+  var V_UP = Math.sqrt(2 * G * (DROP - APEX));
+  var T_APEX = V_UP / G;
+  var SETTLE = 0.5;
+  var GROUND = 60 + DROP + BALL_R;
+
+  var T = {};
+  T.s2 = 0.9;                    // cena 2: giro de 360° e vira bola
+  T.s3 = 1.75;                   // cena 3: a bola cai e pinga duas vezes
+  T.hit1 = T.s3 + FALL;          // primeiro toque no chão
+  T.up1 = T.hit1 + 0.09;
+  T.hit2 = T.up1 + 2 * V1 / G;   // segundo toque
+  T.up2 = T.hit2 + 0.08;
+  T.s4 = T.up2;                  // cena 4: sobe girando e volta a ser o símbolo
+  T.s5 = T.s4 + 0.9;             // cena 5: segue girando
+  T.s6 = T.s5 + 0.45;            // cena 6: vira volante
+  T.wheel = T.s6 + 0.65;         // volante pronto, reto
+  T.right = T.wheel + 0.68;      // virou para a direita (e segura um instante)
+  T.left = T.right + 0.7;        // virou para a esquerda (curva)
+  T.s7 = T.left + 0.1;           // cena 7: volta para a direita muito rápido
+  T.s8 = T.s7 + 0.7;             // cena 8: borrão, desacelera e vira o símbolo
+  T.end = T.s8 + 1.45;
+  var SCENES = [0, T.s2, T.s3, T.s4, T.s5, T.s6, T.s7, T.s8];
 
   var W_SLOW = 40;    // °/s, giro leve das cenas 1 e 8
-  var W_BALL = 710;   // °/s, giro da bola que o símbolo mantém na cena 5
+  var W_BOUNCE = 60;  // °/s, giro da bola quando sai do chão pela segunda vez
+  // °/s que o símbolo mantém na cena 5: o giro de 360° da cena 4 acelera até
+  // essa velocidade e chega nela sem tranco.
+  var W_BALL = (3 * 360 / (T.s5 - T.s4) - W_BOUNCE) / 2;
   var W_MAX = 1440;   // °/s, pico do borrão
 
   // Rotação: trechos de Hermite com velocidade contínua [t, ângulo, °/s].
@@ -79,13 +96,13 @@
     var k = [[0, 0, W_SLOW], [T.s2, W_SLOW * T.s2, W_SLOW]];
     var a = k[1][1] + 360;
     k.push([T.s3, a, 90]);
-    a += 25; k.push([T.up, a, 60]);
-    a += 360; k.push([T.s5, a, W_BALL]);
+    a += 75 * (T.s4 - T.s3); k.push([T.s4, a, W_BOUNCE]);        // gira devagar enquanto pinga
+    a += 360; k.push([T.s5, a, W_BALL]);                         // sobe com um giro de 360°
     a += W_BALL * (T.s6 - T.s5); k.push([T.s6, a, W_BALL]);
     a += W_BALL * (T.wheel - T.s6) / 3; k.push([T.wheel, a, 0]);   // freia até o volante ficar reto
     var up = a;
     k.push([T.right - 0.08, up + 40, 0], [T.right, up + 40, 0]);
-    k.push([T.left, up - 95, 0], [T.s7, up - 100, 0]);
+    k.push([T.left, up - 100, 0], [T.s7, up - 100, 0]);         // segura a curva um instante
     a = up - 100 + W_MAX * (T.s8 - T.s7) / 3; k.push([T.s8, a, W_MAX]); // acelera do zero
     // Platô no pico: duração escolhida para o loop fechar num múltiplo de 90°
     // (o símbolo tem simetria de 90°, então a volta para a cena 1 não tem salto).
@@ -120,48 +137,45 @@
   function outCubic(x) { return 1 - Math.pow(1 - x, 3); }
   function outBack(x) { var y = x - 1; return 1 + 1.8 * y * y * y + 0.8 * y * y; }
 
-  // Quique: queda com gravidade, contato, subida balística e assentamento.
-  var DROP = 16;
-  var G = 2 * DROP / Math.pow(T.hit - T.s3, 2);
-  var APEX = -6;
-  var V_UP = Math.sqrt(2 * G * (DROP - APEX));
-  var T_APEX = V_UP / G;
-  var SETTLE = 0.5;
-  var GROUND = 60 + DROP + BALL_R;
-
+  // Altura da bola: queda com gravidade, dois toques no chão, subida balística e assentamento.
   function posY(t) {
     if (t < T.s3) return 0;
-    if (t < T.hit) { var u = (t - T.s3) / (T.hit - T.s3); return DROP * u * u; }
-    if (t < T.up) return DROP;
-    var tu = t - T.up;
+    if (t < T.hit1) { var u = (t - T.s3) / FALL; return DROP * u * u; }
+    if (t < T.up1) return DROP;
+    if (t < T.hit2) { var a = t - T.up1; return DROP - V1 * a + 0.5 * G * a * a; }
+    if (t < T.up2) return DROP;
+    var tu = t - T.up2;
     if (tu < T_APEX) return DROP - V_UP * tu + 0.5 * G * tu * tu;
     return APEX * (1 - smooth(seg(tu, T_APEX, T_APEX + SETTLE)));
   }
 
-  // > 0 amassa (achata contra o chão), < 0 estica no ar.
+  // > 0 amassa (achata contra o chão), < 0 estica no ar. O segundo toque amassa menos.
+  function impact(u, k) { return k * Math.sin(Math.PI * u) - 0.05 * (1 - u) * (1 - u); }
   function squash(t) {
-    if (t > T.s3 && t < T.hit) return -0.05 * Math.pow(seg(t, T.s3 + 0.1, T.hit), 2);
-    if (t >= T.hit && t <= T.up) { var u = seg(t, T.hit, T.up); return 0.14 * Math.sin(Math.PI * u) - 0.05 * (1 - u) * (1 - u); }
-    if (t > T.up && t < T.up + 0.2) return -0.06 * Math.sin(Math.PI * seg(t, T.up, T.up + 0.2));
+    if (t > T.s3 && t < T.hit1) return -0.05 * Math.pow(seg(t, T.s3 + 0.12, T.hit1), 2);
+    if (t >= T.hit1 && t <= T.up1) return impact(seg(t, T.hit1, T.up1), 0.14);
+    if (t > T.up1 && t < T.hit2) return -0.06 * Math.sin(Math.PI * seg(t, T.up1, T.up1 + 0.18)) - 0.05 * Math.pow(seg(t, T.hit2 - 0.2, T.hit2), 2);
+    if (t >= T.hit2 && t <= T.up2) return impact(seg(t, T.hit2, T.up2), 0.11);
+    if (t > T.up2 && t < T.up2 + 0.2) return -0.06 * Math.sin(Math.PI * seg(t, T.up2, T.up2 + 0.2));
     return 0;
   }
 
   function sample(t) {
     var r = rotation(t);
-    var mb = t < T.s3 ? inOut(seg(t, T.s2 + 0.1, T.s3 - 0.02)) : 1 - inOut(seg(t, T.up + 0.1, T.s5 - 0.05));
+    var mb = t < T.s3 ? inOut(seg(t, T.s2 + 0.05, T.s3 - 0.1)) : 1 - inOut(seg(t, T.s4 + 0.18, T.s5 - 0.03));
     return {
       th: r[0],
       w: r[1],
       mb: mb,
       mw: inOut(seg(t, T.s6, T.s6 + 0.45)) * (1 - inOut(seg(t, T.s8 + 0.02, T.s8 + 0.4))),
-      se: smooth(seg(t, T.s3 - 0.4, T.s3 - 0.02)) * (1 - smooth(seg(t, T.up + 0.02, T.up + 0.3))),
-      ho: (t < T.s8 ? outBack(seg(t, T.s6 + 0.25, T.wheel)) : 1) * (1 - inOut(seg(t, T.s8, T.s8 + 0.32))),
+      se: smooth(seg(t, T.s3 - 0.45, T.s3 - 0.05)) * (1 - smooth(seg(t, T.s4 + 0.05, T.s4 + 0.35))),
+      ho: (t < T.s8 ? outBack(seg(t, T.s6 + 0.2, T.wheel)) : 1) * (1 - inOut(seg(t, T.s8, T.s8 + 0.32))),
       y: posY(t),
       sq: squash(t),
-      sh: smooth(seg(t, T.s3 - 0.3, T.s3)) * (1 - smooth(seg(t, T.up + 0.1, T.up + 0.45)))
+      sh: smooth(seg(t, T.s3 - 0.3, T.s3)) * (1 - smooth(seg(t, T.s4 + 0.1, T.s4 + 0.45)))
     };
   }
-  var SEAMS_ROT = -rotation(T.hit)[0];   // costuras na vertical quando a bola toca o chão
+  var SEAMS_ROT = -rotation(T.hit1)[0];  // costuras na vertical no primeiro toque no chão
   var HOLES_ROT = -KEYS.wheelUp;         // volante reto no fim da cena 6
   var REST = { th: 0, w: 0, mb: 0, mw: 0, se: 0, ho: 0, y: 0, sq: 0, sh: 0 };
 
