@@ -32,10 +32,6 @@ button { font-family: inherit; }
 @keyframes gb-map-side{0%,100%{transform:scaleX(1)}40%,58%{transform:scaleX(0)}}
 @keyframes gb-map-mid{0%,100%{transform:scaleX(1)}40%,58%{transform:scaleX(.3)}}
 @keyframes gb-nod{0%,100%{transform:rotate(0deg)}22%{transform:rotate(11deg)}48%{transform:rotate(0deg)}68%{transform:rotate(7deg)}}
-@keyframes gb-spin3{0%{transform:rotate(0deg)}33.33%{transform:rotate(360deg)}66.66%{transform:rotate(720deg)}100%{transform:rotate(1080deg)}}
-@keyframes gb-star{0%,13%{opacity:1;transform:scale(1)}18%,81%{opacity:0;transform:scale(.55)}86%,100%{opacity:1;transform:scale(1)}}
-@keyframes gb-ball{0%,13%{opacity:0;transform:scale(.55)}18%,47%{opacity:1;transform:scale(1)}52%,100%{opacity:0;transform:scale(.55)}}
-@keyframes gb-racket{0%,47%{opacity:0;transform:scale(.55)}52%,81%{opacity:1;transform:scale(1)}86%,100%{opacity:0;transform:scale(.55)}}
 @keyframes gb-step{0%,100%{transform:rotate(14deg)}22%{transform:translate(-5px,-12px) rotate(22deg)}46%{transform:translate(5px,-11px) rotate(-10deg)}62%{transform:translate(0px,-13px) rotate(-12deg)}80%{transform:translate(0px,0px) rotate(0deg)}}
 @keyframes gb-ground{to{stroke-dashoffset:-48}}
 .gb{cursor:pointer}
@@ -64,11 +60,6 @@ button { font-family: inherit; }
 .gb-connection:is(:hover,:focus-visible) .gb-drop-a{transform:translate(16px,16px) scale(1.24)}
 .gb-connection:is(:hover,:focus-visible) .gb-drop-b{transform:translate(-24px,-22px) scale(2.17)}
 .gb-connection:is(:hover,:focus-visible) .gb-neck{transform:scale(0)}
-.gb-experience .gb-exp-spin,.gb-experience .gb-star,.gb-experience .gb-ball,.gb-experience .gb-racket{transform-origin:60px 60px}
-.gb-experience:is(:hover,:focus-visible) .gb-exp-spin{animation:gb-spin3 5.4s cubic-bezier(.65,0,.35,1) infinite}
-.gb-experience:is(:hover,:focus-visible) .gb-star{animation:gb-star 5.4s linear infinite}
-.gb-experience:is(:hover,:focus-visible) .gb-ball{animation:gb-ball 5.4s linear infinite}
-.gb-experience:is(:hover,:focus-visible) .gb-racket{animation:gb-racket 5.4s linear infinite}
 .gb-roadshow:is(:hover,:focus-visible) .gb-shoe{animation:gb-step 1.15s ease-in-out infinite}
 .gb-roadshow:is(:hover,:focus-visible) .gb-ground{animation:gb-ground .6s linear infinite}
 .grh-paused * { animation-play-state: paused !important; }
