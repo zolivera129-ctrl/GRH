@@ -28,7 +28,7 @@ As áreas do Reels que ficam sob a interface do Instagram (topo, rodapé e colun
 - **Código de campanha de exemplo**: o vídeo usa `CW-2026`. Troque pelo formato real dos anúncios em `src/theme.ts` (`COPY.campaignCode`) e renderize de novo. O cargo do anúncio (`COPY.jobTitle`) fica no mesmo arquivo.
 - **Logo**: é uma releitura em vetor feita a partir do print do site (`src/components/Logo.tsx`). Se tiver o arquivo oficial, vale substituir.
 - **Dados fictícios**: Maria Santos, México (+52), `maria@email.com`. País, prefixo e telefone ficam em `src/theme.ts` (`COPY`). A tela "Application sent!" é uma simulação, e a mensagem real do site pode ser outra.
-- **Áudio**: o vídeo tem só efeitos sonoros (toques, teclas, whoosh, sino), sintetizados por `scripts/make_sfx.py`, sem licença de terceiros. Não há música: adicione uma trilha pelo próprio Instagram e baixe o volume do áudio original se precisar.
+- **Áudio**: trilha original em clima tropical house (120 BPM, Lá menor), gerada por `scripts/make_music.py`, mais os efeitos sonoros de `scripts/make_sfx.py` (toques, teclas, whoosh, sino). Tudo é sintetizado por código, sem samples nem licença de terceiros. Os compassos estão presos à linha do tempo: o groove entra com o celular (3,2 s), o refrão com melodia começa junto com o "DON'T SKIP IT" do código de campanha (29,2 s) e um acorde final soa no encerramento. O áudio sai masterizado em cerca de -15 LUFS. Se preferir uma música em alta do Instagram, baixe o volume do áudio original no app.
 
 ## Legenda sugerida para o post
 
@@ -48,7 +48,9 @@ Projeto em [Remotion](https://www.remotion.dev) (React → vídeo).
 ```bash
 npm i
 npm run dev        # Remotion Studio, para pré-visualizar e ajustar
-npm run render     # gera castaway-como-aplicar-reels.mp4
+npm run render     # gera castaway-como-aplicar-reels.mp4 (render + masterização do áudio)
+npm run music      # gera a trilha de novo (public/music/castaway-tropical.m4a)
+npm run sfx        # gera os efeitos sonoros de novo (public/sfx/)
 ```
 
 Num ambiente sem acesso ao download do Chrome do Remotion, aponte para um Chromium local, por exemplo:
@@ -64,4 +66,5 @@ Quadros avulsos para conferência: `node scripts/stills.mjs Walkthrough 300 880`
 - `src/site/`: as telas simuladas do site (cabeçalho, home, menu e formulário "Apply Now" com as seções 01–07), no navegador escuro do vídeo de referência.
 - `src/components/`: celular, teclado do iPhone (texto, e-mail, URL e numérico), seletor de país, indicador de toque, legendas dos passos, fundo animado e logo.
 - `src/theme.ts`: cores medidas no site e todos os textos/dados do formulário.
-- `public/`: fontes (Raleway, Open Sans, Oswald, Inter; licença OFL), foto do navio recortada do vídeo de referência e efeitos sonoros.
+- `public/`: fontes (Raleway, Open Sans, Oswald, Inter; licença OFL), foto do navio recortada do vídeo de referência, trilha e efeitos sonoros.
+- `scripts/render.sh`: renderiza e masteriza o áudio (+4 dB com limitador). O volume da trilha na mixagem fica em `src/Tutorial.tsx` (`MUSIC_VOLUME`).

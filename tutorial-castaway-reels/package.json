@@ -32,8 +32,9 @@
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
-    "render": "remotion render src/index.ts CastawayApplyReel castaway-como-aplicar-reels.mp4 --codec=h264 --crf=18",
-    "sfx": "python3 scripts/make_sfx.py"
+    "render": "bash scripts/render.sh",
+    "sfx": "python3 scripts/make_sfx.py",
+    "music": "python3 scripts/make_music.py"
   },
   "allowScripts": {
     "esbuild": false
