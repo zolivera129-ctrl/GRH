@@ -15,7 +15,7 @@ Os textos de tela estão em inglês, como o site e os comentários do público.
 | 0,0 – 3,5 | **Gancho.** "You asked:" e os balões de comentário ("How to apply?", "I am interested!"…) entram um a um. Eles se dissolvem e aparecem o logo e o título **HOW TO APPLY at Cast-A-Way · 6 easy steps · on your phone**. |
 | 3,3 – 7,0 | **Passo 1: abrir cast-a-way.com.** O celular entra em perspectiva. Zoom na barra de endereço, onde o endereço é digitado (a tecla `.com` é tocada) e o site carrega. Zoom out. |
 | 7,0 – 10,5 | **Passo 2: abrir o menu.** Zoom no ☰, que vira ✕, e o menu desce. A câmera desce até **Apply Now!** e o toque abre a página do formulário. |
-| 10,5 – 25,2 | **Passo 3: contatos.** Nome e sobrenome digitados no teclado do iPhone. **Nacionalidade**: o seletor rola até *Philippines*. E-mail. **Prefixo do país**: o seletor rola até *Philippines (+63)*, seguido de um zoom forte com destaque amarelo ("so we know where you're calling from"). Telefone (WhatsApp/Telegram) no teclado numérico. |
+| 10,5 – 25,2 | **Passo 3: contatos.** Nome e sobrenome digitados no teclado do iPhone. **Nacionalidade**: o seletor rola até *Mexico*. E-mail. **Prefixo do país**: o seletor rola até *Mexico (+52)*, seguido de um zoom forte com destaque amarelo ("so we know where you're calling from"). Telefone (WhatsApp/Telegram) no teclado numérico. |
 | 25,2 – 29,2 | **Passo 4: demais seções.** Zoom out com o celular inclinado. A página rola rápido e um checklist entra ao lado: 02 Consents, 03 Resume (PDF com foto), 04 Survey, 05 até 3 cargos, 06 Languages. |
 | 29,2 – 38,6 | **Passo 5: código de campanha ("DON'T SKIP IT").** Impacto sonoro e luz amarela no fundo. Zoom forte no campo *Campaign code*, com o resto da tela escurecido. Um anúncio de vaga ("NOW HIRING · BARTENDER") entra, o código sai do anúncio e voa até o campo. Depois entram os três motivos: mostra para qual vaga a pessoa está se candidatando, a candidatura pode ter prioridade e ganha mais visibilidade com os recrutadores. |
 | 38,6 – 44,8 | **Passo 6: enviar.** "How did you hear about us?" → Instagram. "I'm not a robot" (carregando → ✓). Toque em **SEND YOUR RESUME**, confirmação "Application sent!" e confete. |
@@ -27,7 +27,7 @@ As áreas do Reels que ficam sob a interface do Instagram (topo, rodapé e colun
 
 - **Código de campanha de exemplo**: o vídeo usa `CW-2026`. Troque pelo formato real dos anúncios em `src/theme.ts` (`COPY.campaignCode`) e renderize de novo. O cargo do anúncio (`COPY.jobTitle`) fica no mesmo arquivo.
 - **Logo**: é uma releitura em vetor feita a partir do print do site (`src/components/Logo.tsx`). Se tiver o arquivo oficial, vale substituir.
-- **Dados fictícios**: Maria Santos, Filipinas, `maria@email.com`. A tela "Application sent!" é uma simulação, e a mensagem real do site pode ser outra.
+- **Dados fictícios**: Maria Santos, México (+52), `maria@email.com`. País, prefixo e telefone ficam em `src/theme.ts` (`COPY`). A tela "Application sent!" é uma simulação, e a mensagem real do site pode ser outra.
 - **Áudio**: o vídeo tem só efeitos sonoros (toques, teclas, whoosh, sino), sintetizados por `scripts/make_sfx.py`, sem licença de terceiros. Não há música: adicione uma trilha pelo próprio Instagram e baixe o volume do áudio original se precisar.
 
 ## Legenda sugerida para o post

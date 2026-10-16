@@ -6,7 +6,7 @@ import { IconBolt, IconCheck, IconEye, IconTarget } from "../components/Icons";
 import { KEYBOARD_H, Keyboard } from "../components/Keyboard";
 import { Porthole } from "../components/Logo";
 import { BEZEL, PHONE_H, PHONE_W, Phone, SCREEN_H, SCREEN_W } from "../components/Phone";
-import { COUNTRIES, PHILIPPINES, PICKER_ROW, PICKER_VISIBLE, Picker, scrollToRow } from "../components/Picker";
+import { COUNTRIES, TARGET_COUNTRY, PICKER_ROW, PICKER_VISIBLE, Picker, scrollToRow } from "../components/Picker";
 import { Touch } from "../components/Touch";
 import { Sfx, SfxEvent, keyClicks } from "../components/Sfx";
 import { backOut, lerp, out, pulse, smooth, track, typed } from "../lib/anim";
@@ -271,9 +271,9 @@ export const Walkthrough: React.FC = () => {
 
   // ----- pickers -----
   const natOpen = lerp(frame, [T.natTap + 2, T.natTap + 10], [0, 1], out) * (1 - lerp(frame, [T.natPick + 4, T.natPick + 12], [0, 1]));
-  const natScroll = lerp(frame, [T.natTap + 14, T.natPick - 8], [0, scrollToRow(PHILIPPINES)], smooth);
+  const natScroll = lerp(frame, [T.natTap + 14, T.natPick - 8], [0, scrollToRow(TARGET_COUNTRY)], smooth);
   const preOpen = lerp(frame, [T.preTap + 2, T.preTap + 10], [0, 1], out) * (1 - lerp(frame, [T.prePick + 4, T.prePick + 12], [0, 1]));
-  const preScroll = lerp(frame, [T.preTap + 14, T.prePick - 8], [0, scrollToRow(PHILIPPINES)], smooth);
+  const preScroll = lerp(frame, [T.preTap + 14, T.prePick - 8], [0, scrollToRow(TARGET_COUNTRY)], smooth);
   const pickerRowY = (fieldPageY: number) => sy(fieldPageY, S_CONTACTS) + FIELD_H + 6;
 
   // ----- estado do formulário -----
@@ -406,7 +406,7 @@ export const Walkthrough: React.FC = () => {
                 width={SCREEN_W - 48}
                 open={natOpen}
                 scroll={natScroll}
-                active={frame >= T.natPick - 4 ? PHILIPPINES : null}
+                active={frame >= T.natPick - 4 ? TARGET_COUNTRY : null}
               />
               <Picker
                 items={PRE_ITEMS}
@@ -416,7 +416,7 @@ export const Walkthrough: React.FC = () => {
                 width={SCREEN_W - 48}
                 open={preOpen}
                 scroll={preScroll}
-                active={frame >= T.prePick - 4 ? PHILIPPINES : null}
+                active={frame >= T.prePick - 4 ? TARGET_COUNTRY : null}
               />
 
               {/* sucesso */}

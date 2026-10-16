@@ -1,5 +1,5 @@
 import React from "react";
-import { F } from "../theme";
+import { COPY, F } from "../theme";
 import { IconCheck } from "./Icons";
 
 export const PICKER_ROW = 44;
@@ -60,7 +60,8 @@ export const COUNTRIES: [string, string][] = [
   ["Serbia", "+381"],
 ];
 
-export const PHILIPPINES = COUNTRIES.findIndex(([n]) => n === "Philippines");
+/** Linha escolhida nos dois seletores (nacionalidade e prefixo): o país de `COPY.nationality`. */
+export const TARGET_COUNTRY = COUNTRIES.findIndex(([n]) => n === COPY.nationality);
 
 /**
  * Menu de seleção do Safari (popover escuro com a lista de países).

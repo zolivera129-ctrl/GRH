@@ -36,9 +36,9 @@ export const COPY = {
   firstName: "Maria",
   lastName: "Santos",
   email: "maria@email.com",
-  nationality: "Philippines",
-  prefix: "Philippines (+63)",
-  phone: "912 345 6789",
+  nationality: "Mexico",
+  prefix: "Mexico (+52)",
+  phone: "55 1234 5678",
   // Código de exemplo: troque pelo formato real usado nos anúncios das vagas.
   campaignCode: "CW-2026",
   jobTitle: "Bartender",
