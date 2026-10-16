@@ -2,13 +2,14 @@ import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { Background } from "../components/Background";
 import { IconBookmark, IconSend, IconWarn } from "../components/Icons";
-import { Porthole, Wordmark } from "../components/Logo";
+import { LOCKUP, Porthole, Wordmark } from "../components/Logo";
 import { Sfx } from "../components/Sfx";
 import { backOut, lerp, out } from "../lib/anim";
 import { C, COPY, F } from "../theme";
 import "../fonts";
 
 export const OUTRO_FRAMES = 120;
+const LOGO = 300; // diâmetro do símbolo
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -27,10 +28,10 @@ export const Outro: React.FC = () => {
       <Background />
       <AbsoluteFill style={{ alignItems: "center", opacity: 1 - fadeOut }}>
         <div style={{ marginTop: 360, transform: `scale(${logo})` }}>
-          <Porthole size={300} spin={interpolate(frame, [0, 30], [-90, 0], { ...clamp, easing: out })} />
+          <Porthole size={LOGO} spin={interpolate(frame, [0, 30], [-120, 0], { ...clamp, easing: out })} />
         </div>
-        <div style={{ marginTop: 30, ...rise(8) }}>
-          <Wordmark height={120} />
+        <div style={{ marginTop: LOGO * LOCKUP.gap, ...rise(8) }}>
+          <Wordmark height={LOGO * LOCKUP.wordmarkHeight} />
         </div>
 
         <div style={{ marginTop: 90, fontFamily: F.raleway, fontWeight: 700, fontSize: 52, color: "rgba(255,255,255,0.9)", ...rise(18) }}>Apply now at</div>

@@ -25,10 +25,10 @@ export const SiteHeader: React.FC<{ menu: number }> = ({ menu }) => {
   };
   return (
     <div style={{ position: "absolute", left: 0, top: 0, width: SCREEN_W, height: HEADER_H, background: C.brand }}>
-      <div style={{ position: "absolute", left: 18, top: 9 }}>
-        <Porthole size={80} />
+      <div style={{ position: "absolute", left: 18, top: 10 }}>
+        <Porthole size={76} />
       </div>
-      <Wordmark height={40} style={{ position: "absolute", left: 108, top: 29 }} />
+      <Wordmark height={38} style={{ position: "absolute", left: 104, top: 29 }} />
       <div style={{ position: "absolute", left: BURGER.x - 15, top: BURGER.y - 12, width: 30, height: 24 }}>
         {[0, 1, 2].map((i) => (
           <div key={i} style={bar(i)} />

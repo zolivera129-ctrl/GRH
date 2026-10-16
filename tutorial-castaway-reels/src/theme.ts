@@ -7,11 +7,11 @@ export const C = {
   heading: "#3d8fd6", // títulos "01. Contacts"
   button: "#5598d8",
   buttonPressed: "#22408a",
-  ring: "#5bb6e8", // aro do logo (escotilha)
+  ring: "#75d1f7", // azul-claro do manual (C48 M0 Y0 K0)
   sun: "#f2b632",
-  sand: "#f0b53a",
-  palm: "#1f7a3c",
-  sea: "#2a8fd6",
+  sand: "#eec747", // amarelo do manual (C7 M19 Y84 K0)
+  palm: "#2b8354", // verde do manual (C82 M26 Y83 K11)
+  sea: "#0091d0", // azul do manual (C79 M30 Y0 K0)
   ink: "#3a3a3a",
   muted: "#6b6b6b",
   field: "#cfd4da",

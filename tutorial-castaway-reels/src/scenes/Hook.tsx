@@ -93,10 +93,10 @@ export const Hook: React.FC = () => {
         <div
           style={{
             opacity: lerp(frame, [46, 54], [0, 1]),
-            transform: `scale(${lerp(frame, [46, 62], [0.3, 1], backOut)}) rotate(${interpolate(frame, [46, 70], [-200, 0], { ...clamp, easing: out })}deg)`,
+            transform: `scale(${lerp(frame, [46, 62], [0.3, 1], backOut)})`,
           }}
         >
-          <Porthole size={250} />
+          <Porthole size={250} spin={interpolate(frame, [46, 74], [-200, 0], { ...clamp, easing: out })} />
         </div>
         {titleWords.map((w) => {
           const p = lerp(frame, [w.at, w.at + 14], [0, 1], out);
