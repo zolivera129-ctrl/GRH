@@ -30,16 +30,26 @@ As áreas do Reels que ficam sob a interface do Instagram (topo, rodapé e colun
 - **Dados fictícios**: Maria Santos, México (+52), `maria@email.com`. País, prefixo e telefone ficam em `src/theme.ts` (`COPY`). A tela "Application sent!" é uma simulação, e a mensagem real do site pode ser outra.
 - **Áudio**: trilha original em clima tropical house (120 BPM, Lá menor), gerada por `scripts/make_music.py`, mais os efeitos sonoros de `scripts/make_sfx.py` (toques, teclas, whoosh, sino). Tudo é sintetizado por código, sem samples nem licença de terceiros. Os compassos estão presos à linha do tempo: o groove entra com o celular (3,2 s), o refrão com melodia começa junto com o "DON'T SKIP IT" do código de campanha (29,2 s) e um acorde final soa no encerramento. O áudio sai masterizado em cerca de -15 LUFS. Se preferir uma música em alta do Instagram, baixe o volume do áudio original no app.
 
-## Legenda sugerida para o post
+## Legenda para o post
 
-> You asked "How to apply?" 👇 Here's the step-by-step on your phone:
-> 1️⃣ Go to cast-a-way.com
-> 2️⃣ Menu → Apply Now!
-> 3️⃣ Fill in your contacts (nationality + country prefix)
-> 4️⃣ Upload your resume (PDF with photo) and answer every section
-> 5️⃣ ⚠️ Add the CAMPAIGN CODE from the job post: it shows which job you're applying for and may give your application priority
-> 6️⃣ Tick "I'm not a robot" and tap SEND YOUR RESUME
-> Save this video and share it with a friend who dreams of working at sea 🌊🚢
+Em inglês, pronta para colar (também em `legenda-instagram.txt`). Ela avisa que nem todo post tem código de campanha, mas que, quando o post tiver, é essencial colocá-lo na candidatura.
+
+```text
+You asked "How to apply?" 👇 Here's the step-by-step, right from your phone:
+
+1️⃣ Go to cast-a-way.com
+2️⃣ Open the menu ☰ and tap "Apply Now!"
+3️⃣ Fill in your contacts: name, nationality (as in your passport), email, country prefix and a phone number with WhatsApp or Telegram
+4️⃣ Upload your resume (PDF with photo) and complete every section: survey, job positions and languages
+5️⃣ ⚠️ Add the CAMPAIGN CODE
+6️⃣ Tick "I'm not a robot" and tap SEND YOUR RESUME ✅
+
+📌 About the campaign code: not every post has one. But if the job post you saw includes a campaign code, it's essential to add it to your application. It tells our recruiters exactly which job you're applying for, and applications with a campaign code may be given priority.
+
+💾 Save this video for when you apply, and send it to a friend who dreams of working at sea 🌊🚢
+
+#cruisejobs #workatsea #cruiseshipjobs #hiring #castawayhiring
+```
 
 ## Como editar e renderizar
 
