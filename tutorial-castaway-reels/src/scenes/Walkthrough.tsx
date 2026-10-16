@@ -3,7 +3,7 @@ import { AbsoluteFill, Sequence, interpolate, useCurrentFrame, useVideoConfig } 
 import { Background } from "../components/Background";
 import { StepCaption } from "../components/Caption";
 import { IconBolt, IconCheck, IconEye, IconTarget } from "../components/Icons";
-import { KEYBOARD_H, Keyboard } from "../components/Keyboard";
+import { KEYBOARD_H, KeyGlow, Keyboard } from "../components/Keyboard";
 import { Porthole } from "../components/Logo";
 import { BEZEL, PHONE_H, PHONE_W, Phone, SCREEN_H, SCREEN_W } from "../components/Phone";
 import { COUNTRIES, TARGET_COUNTRY, PICKER_ROW, PICKER_VISIBLE, Picker, scrollToRow } from "../components/Picker";
@@ -130,23 +130,40 @@ const toComp = (cam: Cam, x: number, y: number) => {
 // Digitação ----------------------------------------------------------------
 const URL_TOKENS = ["c", "a", "s", "t", "-", "a", "-", "w", "a", "y", ".com"];
 const URL_PER = 2.6;
-const tokensTyped = (frame: number) => {
-  if (frame < T.urlType) return { text: "", pressed: null as string | null };
+const urlTyped = (frame: number) => {
+  if (frame < T.urlType) return "";
   const n = Math.min(URL_TOKENS.length, Math.floor((frame - T.urlType) / URL_PER) + 1);
-  const last = frame - (T.urlType + (n - 1) * URL_PER) < 2 ? URL_TOKENS[n - 1] : null;
-  return { text: URL_TOKENS.slice(0, n).join(""), pressed: last };
-};
-
-const pressedAt = (frame: number, start: number, text: string, per: number) => {
-  if (frame < start) return null;
-  const i = Math.floor((frame - start) / per);
-  if (i >= text.length) return null;
-  return frame - (start + i * per) < 2 ? text[i] : null;
+  return URL_TOKENS.slice(0, n).join("");
 };
 
 const PER_NAME = 3;
 const PER_EMAIL = 2;
 const PER_PHONE = 2;
+
+// Cada tecla acende no frame em que é digitada e apaga em KEY_FADE frames.
+const KEY_FADE = 6;
+type Press = { key: string; f: number };
+const pressesOf = (start: number, chars: string[], per: number): Press[] =>
+  chars.map((ch, i) => ({ key: ch.length === 1 ? ch.toUpperCase() : ch, f: start + i * per }));
+const PRESSES: Press[] = [
+  ...pressesOf(T.urlType, URL_TOKENS, URL_PER),
+  ...pressesOf(T.fnType, COPY.firstName.split(""), PER_NAME),
+  ...pressesOf(T.lnType, COPY.lastName.split(""), PER_NAME),
+  ...pressesOf(T.emailType, COPY.email.split(""), PER_EMAIL),
+  ...pressesOf(T.phoneType, COPY.phone.split(""), PER_PHONE),
+];
+const keyGlow = (frame: number): KeyGlow => {
+  const glow: KeyGlow = {};
+  for (const p of PRESSES) {
+    const age = frame - p.f;
+    if (age < 0 || age > KEY_FADE) continue;
+    glow[p.key] = Math.max(glow[p.key] ?? 0, 1 - age / KEY_FADE);
+  }
+  return glow;
+};
+
+// Toque nos campos perto da borda direita, para o círculo não cobrir o texto digitado.
+const FIELD_TAP_X = 318;
 
 const NAT_ITEMS = COUNTRIES.map(([n]) => n);
 const PRE_ITEMS = COUNTRIES.map(([n, c]) => `${n} (${c})`);
@@ -217,7 +234,7 @@ export const Walkthrough: React.FC = () => {
   const collapse = lerp(frame, [T.nav, T.nav + 12], [0, 1]);
   const toolbar = 1 - collapse;
   const progress = lerp(frame, [T.goTap + 2, T.siteIn + 6], [0, 1], (t) => t);
-  const url = tokensTyped(frame);
+  const urlText = urlTyped(frame);
   const urlFocused = frame >= T.urlTap && frame < T.goTap + 2;
   const siteShown = frame >= T.siteIn;
   const siteIn = lerp(frame, [T.siteIn, T.siteIn + 8], [0, 1]);
@@ -252,22 +269,10 @@ export const Walkthrough: React.FC = () => {
   const kb = KBS.find((k) => frame >= k.up && frame < k.down + 12);
   const kbY = kb ? lerp(frame, [kb.up, kb.up + 10], [KEYBOARD_H, 0], out) + lerp(frame, [kb.down, kb.down + 10], [0, KEYBOARD_H], smooth) : KEYBOARD_H;
 
-  let pressed: string | null = null;
+  const glow = keyGlow(frame);
   let suggestion = "";
-  if (kb?.variant === "url") pressed = url.pressed;
-  if (frame >= T.fnType && frame < T.lnTap) {
-    pressed = pressedAt(frame, T.fnType, COPY.firstName, PER_NAME);
-    suggestion = typed(frame, T.fnType, COPY.firstName, PER_NAME);
-  }
-  if (frame >= T.lnType && frame < 316) {
-    pressed = pressedAt(frame, T.lnType, COPY.lastName, PER_NAME);
-    suggestion = typed(frame, T.lnType, COPY.lastName, PER_NAME);
-  }
-  if (kb?.variant === "email") pressed = pressedAt(frame, T.emailType, COPY.email, PER_EMAIL);
-  if (kb?.variant === "phone") {
-    const ch = pressedAt(frame, T.phoneType, COPY.phone, PER_PHONE);
-    pressed = ch === " " ? null : ch;
-  }
+  if (frame >= T.fnType && frame < T.lnTap) suggestion = typed(frame, T.fnType, COPY.firstName, PER_NAME);
+  if (frame >= T.lnType && frame < 316) suggestion = typed(frame, T.lnType, COPY.lastName, PER_NAME);
 
   // ----- pickers -----
   const natOpen = lerp(frame, [T.natTap + 2, T.natTap + 10], [0, 1], out) * (1 - lerp(frame, [T.natPick + 4, T.natPick + 12], [0, 1]));
@@ -323,14 +328,14 @@ export const Walkthrough: React.FC = () => {
     [T.goTap, 333, SCREEN_H - KEYBOARD_H + 239],
     [T.menuTap, BURGER.x, contentTop(0) + BURGER.y],
     [T.applyTap, 110, contentTop(0) + APPLY_Y],
-    [T.fnTap, 160, fieldC(Y.firstName)],
-    [T.lnTap, 160, fieldC(Y.lastName)],
-    [T.natTap, 220, fieldC(Y.nationality)],
+    [T.fnTap, FIELD_TAP_X, fieldC(Y.firstName)],
+    [T.lnTap, FIELD_TAP_X, fieldC(Y.lastName)],
+    [T.natTap, FIELD_TAP_X, fieldC(Y.nationality)],
     [T.natPick, 160, pickerRowY(Y.nationality) + (PICKER_ROW * PICKER_VISIBLE) / 2],
-    [T.emailTap, 160, fieldC(Y.email)],
-    [T.preTap, 220, fieldC(Y.prefix)],
+    [T.emailTap, FIELD_TAP_X, fieldC(Y.email)],
+    [T.preTap, FIELD_TAP_X, fieldC(Y.prefix)],
     [T.prePick, 160, pickerRowY(Y.prefix) + (PICKER_ROW * PICKER_VISIBLE) / 2],
-    [T.phoneTap, 160, fieldC(Y.phone)],
+    [T.phoneTap, FIELD_TAP_X, fieldC(Y.phone)],
     [T.igTap, 28, sy(RADIO_INSTAGRAM_Y, S_REF)],
     [T.captchaTap, 46, sy(Y.captcha + 38, S_SEND)],
     [T.sendTap, 195, sy(Y.send + 28, S_SEND)],
@@ -340,18 +345,23 @@ export const Walkthrough: React.FC = () => {
   const tx = cam.cx - (BEZEL + cam.fx) * s;
   const ty = cam.cy - (BEZEL + cam.fy) * s + (1 - enter) * 1400;
 
+  // Inclinação 3D só quando existe (entrada do celular e passo 4). Com o 3D sempre
+  // ligado, o Chrome às vezes deixava "buracos" retangulares no celular durante o render.
+  const rotX = cam.rx + (1 - enter) * 28;
+  const tilted = Math.abs(rotX) > 0.01 || Math.abs(cam.ry) > 0.01;
+
   return (
     <AbsoluteFill style={{ fontFamily: F.raleway, overflow: "hidden" }}>
       <Background warm={warm} />
 
       {/* ---------------- celular + câmera ---------------- */}
-      <AbsoluteFill style={{ perspective: 2600, perspectiveOrigin: `${cam.cx}px ${cam.cy}px` }}>
+      <AbsoluteFill style={tilted ? { perspective: 2600, perspectiveOrigin: `${cam.cx}px ${cam.cy}px` } : undefined}>
         <AbsoluteFill
-          style={{
-            transformOrigin: `${cam.cx}px ${cam.cy}px`,
-            transform: `rotateY(${cam.ry}deg) rotateX(${cam.rx + (1 - enter) * 28}deg)`,
-            transformStyle: "preserve-3d",
-          }}
+          style={
+            tilted
+              ? { transformOrigin: `${cam.cx}px ${cam.cy}px`, transform: `rotateY(${cam.ry}deg) rotateX(${rotX}deg)` }
+              : undefined
+          }
         >
           <div style={{ position: "absolute", left: 0, top: 0, width: PHONE_W, height: PHONE_H, transformOrigin: "0 0", transform: `translate(${tx}px, ${ty}px) scale(${s})` }}>
             <Phone>
@@ -425,13 +435,13 @@ export const Walkthrough: React.FC = () => {
               {/* teclado */}
               {kb ? (
                 <div style={{ position: "absolute", left: 0, top: kbY, width: SCREEN_W, height: SCREEN_H, zIndex: 60 }}>
-                  <Keyboard variant={kb.variant} pressed={pressed} suggestion={suggestion} returnPressed={kb.variant === "url" && frame >= T.goTap && frame < T.goTap + 4} />
+                  <Keyboard variant={kb.variant} glow={glow} suggestion={suggestion} returnPressed={kb.variant === "url" && frame >= T.goTap && frame < T.goTap + 4} />
                 </div>
               ) : null}
 
               <BrowserChrome
-                url={siteShown || frame >= T.goTap ? COPY.site : url.text || "Search or enter website name"}
-                placeholder={!url.text && !(siteShown || frame >= T.goTap)}
+                url={siteShown || frame >= T.goTap ? COPY.site : urlText || "Search or enter website name"}
+                placeholder={!urlText && !(siteShown || frame >= T.goTap)}
                 focused={urlFocused}
                 caret={urlFocused && (caretOn || (frame >= T.urlType && frame < T.goTap))}
                 collapse={collapse}

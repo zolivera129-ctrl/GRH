@@ -101,9 +101,10 @@ const Field: React.FC<{
   value: string;
   select?: boolean;
   focused?: boolean;
+  editing?: boolean;
   caret?: boolean;
   flash?: number;
-}> = ({ y, icon, placeholder, value, select = false, focused = false, caret = false, flash = 0 }) => (
+}> = ({ y, icon, placeholder, value, select = false, focused = false, editing = false, caret = false, flash = 0 }) => (
   <div
     style={{
       position: "absolute",
@@ -127,9 +128,10 @@ const Field: React.FC<{
   >
     {icon}
     <div style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", display: "flex", alignItems: "center" }}>
-      {value || (caret ? "" : placeholder)}
-      {caret ? <span style={{ display: "inline-block", width: 2, height: 21, background: "#0a84ff", marginLeft: 1 }} /> : null}
-      {!value && caret ? <span style={{ color: C.muted, marginLeft: 2 }}>{placeholder}</span> : null}
+      {value || null}
+      {/* o cursor ocupa sempre o mesmo espaço; piscar só muda a opacidade */}
+      {editing ? <span style={{ display: "inline-block", width: 2, height: 21, background: "#0a84ff", marginLeft: 1, opacity: caret ? 1 : 0 }} /> : null}
+      {value ? null : <span style={{ color: C.muted, marginLeft: editing ? 2 : 0 }}>{placeholder}</span>}
     </div>
     {select ? <IconChevronDown size={16} color="#333" /> : null}
   </div>
@@ -224,7 +226,8 @@ export const ApplyPage: React.FC<{ s: ApplyState }> = ({ s }) => {
         placeholder="First Name *"
         value={s.firstName}
         focused={s.focus === "firstName"}
-        caret={s.focus === "firstName" && s.caret}
+        editing={s.focus === "firstName"}
+        caret={s.caret}
       />
       <Field
         y={Y.lastName}
@@ -232,7 +235,8 @@ export const ApplyPage: React.FC<{ s: ApplyState }> = ({ s }) => {
         placeholder="Last Name *"
         value={s.lastName}
         focused={s.focus === "lastName"}
-        caret={s.focus === "lastName" && s.caret}
+        editing={s.focus === "lastName"}
+        caret={s.caret}
       />
       <Field
         y={Y.nationality}
@@ -249,7 +253,8 @@ export const ApplyPage: React.FC<{ s: ApplyState }> = ({ s }) => {
         placeholder="Your best email (this will be your login) *"
         value={s.email}
         focused={s.focus === "email"}
-        caret={s.focus === "email" && s.caret}
+        editing={s.focus === "email"}
+        caret={s.caret}
       />
       <Field
         y={Y.prefix}
@@ -266,7 +271,8 @@ export const ApplyPage: React.FC<{ s: ApplyState }> = ({ s }) => {
         placeholder="Phone with WhatsApp or Telegram *"
         value={s.phone}
         focused={s.focus === "phone"}
-        caret={s.focus === "phone" && s.caret}
+        editing={s.focus === "phone"}
+        caret={s.caret}
       />
 
       {/* 02 */}
@@ -371,7 +377,8 @@ export const ApplyPage: React.FC<{ s: ApplyState }> = ({ s }) => {
         placeholder=""
         value={s.code}
         focused={s.focus === "code"}
-        caret={s.focus === "code" && s.caret}
+        editing={s.focus === "code"}
+        caret={s.caret}
         flash={s.flash.code}
       />
       <Para y={Y.hear} size={15.5}>

@@ -29,19 +29,27 @@ const keyBase: React.CSSProperties = {
 
 const darkKey: React.CSSProperties = { ...keyBase, background: "#464648" };
 
+/** Brilho de tecla pressionada: 0 = cor normal, 1 = tecla acesa. */
+export type KeyGlow = Record<string, number>;
+
+const mix = (from: [number, number, number], to: [number, number, number], t: number) =>
+  `rgb(${from.map((c, i) => Math.round(c + (to[i] - c) * t)).join(",")})`;
+const KEY_RGB: [number, number, number] = [107, 107, 110];
+const LIT_RGB: [number, number, number] = [168, 168, 172];
+const keyBg = (g = 0) => mix(KEY_RGB, LIT_RGB, g);
+
 /**
  * Teclado do iPhone (tema escuro, como no vídeo de referência).
- * `pressed` é o caractere que está sendo digitado neste frame (ou null).
+ * `glow` acende as teclas digitadas e apaga aos poucos (sem balão por cima do texto).
  */
 export const Keyboard: React.FC<{
   variant?: Variant;
-  pressed?: string | null;
+  glow?: KeyGlow;
   suggestion?: string;
   returnLabel?: string;
   returnPressed?: boolean;
-}> = ({ variant = "text", pressed = null, suggestion = "", returnLabel, returnPressed = false }) => {
-  if (variant === "phone") return <PhonePad pressed={pressed} />;
-  const p = pressed ? pressed.toUpperCase() : null;
+}> = ({ variant = "text", glow = {}, suggestion = "", returnLabel, returnPressed = false }) => {
+  if (variant === "phone") return <PhonePad glow={glow} />;
 
   const keys: React.ReactNode[] = [];
   ROWS.forEach((row, r) => {
@@ -49,38 +57,11 @@ export const Keyboard: React.FC<{
     const x0 = (SCREEN_W - rowW) / 2;
     row.split("").forEach((ch, i) => {
       const x = x0 + i * (KEY_W + GAP_X);
-      const isP = p === ch;
       keys.push(
-        <div key={ch} style={{ ...keyBase, left: x, top: ROW_Y[r], width: KEY_W, fontSize: 22, background: isP ? "#9a9a9e" : "#6b6b6e" }}>
+        <div key={ch} style={{ ...keyBase, left: x, top: ROW_Y[r], width: KEY_W, fontSize: 22, background: keyBg(glow[ch]) }}>
           {ch}
         </div>,
       );
-      if (isP) {
-        keys.push(
-          <div
-            key={`${ch}-pop`}
-            style={{
-              position: "absolute",
-              left: x - 9,
-              top: ROW_Y[r] - 58,
-              width: KEY_W + 18,
-              height: 56,
-              borderRadius: 10,
-              background: "#7d7d81",
-              color: "#fff",
-              fontFamily: F.ui,
-              fontSize: 34,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 6px 14px rgba(0,0,0,0.45)",
-              zIndex: 5,
-            }}
-          >
-            {ch}
-          </div>,
-        );
-      }
     });
   });
 
@@ -165,7 +146,7 @@ export const Keyboard: React.FC<{
       {bottom.map((b, i) => {
         const x = bx;
         bx += b.w + GAP_X;
-        const isP = !!b.match && pressed === b.match;
+        const g = b.match ? glow[b.match] ?? 0 : 0;
         return (
           <div
             key={i}
@@ -175,7 +156,7 @@ export const Keyboard: React.FC<{
               top: BOTTOM_Y,
               width: b.w,
               fontSize: typeof b.label === "string" && b.label.length > 2 ? 16 : 22,
-              background: b.blue ? (returnPressed ? "#0a5bd6" : "#0a84ff") : isP ? "#9a9a9e" : b.dark ? "#464648" : "#6b6b6e",
+              background: b.blue ? (returnPressed ? "#0a5bd6" : "#0a84ff") : b.dark ? "#464648" : keyBg(g),
             }}
           >
             {b.label}
@@ -207,7 +188,7 @@ const PAD = [
   ["del", ""],
 ];
 
-const PhonePad: React.FC<{ pressed: string | null }> = ({ pressed }) => (
+const PhonePad: React.FC<{ glow: KeyGlow }> = ({ glow }) => (
   <div
     style={{
       position: "absolute",
@@ -227,7 +208,6 @@ const PhonePad: React.FC<{ pressed: string | null }> = ({ pressed }) => (
       const x = 8 + col * (w + 7);
       const y = 12 + row * 56;
       const special = d === "+*#" || d === "del";
-      const isP = pressed === d;
       return (
         <div
           key={d}
@@ -238,7 +218,7 @@ const PhonePad: React.FC<{ pressed: string | null }> = ({ pressed }) => (
             width: w,
             height: 48,
             flexDirection: "column",
-            background: special ? "transparent" : isP ? "#9a9a9e" : "#6b6b6e",
+            background: special ? "transparent" : keyBg(glow[d]),
             boxShadow: special ? "none" : keyBase.boxShadow,
           }}
         >

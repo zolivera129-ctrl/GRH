@@ -12,11 +12,11 @@ export const Touch: React.FC<{ frame: number; at: number; x: number; y: number; 
   size = 44,
 }) => {
   const f = frame - at;
-  if (f < -10 || f > 18) return null;
-  const appear = interpolate(f, [-10, -3], [0, 1], clamp);
-  const press = interpolate(f, [-3, 0, 4], [1, 0.78, 1], clamp);
-  const fade = interpolate(f, [6, 16], [1, 0], clamp);
-  const ripple = interpolate(f, [0, 16], [0, 1], clamp);
+  if (f < -8 || f > 12) return null;
+  const appear = interpolate(f, [-8, -2], [0, 1], clamp);
+  const press = interpolate(f, [-2, 0, 3], [1, 0.78, 1], clamp);
+  const fade = interpolate(f, [3, 10], [1, 0], clamp);
+  const ripple = interpolate(f, [0, 12], [0, 1], clamp);
   return (
     <>
       <div

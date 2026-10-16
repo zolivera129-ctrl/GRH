@@ -12,6 +12,10 @@ export const TOOLBAR_H = 70;
 /** Topo do conteúdo da página, em função do quanto a barra está recolhida (0..1). */
 export const contentTop = (collapse: number) => STATUS_H + interpolate(collapse, [0, 1], [URLBAR_H, URLBAR_MINI]);
 
+const Caret: React.FC<{ on: boolean }> = ({ on }) => (
+  <span style={{ display: "inline-block", width: 2, height: 20, background: "#0a84ff", margin: "0 1px", opacity: on ? 1 : 0 }} />
+);
+
 /** "Chrome" do navegador em tema escuro, igual ao vídeo de referência. */
 export const BrowserChrome: React.FC<{
   url: string;
@@ -71,8 +75,9 @@ export const BrowserChrome: React.FC<{
               alignItems: "center",
             }}
           >
+            {focused && placeholder ? <Caret on={caret} /> : null}
             {url}
-            {caret ? <span style={{ display: "inline-block", width: 2, height: 20, background: "#0a84ff", marginLeft: 1 }} /> : null}
+            {focused && !placeholder ? <Caret on={caret} /> : null}
           </div>
           {focused ? null : <IconShare size={18} color="#c9c9cc" />}
         </div>
