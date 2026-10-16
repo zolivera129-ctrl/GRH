@@ -1,0 +1,45 @@
+{
+  "name": "tutorial-castaway-reels",
+  "version": "1.0.0",
+  "description": "Reels tutorial: how to apply on cast-a-way.com (mobile)",
+  "repository": {},
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "private": true,
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/open-sans": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
+    "@fontsource/raleway": "^5.3.0",
+    "@remotion/cli": "4.0.536",
+    "@remotion/fonts": "4.0.536",
+    "@remotion/media": "4.0.536",
+    "@remotion/transitions": "4.0.536",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.536"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "^4.0.536",
+    "@remotion/eslint-config-flat": "4.0.536",
+    "@remotion/renderer": "^4.0.536",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "10.12.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc",
+    "render": "remotion render src/index.ts CastawayApplyReel castaway-como-aplicar-reels.mp4 --codec=h264 --crf=18",
+    "sfx": "python3 scripts/make_sfx.py"
+  },
+  "allowScripts": {
+    "esbuild": false
+  }
+}
