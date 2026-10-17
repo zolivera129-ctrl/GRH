@@ -1,0 +1,276 @@
+{
+  "versao": 1,
+  "titulo": "A foto da turma",
+  "slug": "foto-da-turma",
+  "fps": 60,
+  "bpm": 120,
+  "formatoBase": "9x16",
+  "formatos": [
+    "9x16"
+  ],
+  "movimento": {
+    "curvaEntrada": [
+      0.16,
+      1,
+      0.3,
+      1
+    ],
+    "cascataLetra": 0.026,
+    "cascataPalavra": 0.045,
+    "entrada": 0.6,
+    "opacidade": 0.18,
+    "subida": 0.18,
+    "desfoque": 0.14,
+    "saida": 0.25,
+    "camera": 0.012
+  },
+  "linguagem": [
+    {
+      "titulo": "Ritmo",
+      "texto": "120 BPM: uma batida = 0,5 s. Risadas, viradas de cabeça e o agachar da frente caem na batida ou na meia batida; o clique cai na batida 16 (8,0 s)."
+    },
+    {
+      "titulo": "Gente",
+      "texto": "Cada pessoa é um recorte da própria ilustração: o corpo inclina a partir dos pés, a cabeça gira e inclina a partir do pescoço. Sem boca, a risada é corpo: ombros que sacodem, cabeça para trás."
+    },
+    {
+      "titulo": "Conversa",
+      "texto": "Duplas e trios se olham de verdade: a cabeça vira uns 20° para o parceiro e inclina um fio na direção dele. Nunca todos ao mesmo tempo: cada par no seu tempo."
+    },
+    {
+      "titulo": "Câmera",
+      "texto": "Nasce perto dos rostos (1,2×) e abre devagar até a foto inteira exatamente no clique; depois do clique, um empurrão vivo de 0,4 %/s."
+    },
+    {
+      "titulo": "Hold",
+      "texto": "Antes do clique a turma respira e balança um fio; depois do clique a foto fica parada (é uma foto) e a vida vem da moldura, das estrelas e de um reflexo de papel que passa uma vez."
+    },
+    {
+      "titulo": "Objetos",
+      "texto": "Mola só no que é objeto: a moldura chega elástica de fora para dentro, as estrelas pulam uma a uma com um giro curto."
+    }
+  ],
+  "referencias": [],
+  "cenas": [
+    {
+      "id": "chegada",
+      "tipo": "foto-plano",
+      "papel": "gancho",
+      "titulo": "A turma chega",
+      "dur": 4.5,
+      "ideia": "Espalhados e conversando em duplas e trios, eles se juntam para a foto: andam para perto, se olham e dão risada.",
+      "camera": "Começa perto dos rostos (1,2×) e abre devagar enquanto o grupo se fecha; deriva lateral leve.",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "A turma espalhada, já andando para o meio; a câmera perto dos rostos",
+          "t": 0.25
+        },
+        {
+          "id": "meio",
+          "rotulo": "Passo 2",
+          "legenda": "Os pares se olham: um vira para o outro, a cabeça inclina na direção do amigo",
+          "t": 1.35
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "As risadas em cadeia; a turma quase junta",
+          "t": 2.6
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0,
+          "tipo": "objeto",
+          "texto": "Cada um sai do seu lugar num tempo diferente (até 0,4 s de diferença) e anda para o meio, quicando um fio a cada passo."
+        },
+        {
+          "t": 0.3,
+          "tipo": "objeto",
+          "texto": "As cabeças viram para o parceiro em 350 ms: a de trás conversa entre si, as meninas em pares, os da frente em trio."
+        },
+        {
+          "t": 1,
+          "tipo": "objeto",
+          "texto": "Primeira risada (os dois da esquerda, atrás): ombros sacodem 4 vezes por segundo, cabeça vai para trás 11°."
+        },
+        {
+          "t": 1.5,
+          "tipo": "objeto",
+          "texto": "A risada passa adiante: as meninas do meio (1,5), o trio da frente (2,1), os dois abraçados de trás (2,5), a dupla da esquerda (3,0)."
+        },
+        {
+          "t": 2.5,
+          "tipo": "objeto",
+          "texto": "Os dois abraçados de trás riem juntos; o do meio vira para eles (2,4) e ri por último (2,75)."
+        },
+        {
+          "t": 3,
+          "tipo": "objeto",
+          "texto": "A dupla da esquerda ri; a de preto vira para a do meio, puxando o trio (3,05)."
+        },
+        {
+          "t": 3.5,
+          "tipo": "vida",
+          "texto": "Todo mundo perto, respirando e balançando um fio; a câmera continua abrindo."
+        },
+        {
+          "t": 3.85,
+          "tipo": "transicao",
+          "texto": "Alguém chama: as cabeças viram para a câmera em onda, do centro para as pontas, 35 ms entre elas. Corte invisível para a próxima."
+        }
+      ],
+      "saida": {
+        "tipo": "corte",
+        "texto": "Corte invisível: o movimento continua"
+      }
+    },
+    {
+      "id": "poses",
+      "tipo": "foto-plano",
+      "papel": "desenvolvimento",
+      "titulo": "As poses",
+      "dur": 3.5,
+      "ideia": "Viram para a câmera, os da frente agacham um a um, e a turma tenta uma pose, outra, até assentar na pose final.",
+      "camera": "Segue abrindo (1,06× → 1,0×) e chega na foto inteira exatamente no clique.",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "Todo mundo olhando para a câmera; os três da frente ainda meio em pé",
+          "t": 0.45
+        },
+        {
+          "id": "meio",
+          "rotulo": "Pose 1",
+          "legenda": "\"Aperta!\": todos inclinam para o centro, cabeças tombadas",
+          "t": 1.3
+        },
+        {
+          "id": "meio2",
+          "rotulo": "Pose 2",
+          "legenda": "Pose descolada: queixo para cima, cabeças para lados alternados",
+          "t": 2.3
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "A pose final, prendendo a respiração para o clique",
+          "t": 3.3
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0.5,
+          "tipo": "objeto",
+          "texto": "Os três da frente agacham um a um na batida (5,0 · 5,125 · 5,25 s), com um amassadinho de 4 % na chegada: tum, tum, tum."
+        },
+        {
+          "t": 0.7,
+          "tipo": "objeto",
+          "texto": "A turma se aperta: todos andam o último pedaço até o lugar da foto."
+        },
+        {
+          "t": 1,
+          "tipo": "objeto",
+          "texto": "Pose 1, \"aperta!\": cada um inclina para o centro (mais quem está na ponta) e tomba a cabeça junto."
+        },
+        {
+          "t": 1.85,
+          "tipo": "objeto",
+          "texto": "Pose 2: inclinam para o outro lado, queixo para cima 7°, cabeças alternando de lado."
+        },
+        {
+          "t": 2.6,
+          "tipo": "vida",
+          "texto": "Assentam na pose final num movimento só; respiram e balançam um fio, segurando para o clique."
+        }
+      ],
+      "saida": {
+        "tipo": "corte",
+        "texto": "Corte invisível: o clique"
+      }
+    },
+    {
+      "id": "clique",
+      "tipo": "foto-plano",
+      "papel": "climax",
+      "titulo": "O clique",
+      "dur": 4,
+      "ideia": "O flash congela a turma; a foto nasce clara e revela a cor, a moldura chega elástica de fora para dentro e as estrelas pulam uma a uma.",
+      "camera": "Empurrão vivo de 0,4 %/s, passando por 1,0 no quadro final (2,9 s).",
+      "quadros": [
+        {
+          "id": "inicio",
+          "rotulo": "Início",
+          "legenda": "O flash: a foto estoura em branco e congela",
+          "t": 0.14
+        },
+        {
+          "id": "meio",
+          "rotulo": "Passo 2",
+          "legenda": "A cor revelando; a moldura verde chegando de fora, ainda esticada",
+          "t": 0.55
+        },
+        {
+          "id": "fim",
+          "rotulo": "Fim",
+          "legenda": "A foto eternizada: moldura ondulada e as estrelas no lugar",
+          "t": 2.9,
+          "aprovado": true
+        }
+      ],
+      "batidas": [
+        {
+          "t": 0,
+          "tipo": "luz",
+          "texto": "Flash: o branco estoura em 3 quadros e apaga em 400 ms; tudo para nesse instante."
+        },
+        {
+          "t": 0.05,
+          "tipo": "luz",
+          "texto": "A foto nasce clara e um pouco desbotada e revela a cor em 1 s, como papel de foto."
+        },
+        {
+          "t": 0.28,
+          "tipo": "objeto",
+          "texto": "A moldura verde chega de fora para dentro, esticada na vertical, passa um fio do lugar e assenta com mola (1,15 Hz)."
+        },
+        {
+          "t": 1,
+          "tipo": "objeto",
+          "texto": "As estrelas pulam uma a uma no sentido do relógio, 45 ms entre elas, girando 70° até parar."
+        },
+        {
+          "t": 1.7,
+          "tipo": "vida",
+          "texto": "Hold: um reflexo de papel fotográfico atravessa a foto uma vez; as estrelas giram e cintilam devagar, cada uma no seu tempo."
+        },
+        {
+          "t": 2.5,
+          "tipo": "vida",
+          "texto": "As estrelas cintilam: cada uma pulsa 3 % e gira até 7°, em períodos que não se repetem juntos."
+        },
+        {
+          "t": 3.4,
+          "tipo": "camera",
+          "texto": "A câmera segue chegando um fio até o último quadro: a foto nunca fica congelada."
+        }
+      ],
+      "saida": null
+    }
+  ],
+  "capa": {
+    "cena": "clique",
+    "quadro": "fim"
+  },
+  "storyboard": {
+    "revisao": 1,
+    "aprovadoEm": null
+  },
+  "versoes": [],
+  "criadoEm": "2026-10-17",
+  "cartaz": "A foto da turma"
+}

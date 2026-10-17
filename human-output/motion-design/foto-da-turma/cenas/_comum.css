@@ -1,0 +1,20 @@
+/* _comum.css — o palco da turma (ver _comum.js). O palco tem o tamanho das camadas (2110 × 3760 px)
+   e é posto no quadro pela câmera; tudo dentro dele está em px da arte em 2×. */
+.palco { position: absolute; left: 0; top: 0; width: 2110px; height: 3760px; transform-origin: 0 0; }
+.palco .fundo, .palco .moldura { position: absolute; left: 0; top: 0; width: 2110px; height: 3760px; display: block; }
+.palco .moldura { transform-origin: 0 0; box-shadow: 0 0 0 900px var(--moldura); }
+.palco .moldura-grupo, .palco .turma { position: absolute; inset: 0; }
+.palco .tc { position: absolute; display: block; max-width: none; user-select: none; }
+.palco .estrela { opacity: 0; }
+.flash, .revela-branco, .revela-cinza, .brilho-foto { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.flash { background: var(--luz-flash); }
+.revela-branco { background: var(--luz-flash); mix-blend-mode: screen; }
+.revela-cinza { background: var(--cinza-revela); mix-blend-mode: saturation; }
+/* reflexo de papel fotográfico: faixa larga, sem borda, que passa uma vez */
+.brilho-foto {
+  inset: -20% -40%;
+  rotate: -24deg;
+  mix-blend-mode: soft-light;
+  background: linear-gradient(90deg, transparent 30%, color-mix(in srgb, var(--luz-flash) 55%, transparent) 47%, color-mix(in srgb, var(--luz-flash) 70%, transparent) 50%, color-mix(in srgb, var(--luz-flash) 55%, transparent) 53%, transparent 70%);
+  filter: blur(3cqmin);
+}

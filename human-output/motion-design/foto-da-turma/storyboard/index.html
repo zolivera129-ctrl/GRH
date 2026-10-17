@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23151619'/%3E%3Cpath d='M11 9l12 7-12 7z' fill='%23f4f4f2'/%3E%3C/svg%3E">
+<title>Storyboard · A foto da turma</title>
+<style>
+:root {
+  --pg-fundo: #f4f4f2;
+  --pg-papel: #ffffff;
+  --pg-tinta: #151619;
+  --pg-suave: #676a72;
+  --pg-fraca: #9a9ca3;
+  --pg-fio: #e2e2df;
+  --pg-fio-forte: #cfcfcb;
+  --pg-raio: 14px;
+  --pg-sombra: 0 1px 2px rgba(20, 21, 25, 0.06), 0 8px 28px rgba(20, 21, 25, 0.08);
+  --pg-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --pg-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --pg-tipo: #4b55a8;
+  --pg-camera: #1f7a73;
+  --pg-transicao: #9a5b13;
+  --pg-luz: #8a7414;
+  --pg-objeto: #a3404f;
+  --pg-vida: #3f7a3a;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--pg-fundo);
+  color: var(--pg-tinta);
+  font: 15px/1.55 var(--pg-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4, p, figure, ol, ul { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+h1, h2, h3, h4 { font-weight: 400; }
+a { color: inherit; }
+img, video { display: block; max-width: 100%; }
+main { max-width: 1320px; margin: 0 auto; padding: 0 16px 72px; }
+@media (min-width: 720px) { main { padding: 0 40px 96px; } }
+.sobre { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pg-suave); }
+.num { font-variant-numeric: tabular-nums; }
+.pilula {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 26px; padding: 0 11px; border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--pg-fio-forte);
+  font-size: 12px; color: var(--pg-tinta); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.etiqueta {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px;
+  background: var(--pg-papel); box-shadow: inset 0 0 0 1px var(--pg-fio);
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pg-suave); white-space: nowrap;
+}
+.botao {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding: 0 18px; border-radius: 999px; border: 0;
+  background: var(--pg-tinta); color: #fff; text-decoration: none; cursor: pointer;
+  font: 500 13px/1 var(--pg-sans); letter-spacing: 0.01em; white-space: nowrap;
+  transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), background-color 140ms;
+}
+.botao:hover { background: #2a2c31; }
+.botao:active { transform: scale(0.97); }
+.botao small { font-weight: 400; opacity: 0.66; }
+.botao.contorno { background: transparent; color: var(--pg-tinta); box-shadow: inset 0 0 0 1px var(--pg-fio-forte); }
+.botao.contorno:hover { background: rgba(20, 21, 25, 0.05); }
+.quadro {
+  position: relative; overflow: hidden; border-radius: 10px; background: #0d0d0e;
+  box-shadow: var(--pg-sombra);
+}
+.quadro img, .quadro video { width: 100%; height: 100%; object-fit: cover; }
+/* marca/tokens.css — as cores da ilustração da turma (lidas da arte original). */
+:root {
+  --fundo: #f36ea8;          /* rosa do xadrez */
+  --moldura: #386d25;        /* verde da moldura ondulada */
+  --estrela: #f4a31a;        /* laranja das estrelas */
+  --texto: #fff6ee;
+  --luz-flash: #ffffff;
+  --cinza-revela: #8a8a8a;
+  --fonte-titulo: ui-sans-serif, system-ui, sans-serif;
+  --fonte-texto: ui-sans-serif, system-ui, sans-serif;
+}
+
+.prancha { padding-top: 8px; }
+/* o cabeçalho veste a marca do filme: o fundo, a cor do texto e a fonte do título dela */
+.cab-marca { background: var(--fundo, #111); color: var(--texto, #f2f2f2); }
+.cab-marca .cab-in { max-width: 1320px; margin: 0 auto; padding: 56px 16px 52px; }
+@media (min-width: 720px) { .cab-marca .cab-in { padding: 72px 40px 64px; } }
+.cab { display: grid; gap: 22px; }
+.cab .sobre { color: var(--texto-suave, #a6a6a6); }
+.cab h1 { font-family: var(--fonte-titulo, var(--pg-sans)); font-weight: var(--titulo-peso, 400); font-size: clamp(44px, 8.4vw, 132px); line-height: 0.96; letter-spacing: var(--titulo-tracking, -0.045em); text-wrap: balance; max-width: 15ch; }
+.cab .meta div { border-top-color: color-mix(in srgb, var(--texto, #fff) 18%, transparent); }
+.cab .meta dt { color: var(--texto-suave, #a6a6a6); }
+.cab .abas { background: color-mix(in srgb, var(--texto, #fff) 8%, transparent); box-shadow: none; }
+.cab .abas button { color: var(--texto-suave, #a6a6a6); }
+.cab .abas button.on { background: var(--texto, #fff); color: var(--fundo, #111); }
+.cab .linha-sup { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 28px; margin: 6px 0 0; }
+.meta div { border-top: 1px solid var(--pg-fio); padding-top: 10px; }
+.meta dt { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pg-suave); }
+.meta dd { margin: 4px 0 0; font-size: 15px; }
+.bloco-sec { padding: 44px 0; border-bottom: 1px solid var(--pg-fio); }
+.bloco-sec > h2 { margin-bottom: 20px; }
+.linguagem ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px 28px; }
+.linguagem h3 { font-size: 17px; letter-spacing: -0.01em; margin-bottom: 6px; }
+.linguagem p { color: var(--pg-suave); font-size: 14px; text-wrap: pretty; }
+.refs ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.refs li { display: grid; grid-template-columns: 140px 1fr; gap: 14px; align-items: start; }
+.refs img { width: 140px; border-radius: 8px; box-shadow: var(--pg-sombra); }
+.refs h3 { font-size: 15px; margin-bottom: 4px; }
+.refs p { font-size: 13px; color: var(--pg-suave); }
+.regua { position: relative; height: 78px; margin: 4px 0 30px; }
+.regua .bloco { position: absolute; height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 8px; overflow: hidden; white-space: nowrap; border-radius: 6px; background: var(--pg-papel); box-shadow: inset 0 0 0 1px var(--pg-fio-forte); font-size: 12px; color: var(--pg-tinta); text-decoration: none; }
+.regua .bloco b { font-weight: 500; color: var(--pg-suave); }
+.regua .t0 { top: 0; }
+.regua .t1 { top: 32px; }
+.regua .janela { position: absolute; top: 0; height: 60px; background: repeating-linear-gradient(135deg, rgba(21,22,25,0.10) 0 4px, transparent 4px 8px); border-radius: 4px; pointer-events: none; }
+.regua .escala { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; border-top: 1px solid var(--pg-fio); }
+.regua .escala span { position: absolute; top: 2px; transform: translateX(-50%); font-size: 10px; color: var(--pg-fraca); font-variant-numeric: tabular-nums; }
+.regua .escala span:first-child { transform: none; }
+.contato { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 16px; }
+@media (min-width: 900px) { .contato.f16x9, .contato.f9x16 { grid-template-columns: repeat(var(--col, 4), minmax(0, 1fr)); } }
+@media (min-width: 600px) and (max-width: 899px) { .contato.f9x16 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.contato a { display: block; text-decoration: none; }
+.contato p { display: flex; justify-content: space-between; gap: 8px; margin-top: 9px; font-size: 12.5px; color: var(--pg-suave); }
+.contato p b { font-weight: 400; color: var(--pg-tinta); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quadro.f16x9 { aspect-ratio: 16 / 9; }
+.quadro.f9x16 { aspect-ratio: 9 / 16; }
+.quadro .vazio { display: grid; place-items: center; height: 100%; color: #777; font-size: 12px; }
+.cena { padding: 56px 0 44px; border-bottom: 1px solid var(--pg-fio); scroll-margin-top: 12px; }
+.cena-cab { display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: start; margin-bottom: 18px; }
+.cena-cab .n { font-size: clamp(48px, 6vw, 84px); line-height: 0.86; letter-spacing: -0.05em; }
+.cena-tit h2 { font-size: clamp(26px, 3.2vw, 40px); line-height: 1.04; letter-spacing: -0.03em; }
+.cena-tit .ideia { margin-top: 8px; font-size: 16px; color: var(--pg-suave); max-width: 60ch; text-wrap: pretty; }
+.cena-tempo { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--pg-suave); }
+@media (min-width: 900px) { .cena-cab { grid-template-columns: auto 1fr auto; } .cena-tempo { grid-column: auto; align-self: center; } }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 18px; }
+.quadros { display: grid; gap: 16px; }
+.quadros figcaption { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; font-size: 13.5px; color: var(--pg-suave); text-wrap: pretty; }
+.quadros figcaption b { font-weight: 500; color: var(--pg-tinta); }
+.quadros figcaption b .num { font-weight: 400; color: var(--pg-fraca); }
+.quadros.f16x9 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr)); gap: 22px 18px; }
+.quadros.f16x9.n3 > figure:last-child:nth-child(3) { grid-column: 1 / -1; }
+.quadros.f16x9.n1 { grid-template-columns: minmax(0, 860px); }
+.quadros.f9x16 { grid-template-columns: repeat(auto-fill, minmax(min(46%, 280px), 330px)); }
+.quadros + .quadros { margin-top: 26px; }
+body.so-16x9 .quadros.f9x16, body.so-9x16 .quadros.f16x9, body.so-16x9 .contato.f9x16, body.so-9x16 .contato.f16x9 { display: none; }
+.notas { display: grid; gap: 28px; margin-top: 30px; }
+@media (min-width: 960px) { .notas { grid-template-columns: minmax(0, 1fr) 340px; gap: 48px; } }
+.movimento ol { display: grid; gap: 0; margin-top: 12px; }
+.movimento li { display: grid; grid-template-columns: 64px auto 1fr; gap: 6px 12px; align-items: baseline; padding: 11px 0; border-top: 1px solid var(--pg-fio); }
+.movimento li:last-child { border-bottom: 1px solid var(--pg-fio); }
+.movimento .t { font-size: 13px; color: var(--pg-suave); }
+.movimento p { font-size: 14.5px; text-wrap: pretty; }
+@media (max-width: 560px) { .movimento li { grid-template-columns: 56px 1fr; } .movimento li p { grid-column: 1 / -1; } }
+.tag { justify-self: start; display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: var(--c, var(--pg-suave)); background: color-mix(in srgb, var(--c, #888) 10%, transparent); }
+.tag.tipo { --c: var(--pg-tipo); } .tag.camera { --c: var(--pg-camera); } .tag.transicao { --c: var(--pg-transicao); }
+.tag.luz { --c: var(--pg-luz); } .tag.objeto { --c: var(--pg-objeto); } .tag.vida { --c: var(--pg-vida); }
+.lado { display: grid; gap: 18px; align-content: start; }
+.lado div { padding: 14px 16px; border-radius: 12px; background: var(--pg-papel); box-shadow: inset 0 0 0 1px var(--pg-fio); }
+.lado p { margin-top: 6px; font-size: 14px; text-wrap: pretty; }
+.vazio-txt { margin-top: 12px; color: var(--pg-fraca); font-size: 14px; }
+.passagem { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--pg-fio); font-size: 13px; color: var(--pg-suave); }
+.passagem b { font-weight: 500; color: var(--pg-tinta); }
+.passagem::before { content: ''; width: 28px; height: 1px; background: var(--pg-fio-forte); }
+.abas { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--pg-papel); box-shadow: inset 0 0 0 1px var(--pg-fio); }
+.abas button { height: 30px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--pg-suave); font: 13px var(--pg-sans); cursor: pointer; }
+.abas button.on { background: var(--pg-tinta); color: #fff; }
+.rodape { padding: 56px 0 0; display: grid; gap: 8px; }
+.rodape p:first-child { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.15; letter-spacing: -0.02em; text-wrap: balance; max-width: 30ch; }
+.rodape p + p { color: var(--pg-suave); font-size: 13px; }
+@media print { body { background: #fff; } .abas { display: none; } .cena { break-inside: avoid-page; } }
+</style>
+</head>
+<body>
+<header class="cab-marca"><div class="cab-in cab">
+    <div class="linha-sup"><p class="sobre">Storyboard · A foto da turma · rev. 01</p></div>
+    <h1>A foto da turma</h1>
+    <dl class="meta"><div><dt>Peça</dt><dd>Filme de motion</dd></div><div><dt>Duração</dt><dd>12 s</dd></div><div><dt>Cenas</dt><dd>3</dd></div><div><dt>Formato</dt><dd>9:16 · 1080×1920</dd></div><div><dt>Ritmo</dt><dd>120 BPM · batida de 0,5 s</dd></div><div><dt>Mestre</dt><dd>60 qps</dd></div></dl>
+  </div></header>
+<main class="prancha">
+  <section class="bloco-sec linguagem"><h2 class="sobre">A linguagem do movimento</h2><ul><li><h3>Ritmo</h3><p>120 BPM: uma batida = 0,5 s. Risadas, viradas de cabeça e o agachar da frente caem na batida ou na meia batida; o clique cai na batida 16 (8,0 s).</p></li><li><h3>Gente</h3><p>Cada pessoa é um recorte da própria ilustração: o corpo inclina a partir dos pés, a cabeça gira e inclina a partir do pescoço. Sem boca, a risada é corpo: ombros que sacodem, cabeça para trás.</p></li><li><h3>Conversa</h3><p>Duplas e trios se olham de verdade: a cabeça vira uns 20° para o parceiro e inclina um fio na direção dele. Nunca todos ao mesmo tempo: cada par no seu tempo.</p></li><li><h3>Câmera</h3><p>Nasce perto dos rostos (1,2×) e abre devagar até a foto inteira exatamente no clique; depois do clique, um empurrão vivo de 0,4 %/s.</p></li><li><h3>Hold</h3><p>Antes do clique a turma respira e balança um fio; depois do clique a foto fica parada (é uma foto) e a vida vem da moldura, das estrelas e de um reflexo de papel que passa uma vez.</p></li><li><h3>Objetos</h3><p>Mola só no que é objeto: a moldura chega elástica de fora para dentro, as estrelas pulam uma a uma com um giro curto.</p></li></ul></section>
+  
+  <section class="bloco-sec sequencia">
+    <h2 class="sobre">Sequência</h2>
+    <div class="regua"><a class="bloco t0" href="#cena-chegada" style="left:0.000%;width:37.500%"><b>01</b> A turma chega</a><a class="bloco t1" href="#cena-poses" style="left:37.500%;width:29.167%"><b>02</b> As poses</a><a class="bloco t0" href="#cena-clique" style="left:66.667%;width:33.333%"><b>03</b> O clique</a><div class="escala"><span style="left:0.000%">0s</span><span style="left:8.333%">1s</span><span style="left:16.667%">2s</span><span style="left:25.000%">3s</span><span style="left:33.333%">4s</span><span style="left:41.667%">5s</span><span style="left:50.000%">6s</span><span style="left:58.333%">7s</span><span style="left:66.667%">8s</span><span style="left:75.000%">9s</span><span style="left:83.333%">10s</span><span style="left:91.667%">11s</span><span style="left:100.000%">12s</span></div></div>
+    <ol class="contato f9x16" style="--col:3"><li><a href="#cena-chegada"><div class="quadro f9x16"><img src="quadros/9x16/01-chegada-fim.png" alt=""></div><p><b>01 · A turma chega</b><span class="num">00:00,0</span></p></a></li><li><a href="#cena-poses"><div class="quadro f9x16"><img src="quadros/9x16/02-poses-fim.png" alt=""></div><p><b>02 · As poses</b><span class="num">00:04,5</span></p></a></li><li><a href="#cena-clique"><div class="quadro f9x16"><img src="quadros/9x16/03-clique-fim.png" alt=""></div><p><b>03 · O clique</b><span class="num">00:08,0</span></p></a></li></ol>
+  </section>
+  <section class="cena" id="cena-chegada">
+      <header class="cena-cab">
+        <span class="n num">01</span>
+        <div class="cena-tit"><h2>A turma chega</h2><p class="ideia">Espalhados e conversando em duplas e trios, eles se juntam para a foto: andam para perto, se olham e dão risada.</p></div>
+        <div class="cena-tempo num">00:00,0 — 00:04,5 <span class="pilula">4,5 s</span></div>
+      </header>
+      
+      <div class="quadros n3 f9x16" data-formato="9x16"><figure><div class="quadro f9x16"><img src="quadros/9x16/01-chegada-inicio.png" alt="Início"></div><figcaption><b>Início <span class="num">· 0,25 s</span></b><span>A turma espalhada, já andando para o meio; a câmera perto dos rostos</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/01-chegada-meio.png" alt="Passo 2"></div><figcaption><b>Passo 2 <span class="num">· 1,35 s</span></b><span>Os pares se olham: um vira para o outro, a cabeça inclina na direção do amigo</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/01-chegada-fim.png" alt="Fim"></div><figcaption><b>Fim <span class="num">· 2,6 s</span></b><span>As risadas em cadeia; a turma quase junta</span></figcaption></figure></div>
+      <div class="notas">
+        <div class="movimento"><h4 class="sobre">Movimento</h4><ol><li><span class="t num">0,0 s</span><span class="tag objeto">Objeto</span><p>Cada um sai do seu lugar num tempo diferente (até 0,4 s de diferença) e anda para o meio, quicando um fio a cada passo.</p></li><li><span class="t num">0,3 s</span><span class="tag objeto">Objeto</span><p>As cabeças viram para o parceiro em 350 ms: a de trás conversa entre si, as meninas em pares, os da frente em trio.</p></li><li><span class="t num">1,0 s</span><span class="tag objeto">Objeto</span><p>Primeira risada (os dois da esquerda, atrás): ombros sacodem 4 vezes por segundo, cabeça vai para trás 11°.</p></li><li><span class="t num">1,5 s</span><span class="tag objeto">Objeto</span><p>A risada passa adiante: as meninas do meio (1,5), o trio da frente (2,1), os dois abraçados de trás (2,5), a dupla da esquerda (3,0).</p></li><li><span class="t num">2,5 s</span><span class="tag objeto">Objeto</span><p>Os dois abraçados de trás riem juntos; o do meio vira para eles (2,4) e ri por último (2,75).</p></li><li><span class="t num">3,0 s</span><span class="tag objeto">Objeto</span><p>A dupla da esquerda ri; a de preto vira para a do meio, puxando o trio (3,05).</p></li><li><span class="t num">3,5 s</span><span class="tag vida">Vida no hold</span><p>Todo mundo perto, respirando e balançando um fio; a câmera continua abrindo.</p></li><li><span class="t num">3,85 s</span><span class="tag transicao">Transição</span><p>Alguém chama: as cabeças viram para a câmera em onda, do centro para as pontas, 35 ms entre elas. Corte invisível para a próxima.</p></li></ol></div>
+        <aside class="lado"><div><h4 class="sobre">Câmera</h4><p>Começa perto dos rostos (1,2×) e abre devagar enquanto o grupo se fecha; deriva lateral leve.</p></div><div><h4 class="sobre">Entra</h4><p>Abre o filme.</p></div><div><h4 class="sobre">Sai</h4><p>Corte invisível: o movimento continua</p></div></aside>
+      </div>
+    </section><div class="passagem"><span class="num">01 → 02</span><b>Corte seco</b><span class="num">0,0 s</span></div><section class="cena" id="cena-poses">
+      <header class="cena-cab">
+        <span class="n num">02</span>
+        <div class="cena-tit"><h2>As poses</h2><p class="ideia">Viram para a câmera, os da frente agacham um a um, e a turma tenta uma pose, outra, até assentar na pose final.</p></div>
+        <div class="cena-tempo num">00:04,5 — 00:08,0 <span class="pilula">3,5 s</span></div>
+      </header>
+      
+      <div class="quadros n4 f9x16" data-formato="9x16"><figure><div class="quadro f9x16"><img src="quadros/9x16/02-poses-inicio.png" alt="Início"></div><figcaption><b>Início <span class="num">· 0,45 s</span></b><span>Todo mundo olhando para a câmera; os três da frente ainda meio em pé</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/02-poses-meio.png" alt="Pose 1"></div><figcaption><b>Pose 1 <span class="num">· 1,3 s</span></b><span>&quot;Aperta!&quot;: todos inclinam para o centro, cabeças tombadas</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/02-poses-meio2.png" alt="Pose 2"></div><figcaption><b>Pose 2 <span class="num">· 2,3 s</span></b><span>Pose descolada: queixo para cima, cabeças para lados alternados</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/02-poses-fim.png" alt="Fim"></div><figcaption><b>Fim <span class="num">· 3,3 s</span></b><span>A pose final, prendendo a respiração para o clique</span></figcaption></figure></div>
+      <div class="notas">
+        <div class="movimento"><h4 class="sobre">Movimento</h4><ol><li><span class="t num">0,5 s</span><span class="tag objeto">Objeto</span><p>Os três da frente agacham um a um na batida (5,0 · 5,125 · 5,25 s), com um amassadinho de 4 % na chegada: tum, tum, tum.</p></li><li><span class="t num">0,7 s</span><span class="tag objeto">Objeto</span><p>A turma se aperta: todos andam o último pedaço até o lugar da foto.</p></li><li><span class="t num">1,0 s</span><span class="tag objeto">Objeto</span><p>Pose 1, &quot;aperta!&quot;: cada um inclina para o centro (mais quem está na ponta) e tomba a cabeça junto.</p></li><li><span class="t num">1,85 s</span><span class="tag objeto">Objeto</span><p>Pose 2: inclinam para o outro lado, queixo para cima 7°, cabeças alternando de lado.</p></li><li><span class="t num">2,6 s</span><span class="tag vida">Vida no hold</span><p>Assentam na pose final num movimento só; respiram e balançam um fio, segurando para o clique.</p></li></ol></div>
+        <aside class="lado"><div><h4 class="sobre">Câmera</h4><p>Segue abrindo (1,06× → 1,0×) e chega na foto inteira exatamente no clique.</p></div><div><h4 class="sobre">Entra</h4><p>Entra num corte seco.</p></div><div><h4 class="sobre">Sai</h4><p>Corte invisível: o clique</p></div></aside>
+      </div>
+    </section><div class="passagem"><span class="num">02 → 03</span><b>Corte seco</b><span class="num">0,0 s</span></div><section class="cena" id="cena-clique">
+      <header class="cena-cab">
+        <span class="n num">03</span>
+        <div class="cena-tit"><h2>O clique</h2><p class="ideia">O flash congela a turma; a foto nasce clara e revela a cor, a moldura chega elástica de fora para dentro e as estrelas pulam uma a uma.</p></div>
+        <div class="cena-tempo num">00:08,0 — 00:12,0 <span class="pilula">4,0 s</span></div>
+      </header>
+      
+      <div class="quadros n3 f9x16" data-formato="9x16"><figure><div class="quadro f9x16"><img src="quadros/9x16/03-clique-inicio.png" alt="Início"></div><figcaption><b>Início <span class="num">· 0,14 s</span></b><span>O flash: a foto estoura em branco e congela</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/03-clique-meio.png" alt="Passo 2"></div><figcaption><b>Passo 2 <span class="num">· 0,55 s</span></b><span>A cor revelando; a moldura verde chegando de fora, ainda esticada</span></figcaption></figure><figure><div class="quadro f9x16"><img src="quadros/9x16/03-clique-fim.png" alt="Fim"></div><figcaption><b>Fim <span class="num">· 2,9 s</span></b><span>A foto eternizada: moldura ondulada e as estrelas no lugar</span></figcaption></figure></div>
+      <div class="notas">
+        <div class="movimento"><h4 class="sobre">Movimento</h4><ol><li><span class="t num">0,0 s</span><span class="tag luz">Luz</span><p>Flash: o branco estoura em 3 quadros e apaga em 400 ms; tudo para nesse instante.</p></li><li><span class="t num">0,05 s</span><span class="tag luz">Luz</span><p>A foto nasce clara e um pouco desbotada e revela a cor em 1 s, como papel de foto.</p></li><li><span class="t num">0,28 s</span><span class="tag objeto">Objeto</span><p>A moldura verde chega de fora para dentro, esticada na vertical, passa um fio do lugar e assenta com mola (1,15 Hz).</p></li><li><span class="t num">1,0 s</span><span class="tag objeto">Objeto</span><p>As estrelas pulam uma a uma no sentido do relógio, 45 ms entre elas, girando 70° até parar.</p></li><li><span class="t num">1,7 s</span><span class="tag vida">Vida no hold</span><p>Hold: um reflexo de papel fotográfico atravessa a foto uma vez; as estrelas giram e cintilam devagar, cada uma no seu tempo.</p></li><li><span class="t num">2,5 s</span><span class="tag vida">Vida no hold</span><p>As estrelas cintilam: cada uma pulsa 3 % e gira até 7°, em períodos que não se repetem juntos.</p></li><li><span class="t num">3,4 s</span><span class="tag camera">Câmera</span><p>A câmera segue chegando um fio até o último quadro: a foto nunca fica congelada.</p></li></ol></div>
+        <aside class="lado"><div><h4 class="sobre">Câmera</h4><p>Empurrão vivo de 0,4 %/s, passando por 1,0 no quadro final (2,9 s).</p></div><div><h4 class="sobre">Entra</h4><p>Entra num corte seco.</p></div><div><h4 class="sobre">Sai</h4><p>Fecha o filme no quadro final, vivo até o último quadro.</p></div></aside>
+      </div>
+    </section>
+  <footer class="rodape">
+    <p>Aprovado o storyboard, a gente anima em 16:9, 9:16 ou nos dois.</p>
+    <p>Quadros renderizados com a marca e as imagens reais do projeto. Cada batida tem o tempo local da cena, em segundos.</p>
+  </footer>
+</main>
+
+</body>
+</html>
