@@ -82,12 +82,12 @@
       ],
       "batidas": [
         {
-          "t": 0.0,
+          "t": 0,
           "tipo": "objeto",
           "texto": "No meio da conversa: cada cabeça pende uns 5° para o parceiro; os corpos ficam como na arte."
         },
         {
-          "t": 1.0,
+          "t": 1,
           "tipo": "objeto",
           "texto": "Primeira risada (os dois da esquerda, atrás): a cabeça vai para trás e para o lado do amigo, sacode duas ou três vezes, cada vez mais fraco, e volta."
         },
@@ -292,6 +292,15 @@
       ],
       "fps": 60,
       "nota": "Corpos parados; o movimento vem das cabeças, braços e mãos"
+    },
+    {
+      "v": 4,
+      "data": "2026-10-17",
+      "formatos": [
+        "9x16"
+      ],
+      "fps": 60,
+      "nota": "Só movimentos humanos: cabeças inclinam, riem e acenam; corpos parados"
     }
   ],
   "criadoEm": "2026-10-17",
