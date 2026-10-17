@@ -1,4 +1,4 @@
-/* _comum.js — a turma como bonecos de recorte.
+/* _comum.js — a turma em camadas recortadas da ilustração.
    A ilustração foi separada em camadas (corpo e cabeça de cada pessoa, mais o braço de quem abraça
    e a mão no ombro), com as partes escondidas completadas por trás. Aqui mora o palco (fundo
    xadrez, moldura, estrelas, pessoas, flash), a coreografia inteira como função pura do tempo do
@@ -16,38 +16,37 @@
   const ORDEM = Object.keys(CAMADAS);
   const ESTRELAS = [["estrela-02", 48, 421, 200, 214, 148, 529], ["estrela-00", 706, 389, 184, 182, 797, 480], ["estrela-01", 1230, 389, 176, 180, 1315, 477], ["estrela-03", 1860, 423, 202, 208, 1959, 528], ["estrela-05", 1936, 925, 158, 164, 2015, 1007], ["estrela-07", 1938, 1813, 152, 158, 2014, 1890], ["estrela-09", 1906, 2705, 182, 186, 1996, 2797], ["estrela-11", 1866, 3121, 198, 206, 1964, 3224], ["estrela-13", 1236, 3203, 160, 166, 1315, 3284], ["estrela-12", 718, 3197, 160, 168, 797, 3280], ["estrela-10", 40, 3121, 200, 208, 139, 3224], ["estrela-08", 26, 2685, 172, 178, 112, 2771], ["estrela-06", 20, 1813, 152, 156, 95, 1890], ["estrela-04", 20, 925, 156, 168, 97, 1008]]; // em volta, no sentido do relógio
 
-  /* Pessoas. Os corpos ficam no lugar (só respiram e sacodem um fio na risada); quem conversa são
-     as cabeças e os braços que aparecem.
-     n = pescoço (pivô da cabeça), p = pé (pivô do corpo), em px da ilustração original.
-     olha = [quando, yaw, roll, pitch]: para onde a cabeça vai (yaw + vira à direita, roll +
-     inclina à direita, pitch + queixo para baixo). risos e acenos = [início, duração]. */
+  /* Pessoas. Só o que uma pessoa faz: os corpos ficam parados; a cabeça inclina a partir do pescoço
+     e se desloca um fio, os braços fazem um gesto lento de cada vez. Nada gira em 3D, nada estica,
+     nada balança sozinho.
+     n = pescoço (pivô da cabeça), em px da ilustração original.
+     olha = [quando, inclinação em graus (+ para a direita), deslocamento em px]: para quem a cabeça
+     pende na conversa. risos e acenos = [início, duração]. */
   const P = {
-    B1: { n: [230, 318], p: [190, 1240], olha: [[0, 24, 6, 0]], risos: [[1.0, 0.95]], acenos: [[2.3, 0.7]] },
-    B2: { n: [360, 318], p: [360, 1240], olha: [[0, -24, -5, 0], [2.6, 20, 4, 0]], risos: [[1.05, 0.85]], acenos: [] },
-    B3: { n: [562, 335], p: [560, 1240], olha: [[0, 22, 4, 0], [2.3, -20, -4, 0]], risos: [[2.75, 0.7]], acenos: [[1.3, 0.7]] },
-    B4: { n: [700, 338], p: [700, 1240], olha: [[0, 20, 7, 0]], risos: [[2.55, 0.85]], acenos: [[1.5, 0.6]] },
-    B5: { n: [835, 335], p: [880, 1240], olha: [[0, -24, -8, 0]], risos: [[2.5, 0.95]], acenos: [] },
-    M1: { n: [262, 480], p: [210, 1300], olha: [[0, 22, 5, 0]], risos: [[3.0, 0.8]], acenos: [[1.6, 0.7]] },
-    M2: { n: [398, 492], p: [390, 1300], olha: [[0, -24, -5, 0], [2.2, 18, 4, 0], [2.95, -22, -5, 0]], risos: [[3.05, 0.8]], acenos: [] },
-    M3: { n: [500, 560], p: [480, 1300], olha: [[0, 24, 5, 0], [2.4, -18, -4, 0]], risos: [[1.5, 0.9]], acenos: [] },
-    M4: { n: [612, 510], p: [650, 1300], olha: [[0, -26, -6, 0]], risos: [[1.55, 1.0]], acenos: [[2.7, 0.7]] },
-    M5: { n: [765, 498], p: [790, 1300], olha: [[0, 18, 8, 6]], risos: [[1.25, 0.8]], acenos: [[2.4, 0.7]] },
-    M6: { n: [835, 672], p: [880, 1250], olha: [[0, -20, -6, -8]], risos: [[1.3, 0.75]], acenos: [] },
-    F1: { n: [335, 905], p: [220, 1385], olha: [[0, 24, 6, 0]], risos: [[2.1, 0.8]], acenos: [[1.0, 0.6]] },
-    F2: { n: [505, 935], p: [450, 1385], olha: [[0, -22, -4, 0], [2.4, 22, 5, 0]], risos: [[2.15, 0.9]], acenos: [] },
-    F3: { n: [680, 955], p: [790, 1385], olha: [[0, -24, -7, 0]], risos: [[2.25, 0.75]], acenos: [[1.2, 0.6]] },
+    B1: { n: [230, 318], olha: [[0, 5, 2]], risos: [[1.0, 1.1]], acenos: [[2.4, 0.8]] },
+    B2: { n: [360, 318], olha: [[0, -5, -2], [2.7, 4, 1.5]], risos: [[1.1, 1.0]], acenos: [] },
+    B3: { n: [562, 335], olha: [[0, 4, 1.5], [2.35, -4, -1.5]], risos: [[2.85, 0.9]], acenos: [[1.35, 0.8]] },
+    B4: { n: [700, 338], olha: [[0, 6, 2]], risos: [[2.55, 1.0]], acenos: [[1.55, 0.7]] },
+    B5: { n: [835, 335], olha: [[0, -6, -2]], risos: [[2.6, 1.05]], acenos: [] },
+    M1: { n: [262, 480], olha: [[0, 4, 1.5]], risos: [[3.05, 0.95]], acenos: [[1.7, 0.8]] },
+    M2: { n: [398, 492], olha: [[0, -5, -2], [2.25, 3.5, 1.5], [3.0, -5, -2]], risos: [[3.15, 0.9]], acenos: [] },
+    M3: { n: [500, 560], olha: [[0, 5, 2], [2.45, -3.5, -1.5]], risos: [[1.5, 1.05]], acenos: [] },
+    M4: { n: [612, 510], olha: [[0, -5, -2]], risos: [[1.6, 1.1]], acenos: [[2.8, 0.8]] },
+    M5: { n: [765, 498], olha: [[0, 6, 2]], risos: [[1.25, 0.95]], acenos: [[2.45, 0.8]] },
+    M6: { n: [835, 672], olha: [[0, -5, -2]], risos: [[1.4, 0.9]], acenos: [] },
+    F1: { n: [335, 905], olha: [[0, 5, 2]], risos: [[2.1, 0.95]], acenos: [[1.0, 0.7]] },
+    F2: { n: [505, 935], olha: [[0, -4, -1.5], [2.5, 4, 1.5]], risos: [[2.2, 1.05]], acenos: [] },
+    F3: { n: [680, 955], olha: [[0, -6, -2]], risos: [[2.3, 0.9]], acenos: [[1.2, 0.7]] },
   };
   const NOMES = Object.keys(P);
 
-  /* Membros: pivô (ombro, cotovelo ou pulso), dono e o gesto. Ângulo + gira no sentido do relógio. */
+  /* Membros: pivô (cotovelo ou ombro) e dono. Só três gestos, lentos, um de cada vez. */
   const MEMBROS = {
-    B4a: { dono: 'B4', piv: [872, 292] },  // o braço que abraça: aperta e dá tapinhas no peito do amigo
-    F1m: { dono: 'F1', piv: [392, 925] },  // a mão no ombro do amigo: tapinhas na risada
-    F1a: { dono: 'F1', piv: [198, 1072] }, // o antebraço tatuado: gesticula enquanto conta
-    F2v: { dono: 'F2', piv: [610, 1175] }, // o "V": desce no peito e sobe até o queixo na pose final
-    F3m: { dono: 'F3', piv: [878, 1135] }, // a mão no joelho: balança na risada
-    M1a: { dono: 'M1', piv: [125, 552] },  // o braço solto: balança na risada
-    M3a: { dono: 'M3', piv: [545, 588] },  // o braço tatuado: balança na risada
+    B4a: { dono: 'B4', piv: [872, 292] },  // o braço que abraça: puxa o amigo para perto na pose 1
+    F1m: { dono: 'F1', piv: [392, 925] },  // a mão no ombro: aperta o amigo na pose 1
+    F2v: { dono: 'F2', piv: [610, 1175] }, // o "V": sobe do peito até o queixo para a foto
+    F1a: { dono: 'F1', piv: [198, 1072] }, M1a: { dono: 'M1', piv: [125, 552] }, // parados
+    M3a: { dono: 'M3', piv: [545, 588] }, F3m: { dono: 'F3', piv: [878, 1135] },
   };
   const MEMBROS_DE = {};
   for (const [k, m] of Object.entries(MEMBROS)) (MEMBROS_DE[m.dono] = MEMBROS_DE[m.dono] || []).push(k);
@@ -73,8 +72,7 @@
   const limpar = (ch) => { ch.sort((a, b) => a[0] - b[0]); for (let j = 1; j < ch.length; j++) if (ch[j][0] <= ch[j - 1][0] + 1e-3) ch[j][0] = ch[j - 1][0] + 0.02; return ch; };
   const r01 = (i, k) => { const x = Math.sin((i + 1) * 127.1 + k * 311.7) * 43758.5453; return x - Math.floor(x); };
   const sinal = (v) => (v > 0 ? 1 : v < 0 ? -1 : 0);
-  // envelope de um gesto curto (risada, aceno, tapinha): nasce e morre sem tranco
-  const env = (t, t0, d) => { const u = (t - t0) / d; return u <= 0 || u >= 1 ? 0 : Math.pow(Math.sin(Math.PI * u), 1.3); };
+  const suave = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
 
   /* ─── a coreografia das cabeças, montada uma vez em chaves ─── */
   const COREO = {};
@@ -82,73 +80,59 @@
     const q = P[nome];
     const lado = q.n[0] - 527, dir = sinal(lado);
     const alt = i % 2 ? 1 : -1;
-    const virada = 3.85 + 0.03 * Math.abs(lado) / 40; // a chamada: viram para a câmera, do centro para as pontas
+    const rea = 0.16 * r01(i, 1);                       // cada um reage no seu tempo
+    const dm = 0.55 + 0.15 * r01(i, 2);                 // e leva o seu tempo para mexer a cabeça
+    const virada = 3.85 + 0.03 * Math.abs(lado) / 40 + rea; // a chamada: olham para a câmera, do centro para as pontas
     const trilhas = {};
-    ['yaw', 'roll', 'pitch'].forEach((eixo, e) => {
+    ['roll', 'hx'].forEach((eixo, e) => {
       const ch = [];
       q.olha.forEach((o, j) => {
         if (j === 0) ch.push([0, o[1 + e]]);
-        else { ch.push([o[0], q.olha[j - 1][1 + e]]); ch.push([o[0] + 0.38, o[1 + e]]); }
+        else { ch.push([o[0] + rea, q.olha[j - 1][1 + e]]); ch.push([o[0] + rea + dm, o[1 + e]]); }
       });
       const ult = q.olha[q.olha.length - 1][1 + e];
-      // pose 1 "aperta!": tombam para o centro; pose 2: queixo para cima, lados alternados
-      const p1 = [-dir * 10, -dir * (7 + 4 * Math.min(1, Math.abs(lado) / 420)), 0][e];
-      const p2 = [alt * 9, alt * 7, -9][e];
-      ch.push([virada, ult], [virada + 0.42, 0], [5.0, 0], [5.3, p1], [5.75, p1 * 0.85], [6.05, p2 * 0.4], [6.35, p2], [6.8, p2 * 0.85], [7.2, 0]);
+      // pose 1 "aperta!": encostam a cabeça para o centro; pose 2: cabeças pendendo para lados alternados
+      const p1 = [-dir * (4 + 3 * Math.min(1, Math.abs(lado) / 420)), -dir * 2.5][e];
+      const p2 = [alt * 4, alt * 1.5][e];
+      ch.push([virada, ult], [virada + dm, 0], [5.0 + rea, 0], [5.0 + rea + dm, p1], [5.9 + rea, p1], [5.9 + rea + dm, p2], [6.85 + rea, p2], [6.85 + rea + dm, 0]);
       trilhas[eixo] = limpar(ch);
     });
-    trilhas.hx = limpar([[0, sinal(q.olha[0][1]) * 3], [virada, sinal(q.olha[q.olha.length - 1][1]) * 3], [virada + 0.42, 0], [5.0, 0], [5.3, -dir * 4], [5.75, -dir * 3.5], [6.2, 0]]);
-    COREO[nome] = { ...trilhas, fase: r01(i, 3) * 6.28, fase2: r01(i, 4) * 6.28 };
+    // pose 2 também levanta um pouco o queixo: a cabeça sobe um fio
+    trilhas.hy = limpar([[0, 0], [5.9 + rea, 0], [5.9 + rea + dm, -1.5], [6.85 + rea, -1.5], [6.85 + rea + dm, 0]]);
+    COREO[nome] = trilhas;
   });
 
-  /* Estado de uma pessoa no tempo do filme (congela no flash: a foto é tirada ali). */
+  /* Estado de uma cabeça no tempo do filme (congela no flash: a foto é tirada ali). */
   function estado(nome, t) {
     const c = COREO[nome], q = P[nome];
     t = Math.min(t, T_FLASH);
-    let yaw = trilha(c.yaw, t), roll = trilha(c.roll, t), pitch = trilha(c.pitch, t), hx = trilha(c.hx, t), hy = 0;
-    let y = 0, r = 0, sy = 1;
-    // risada: cabeça vai para trás e quica, ombros sacodem um fio
+    let roll = trilha(c.roll, t), hx = trilha(c.hx, t), hy = trilha(c.hy, t);
+    const lado = sinal(q.olha[0][1]);
+    // risada: a cabeça vai para trás e para o lado do amigo, dá duas ou três sacudidas que diminuem e volta
     for (const [t0, d] of q.risos) {
-      const e = env(t, t0, d);
-      if (!e) continue;
-      const sac = (1 - Math.cos(2 * Math.PI * 4.6 * (t - t0))) / 2;
-      y -= 2.2 * e * sac;
-      pitch -= 13 * e;
-      hy -= (4 + 3 * sac) * e;
-      roll += 3.5 * e * Math.sin(2 * Math.PI * 2.3 * (t - t0));
+      const u = (t - t0) / d;
+      if (u <= 0 || u >= 1) continue;
+      const sobe = suave(u / 0.25) * (1 - suave((u - 0.6) / 0.4)); // vai, segura, volta
+      const ha = Math.sin(Math.PI * 2 * 3.2 * (t - t0)) * (1 - u);   // "ha-ha-ha", cada vez mais fraco
+      hy += -3.2 * sobe + 0.9 * ha * sobe;
+      roll += lado * 2.5 * sobe;
     }
-    // aceno de "uhum" de quem escuta
-    for (const [t0, d] of q.acenos) pitch += 7 * env(t, t0, d) * Math.sin(2 * Math.PI * 2.6 * (t - t0));
-    // respiração e balanço quase imperceptíveis (a vida no hold), até o clique
-    sy = 1 + 0.004 * Math.sin((2 * Math.PI * t) / 3.1 + c.fase);
-    r = 0.22 * Math.sin((2 * Math.PI * t) / 4.7 + c.fase2);
-    roll += 0.8 * Math.sin((2 * Math.PI * t) / 3.7 + c.fase2);
-    yaw += 1.2 * Math.sin((2 * Math.PI * t) / 4.3 + c.fase);
-    return { y, r, sy, yaw, roll, pitch, hx, hy };
+    // aceno de "uhum": a cabeça desce e sobe duas vezes, devagar
+    for (const [t0, d] of q.acenos) {
+      const u = (t - t0) / d;
+      if (u <= 0 || u >= 1) continue;
+      hy += 1.4 * Math.pow(Math.sin(Math.PI * 2 * u), 2);
+    }
+    return { roll, hx, hy };
   }
 
-  /* Ângulo de cada membro no tempo do filme. */
+  /* Ângulo de cada membro no tempo do filme: só gestos lentos, sem oscilar. */
   function membro(k, t) {
     t = Math.min(t, T_FLASH);
-    const vivo = 0.6 * Math.sin((2 * Math.PI * t) / 3.3 + k.length + k.charCodeAt(0));
     switch (k) {
-      case 'F2v': { // o V: começa descansando no peito e sobe até o queixo para a foto
-        const a = trilha([[0, -9], [6.15, -9], [6.95, -0.6], [7.12, 1.0], [7.34, 0]], t);
-        return a + 1.6 * env(t, 2.15, 0.9) * Math.sin(2 * Math.PI * 4.6 * (t - 2.15)) + vivo * (t < 6.1 ? 1 : 0);
-      }
-      case 'F1m': { // tapinhas no ombro na risada; aperta na pose 1
-        const tap = 7 * env(t, 2.1, 0.8) * Math.max(0, Math.sin(2 * Math.PI * 4 * (t - 2.1)));
-        return tap + trilha([[0, 0], [5.0, 0], [5.25, 4], [5.75, 3.5], [6.1, 0]], t);
-      }
-      case 'B4a': { // o abraço: tapinhas no peito do amigo e puxa na pose 1
-        const tap = 3.2 * env(t, 2.5, 0.9) * Math.sin(2 * Math.PI * 4.2 * (t - 2.5));
-        return tap + trilha([[0, 0], [5.0, 0], [5.3, -2.6], [5.75, -2.2], [6.1, 0]], t) + vivo * 0.5;
-      }
-      case 'F1a': // gesticula enquanto conta (levanta a mão), e quica na risada
-        return trilha([[0, 0], [0.9, 0], [1.15, -6], [1.55, -5], [1.85, 0]], t) - 2.5 * env(t, 2.1, 0.8) * (1 - Math.cos(2 * Math.PI * 4.6 * (t - 2.1))) / 2 + vivo * 0.4;
-      case 'F3m': return 3.2 * env(t, 2.25, 0.85) * Math.sin(2 * Math.PI * 2.2 * (t - 2.25)) + vivo;
-      case 'M1a': return 2.6 * env(t, 3.0, 0.9) * Math.sin(2 * Math.PI * 1.9 * (t - 3.0)) + vivo * 0.5;
-      case 'M3a': return 2.2 * env(t, 1.5, 1.0) * Math.sin(2 * Math.PI * 1.8 * (t - 1.5)) + vivo * 0.5;
+      case 'F2v': return trilha([[0, -6], [6.1, -6], [6.95, 0]], t);                       // o V sobe até o queixo
+      case 'F1m': return trilha([[0, 0], [5.05, 0], [5.6, 2.5], [6.0, 2.5], [6.6, 0]], t);   // aperta o ombro
+      case 'B4a': return trilha([[0, 0], [5.05, 0], [5.6, -1.8], [6.0, -1.8], [6.6, 0]], t); // puxa o amigo
     }
     return 0;
   }
@@ -205,17 +189,14 @@
   /* Aplica o filme inteiro no tempo global t. */
   function aplicar(t, el, api) {
     const { clamp, prog, ease, lerp } = api;
-    // pessoas: corpo (pivô no pé), cabeça (pivô no pescoço), membros (pivô na junta)
+    // pessoas: os corpos ficam como na arte; a cabeça inclina no pescoço; os braços giram na junta
     for (const nome of NOMES) {
       const q = P[nome], s = estado(nome, t);
-      const px = PX(q.p[0]), py = PY(q.p[1]), nx = PX(q.n[0]), ny = PY(q.n[1]);
-      const corpo = `translate(0px, ${f(s.y * Z)}px) translate(${f(px)}px, ${f(py)}px) rotate(${f(s.r)}deg) scale(1, ${f(s.sy)}) translate(${f(-px)}px, ${f(-py)}px)`;
-      const cabeca = `${corpo} translate(${f(nx + s.hx * Z)}px, ${f(ny + s.hy * Z)}px) perspective(1400px) rotateY(${f(s.yaw)}deg) rotateX(${f(-s.pitch)}deg) rotate(${f(s.roll)}deg) translate(${f(-nx)}px, ${f(-ny)}px)`;
-      api.set(el.camadas[`${nome}b`], { pre: corpo });
-      api.set(el.camadas[`${nome}h`], { pre: cabeca });
+      const nx = PX(q.n[0]), ny = PY(q.n[1]);
+      api.set(el.camadas[`${nome}h`], { pre: `translate(${f(nx + s.hx * Z)}px, ${f(ny + s.hy * Z)}px) rotate(${f(s.roll)}deg) translate(${f(-nx)}px, ${f(-ny)}px)` });
       for (const k of MEMBROS_DE[nome] || []) {
         const [mx, my] = MEMBROS[k].piv;
-        api.set(el.camadas[k], { pre: `${corpo} translate(${f(PX(mx))}px, ${f(PY(my))}px) rotate(${f(membro(k, t))}deg) translate(${f(-PX(mx))}px, ${f(-PY(my))}px)` });
+        api.set(el.camadas[k], { pre: `translate(${f(PX(mx))}px, ${f(PY(my))}px) rotate(${f(membro(k, t))}deg) translate(${f(-PX(mx))}px, ${f(-PY(my))}px)` });
       }
     }
     // câmera

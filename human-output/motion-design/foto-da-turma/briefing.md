@@ -34,4 +34,4 @@ pose final, vem o flash, e aí a foto é eternizada e a moldura aparece."
   reflexo de papel e da câmera.
 
 ## Mantenha
-(correções aprovadas entram aqui)
+- Só movimentos humanos: corpos parados como na arte; cabeça inclina no pescoço, ri indo para trás, acena devagar. Nada de cabeça girando como cartão, corpo esticando ou balançando, braço oscilando como pêndulo, balanço constante.

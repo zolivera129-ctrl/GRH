@@ -31,11 +31,11 @@
     },
     {
       "titulo": "Gente",
-      "texto": "Cada pessoa é um recorte da própria ilustração. Os corpos ficam no lugar e só respiram; quem conversa são as cabeças (giram até 26° e inclinam a partir do pescoço) e os braços e mãos que aparecem. Sem boca, a risada é cabeça para trás e ombros que sacodem."
+      "texto": "Só movimentos que uma pessoa faz: os corpos ficam como na arte; a cabeça inclina a partir do pescoço para o amigo, ri indo para trás, acena devagar. Nada gira como cartão, nada estica, nada balança sozinho. Os braços fazem um gesto lento de cada vez."
     },
     {
       "titulo": "Conversa",
-      "texto": "Duplas e trios se olham de verdade: a cabeça vira uns 20° para o parceiro e inclina um fio na direção dele. Nunca todos ao mesmo tempo: cada par no seu tempo."
+      "texto": "Duplas e trios inclinam a cabeça um para o outro, cada um no seu tempo, em movimentos de meio segundo."
     },
     {
       "titulo": "Câmera",
@@ -82,39 +82,39 @@
       ],
       "batidas": [
         {
-          "t": 0,
+          "t": 0.0,
           "tipo": "objeto",
-          "texto": "O filme abre no meio da conversa: cada cabeça virada uns 22° para o parceiro e inclinada na direção dele; os corpos só respiram."
+          "texto": "No meio da conversa: cada cabeça pende uns 5° para o parceiro; os corpos ficam como na arte."
         },
         {
-          "t": 1,
+          "t": 1.0,
           "tipo": "objeto",
-          "texto": "Primeira risada (os dois da esquerda, atrás): cabeça vai para trás 13° e quica, ombros sacodem 4 vezes por segundo. O da camisa preta gesticula com a mão tatuada."
+          "texto": "Primeira risada (os dois da esquerda, atrás): a cabeça vai para trás e para o lado do amigo, sacode duas ou três vezes, cada vez mais fraco, e volta."
         },
         {
           "t": 1.5,
           "tipo": "objeto",
-          "texto": "A risada passa adiante: as meninas do meio (1,5), o braço tatuado balança; quem escuta acena \"uhum\"."
+          "texto": "A risada passa para as meninas do meio; quem escuta acena \"uhum\" devagar."
         },
         {
           "t": 2.1,
           "tipo": "objeto",
-          "texto": "O trio da frente ri: tapinhas no ombro do amigo, a mão no joelho balança, o do meio vira para o da direita (2,4)."
+          "texto": "O trio da frente ri; o do meio inclina para o da direita (2,5)."
         },
         {
-          "t": 2.5,
+          "t": 2.55,
           "tipo": "objeto",
-          "texto": "Os dois abraçados de trás riem: o braço do abraço dá tapinhas no peito do amigo. O do meio vira para eles."
+          "texto": "Os dois abraçados de trás riem juntos; o do meio inclina para eles."
         },
         {
-          "t": 3,
+          "t": 3.05,
           "tipo": "objeto",
-          "texto": "A dupla da esquerda ri por último, o braço solto dela balança; a de preto vira de volta para a amiga."
+          "texto": "A dupla da esquerda ri por último; a de preto volta a inclinar para a amiga."
         },
         {
           "t": 3.85,
           "tipo": "transicao",
-          "texto": "Alguém chama: as cabeças viram para a câmera em onda, do centro para as pontas, 30 ms entre elas. Corte invisível para a próxima."
+          "texto": "Alguém chama: as cabeças voltam para a câmera, do centro para as pontas, cada uma no seu tempo."
         }
       ],
       "saida": {
@@ -160,27 +160,27 @@
         {
           "t": 0.5,
           "tipo": "objeto",
-          "texto": "Pose 1, \"aperta!\": cada cabeça tomba para o centro (mais quem está na ponta), o braço do abraço puxa o amigo, a mão aperta o ombro."
+          "texto": "Pose 1, \"aperta!\": todos encostam a cabeça para o centro; o braço do abraço puxa o amigo e a mão aperta o ombro, devagar."
         },
         {
-          "t": 1,
-          "tipo": "vida",
-          "texto": "Seguram a pose um instante, ainda vivos."
-        },
-        {
-          "t": 1.55,
+          "t": 1.4,
           "tipo": "objeto",
-          "texto": "Pose 2: queixo para cima 9°, cabeças alternando de lado."
+          "texto": "Pose 2: as cabeças pendem para lados alternados e o queixo sobe um fio."
         },
         {
-          "t": 1.65,
+          "t": 1.6,
           "tipo": "objeto",
-          "texto": "O \"V\" sai do peito e sobe até o queixo em 0,8 s, passa um fio e assenta na batida (7,34 s)."
+          "texto": "O \"V\" sobe do peito até o queixo em 0,85 s, num gesto só."
         },
         {
-          "t": 2.7,
+          "t": 2.35,
+          "tipo": "objeto",
+          "texto": "Voltam para a pose final, cada um no seu tempo."
+        },
+        {
+          "t": 3.2,
           "tipo": "vida",
-          "texto": "Todas as cabeças voltam para a pose final; só a respiração continua, segurando para o clique."
+          "texto": "Seguram parados para o clique; só a câmera chega."
         }
       ],
       "saida": {
