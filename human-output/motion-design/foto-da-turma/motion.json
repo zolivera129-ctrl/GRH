@@ -82,12 +82,12 @@
       ],
       "batidas": [
         {
-          "t": 0.0,
+          "t": 0,
           "tipo": "objeto",
           "texto": "O filme abre no meio da conversa: cada cabeça virada uns 22° para o parceiro e inclinada na direção dele; os corpos só respiram."
         },
         {
-          "t": 1.0,
+          "t": 1,
           "tipo": "objeto",
           "texto": "Primeira risada (os dois da esquerda, atrás): cabeça vai para trás 13° e quica, ombros sacodem 4 vezes por segundo. O da camisa preta gesticula com a mão tatuada."
         },
@@ -107,7 +107,7 @@
           "texto": "Os dois abraçados de trás riem: o braço do abraço dá tapinhas no peito do amigo. O do meio vira para eles."
         },
         {
-          "t": 3.0,
+          "t": 3,
           "tipo": "objeto",
           "texto": "A dupla da esquerda ri por último, o braço solto dela balança; a de preto vira de volta para a amiga."
         },
@@ -147,7 +147,7 @@
           "id": "meio2",
           "rotulo": "Pose 2",
           "legenda": "Queixo para cima, cabeças para lados alternados; o \"V\" começa a subir",
-          "t": 2.0
+          "t": 2
         },
         {
           "id": "fim",
@@ -163,7 +163,7 @@
           "texto": "Pose 1, \"aperta!\": cada cabeça tomba para o centro (mais quem está na ponta), o braço do abraço puxa o amigo, a mão aperta o ombro."
         },
         {
-          "t": 1.0,
+          "t": 1,
           "tipo": "vida",
           "texto": "Seguram a pose um instante, ainda vivos."
         },
@@ -195,7 +195,7 @@
       "titulo": "O clique",
       "dur": 4,
       "ideia": "O flash congela a turma; a foto nasce clara e revela a cor, a moldura chega elástica de fora para dentro e as estrelas pulam uma a uma.",
-      "camera": "Empurrão vivo de 0,4 %/s, passando por 1,0 no quadro final (2,9 s).",
+      "camera": "Fica no enquadramento exato da arte enquanto a moldura e as estrelas chegam; depois do quadro final (2,7 s), um push-in vivo e lento.",
       "quadros": [
         {
           "id": "inicio",
@@ -213,7 +213,7 @@
           "id": "fim",
           "rotulo": "Fim",
           "legenda": "A foto eternizada: moldura ondulada e as estrelas no lugar",
-          "t": 2.9,
+          "t": 2.7,
           "aprovado": true
         }
       ],
@@ -265,7 +265,17 @@
     "revisao": 1,
     "aprovadoEm": null
   },
-  "versoes": [],
+  "versoes": [
+    {
+      "v": 1,
+      "data": "2026-10-17",
+      "formatos": [
+        "9x16"
+      ],
+      "fps": 60,
+      "nota": "Corpos parados; movimento nas cabeças, braços e mãos"
+    }
+  ],
   "criadoEm": "2026-10-17",
   "cartaz": "A foto da turma"
 }

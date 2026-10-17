@@ -161,8 +161,8 @@
       const fx = 527.5 + 8 * Math.sin((2 * Math.PI * t) / 6.5) * Math.min(1, (T_FLASH - t) / 2);
       return { zoom, fx, fy };
     }
-    // a foto: push-in vivo, passando por 1,0 no quadro final
-    return { zoom: 1 + 0.0042 * (t - 10.9), fx: 527.5, fy: 745.5 };
+    // a foto: parada no enquadramento exato enquanto moldura e estrelas chegam; depois um push-in vivo
+    return { zoom: 1 + 0.0045 * Math.max(0, t - 10.6) ** 1.5, fx: 527.5, fy: 745.5 };
   }
 
   const f = (v) => (Math.round(v * 1000) / 1000).toString();

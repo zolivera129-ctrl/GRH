@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 motion-mais-admirados-2026/build/
 human-output/**/.cache/
+human-output/**/render/

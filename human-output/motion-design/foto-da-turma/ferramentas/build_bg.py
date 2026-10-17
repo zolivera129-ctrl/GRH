@@ -78,7 +78,7 @@ win = cv2.resize(win.astype(np.float32), (W2, CH), interpolation=cv2.INTER_AREA)
 gm = (np.linalg.norm(im - [56, 109, 37], axis=2) < 30)
 green = np.median(im[gm], axis=0)
 mot2 = cv2.resize(cv2.GaussianBlur(rng.normal(0, 1, (CH // 8 + 1, W2 // 8 + 1)).astype(np.float32), (0, 0), 5), (W2, CH)); mot2 /= mot2.std() + 1e-6
-fr = green[None, None] + mot2[..., None] * 1.4 + rng.normal(0, 1.6, (CH, W2, 1))
+fr = np.broadcast_to(green[None, None], (CH, W2, 3)).astype(np.float32)  # flat: matches the green beyond the edges
 fa = 1 - win
 rgba = np.dstack([np.clip(fr, 0, 255), fa * 255]).astype(np.uint8)
 cv2.imwrite(os.path.join(out, 'moldura.png'), cv2.cvtColor(rgba, cv2.COLOR_RGBA2BGRA), [cv2.IMWRITE_PNG_COMPRESSION, 9])
