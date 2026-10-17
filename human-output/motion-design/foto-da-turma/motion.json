@@ -31,7 +31,7 @@
     },
     {
       "titulo": "Gente",
-      "texto": "Cada pessoa é um recorte da própria ilustração: o corpo inclina a partir dos pés, a cabeça gira e inclina a partir do pescoço. Sem boca, a risada é corpo: ombros que sacodem, cabeça para trás."
+      "texto": "Cada pessoa é um recorte da própria ilustração. Os corpos ficam no lugar e só respiram; quem conversa são as cabeças (giram até 26° e inclinam a partir do pescoço) e os braços e mãos que aparecem. Sem boca, a risada é cabeça para trás e ombros que sacodem."
     },
     {
       "titulo": "Conversa",
@@ -58,68 +58,63 @@
       "papel": "gancho",
       "titulo": "A turma chega",
       "dur": 4.5,
-      "ideia": "Espalhados e conversando em duplas e trios, eles se juntam para a foto: andam para perto, se olham e dão risada.",
+      "ideia": "A turma já está junta, no meio da conversa: as cabeças viram umas para as outras em duplas e trios, as mãos gesticulam e a risada passa de grupo em grupo.",
       "camera": "Começa perto dos rostos (1,2×) e abre devagar enquanto o grupo se fecha; deriva lateral leve.",
       "quadros": [
         {
           "id": "inicio",
           "rotulo": "Início",
-          "legenda": "A turma espalhada, já andando para o meio; a câmera perto dos rostos",
+          "legenda": "No meio da conversa: cada dupla virada para o seu parceiro; a câmera perto dos rostos",
           "t": 0.25
         },
         {
           "id": "meio",
           "rotulo": "Passo 2",
-          "legenda": "Os pares se olham: um vira para o outro, a cabeça inclina na direção do amigo",
-          "t": 1.35
+          "legenda": "As primeiras risadas: cabeças para trás, um aceno de \"uhum\" de quem escuta",
+          "t": 1.4
         },
         {
           "id": "fim",
           "rotulo": "Fim",
-          "legenda": "As risadas em cadeia; a turma quase junta",
-          "t": 2.6
+          "legenda": "A risada chega no trio da frente: tapinha no ombro, mão balançando no joelho",
+          "t": 2.45
         }
       ],
       "batidas": [
         {
-          "t": 0,
+          "t": 0.0,
           "tipo": "objeto",
-          "texto": "Cada um sai do seu lugar num tempo diferente (até 0,4 s de diferença) e anda para o meio, quicando um fio a cada passo."
+          "texto": "O filme abre no meio da conversa: cada cabeça virada uns 22° para o parceiro e inclinada na direção dele; os corpos só respiram."
         },
         {
-          "t": 0.3,
+          "t": 1.0,
           "tipo": "objeto",
-          "texto": "As cabeças viram para o parceiro em 350 ms: a de trás conversa entre si, as meninas em pares, os da frente em trio."
-        },
-        {
-          "t": 1,
-          "tipo": "objeto",
-          "texto": "Primeira risada (os dois da esquerda, atrás): ombros sacodem 4 vezes por segundo, cabeça vai para trás 11°."
+          "texto": "Primeira risada (os dois da esquerda, atrás): cabeça vai para trás 13° e quica, ombros sacodem 4 vezes por segundo. O da camisa preta gesticula com a mão tatuada."
         },
         {
           "t": 1.5,
           "tipo": "objeto",
-          "texto": "A risada passa adiante: as meninas do meio (1,5), o trio da frente (2,1), os dois abraçados de trás (2,5), a dupla da esquerda (3,0)."
+          "texto": "A risada passa adiante: as meninas do meio (1,5), o braço tatuado balança; quem escuta acena \"uhum\"."
+        },
+        {
+          "t": 2.1,
+          "tipo": "objeto",
+          "texto": "O trio da frente ri: tapinhas no ombro do amigo, a mão no joelho balança, o do meio vira para o da direita (2,4)."
         },
         {
           "t": 2.5,
           "tipo": "objeto",
-          "texto": "Os dois abraçados de trás riem juntos; o do meio vira para eles (2,4) e ri por último (2,75)."
+          "texto": "Os dois abraçados de trás riem: o braço do abraço dá tapinhas no peito do amigo. O do meio vira para eles."
         },
         {
-          "t": 3,
+          "t": 3.0,
           "tipo": "objeto",
-          "texto": "A dupla da esquerda ri; a de preto vira para a do meio, puxando o trio (3,05)."
-        },
-        {
-          "t": 3.5,
-          "tipo": "vida",
-          "texto": "Todo mundo perto, respirando e balançando um fio; a câmera continua abrindo."
+          "texto": "A dupla da esquerda ri por último, o braço solto dela balança; a de preto vira de volta para a amiga."
         },
         {
           "t": 3.85,
           "tipo": "transicao",
-          "texto": "Alguém chama: as cabeças viram para a câmera em onda, do centro para as pontas, 35 ms entre elas. Corte invisível para a próxima."
+          "texto": "Alguém chama: as cabeças viram para a câmera em onda, do centro para as pontas, 30 ms entre elas. Corte invisível para a próxima."
         }
       ],
       "saida": {
@@ -133,59 +128,59 @@
       "papel": "desenvolvimento",
       "titulo": "As poses",
       "dur": 3.5,
-      "ideia": "Viram para a câmera, os da frente agacham um a um, e a turma tenta uma pose, outra, até assentar na pose final.",
+      "ideia": "Olhando para a câmera, a turma tenta uma pose, outra, e assenta na pose final; o \"V\" sobe até o queixo bem a tempo do clique.",
       "camera": "Segue abrindo (1,06× → 1,0×) e chega na foto inteira exatamente no clique.",
       "quadros": [
         {
           "id": "inicio",
           "rotulo": "Início",
-          "legenda": "Todo mundo olhando para a câmera; os três da frente ainda meio em pé",
-          "t": 0.45
+          "legenda": "Todo mundo olhando para a câmera",
+          "t": 0.3
         },
         {
           "id": "meio",
           "rotulo": "Pose 1",
-          "legenda": "\"Aperta!\": todos inclinam para o centro, cabeças tombadas",
-          "t": 1.3
+          "legenda": "\"Aperta!\": as cabeças tombam para o centro, o abraço puxa, a mão aperta o ombro",
+          "t": 0.95
         },
         {
           "id": "meio2",
           "rotulo": "Pose 2",
-          "legenda": "Pose descolada: queixo para cima, cabeças para lados alternados",
-          "t": 2.3
+          "legenda": "Queixo para cima, cabeças para lados alternados; o \"V\" começa a subir",
+          "t": 2.0
         },
         {
           "id": "fim",
           "rotulo": "Fim",
-          "legenda": "A pose final, prendendo a respiração para o clique",
-          "t": 3.3
+          "legenda": "A pose final, com o \"V\" no queixo, prendendo a respiração para o clique",
+          "t": 3.2
         }
       ],
       "batidas": [
         {
           "t": 0.5,
           "tipo": "objeto",
-          "texto": "Os três da frente agacham um a um na batida (5,0 · 5,125 · 5,25 s), com um amassadinho de 4 % na chegada: tum, tum, tum."
+          "texto": "Pose 1, \"aperta!\": cada cabeça tomba para o centro (mais quem está na ponta), o braço do abraço puxa o amigo, a mão aperta o ombro."
         },
         {
-          "t": 0.7,
-          "tipo": "objeto",
-          "texto": "A turma se aperta: todos andam o último pedaço até o lugar da foto."
-        },
-        {
-          "t": 1,
-          "tipo": "objeto",
-          "texto": "Pose 1, \"aperta!\": cada um inclina para o centro (mais quem está na ponta) e tomba a cabeça junto."
-        },
-        {
-          "t": 1.85,
-          "tipo": "objeto",
-          "texto": "Pose 2: inclinam para o outro lado, queixo para cima 7°, cabeças alternando de lado."
-        },
-        {
-          "t": 2.6,
+          "t": 1.0,
           "tipo": "vida",
-          "texto": "Assentam na pose final num movimento só; respiram e balançam um fio, segurando para o clique."
+          "texto": "Seguram a pose um instante, ainda vivos."
+        },
+        {
+          "t": 1.55,
+          "tipo": "objeto",
+          "texto": "Pose 2: queixo para cima 9°, cabeças alternando de lado."
+        },
+        {
+          "t": 1.65,
+          "tipo": "objeto",
+          "texto": "O \"V\" sai do peito e sobe até o queixo em 0,8 s, passa um fio e assenta na batida (7,34 s)."
+        },
+        {
+          "t": 2.7,
+          "tipo": "vida",
+          "texto": "Todas as cabeças voltam para a pose final; só a respiração continua, segurando para o clique."
         }
       ],
       "saida": {
