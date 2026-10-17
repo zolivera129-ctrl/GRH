@@ -195,7 +195,7 @@
       "titulo": "O clique",
       "dur": 4,
       "ideia": "O flash congela a turma; a foto nasce clara e revela a cor, a moldura chega elástica de fora para dentro e as estrelas pulam uma a uma.",
-      "camera": "Fica no enquadramento exato da arte enquanto a moldura e as estrelas chegam; depois do quadro final (2,7 s), um push-in vivo e lento.",
+      "camera": "Fica no enquadramento exato da arte enquanto a moldura chega; quando as estrelas começam a pular, um push-in vivo e lento até o fim.",
       "quadros": [
         {
           "id": "inicio",
@@ -213,7 +213,7 @@
           "id": "fim",
           "rotulo": "Fim",
           "legenda": "A foto eternizada: moldura ondulada e as estrelas no lugar",
-          "t": 2.7,
+          "t": 2.3,
           "aprovado": true
         }
       ],
@@ -241,12 +241,12 @@
         {
           "t": 1.7,
           "tipo": "vida",
-          "texto": "Hold: um reflexo de papel fotográfico atravessa a foto uma vez; as estrelas giram e cintilam devagar, cada uma no seu tempo."
+          "texto": "As estrelas cintilam: cada uma pulsa 5 % e gira até 11°, em períodos que não se repetem juntos."
         },
         {
           "t": 2.5,
           "tipo": "vida",
-          "texto": "As estrelas cintilam: cada uma pulsa 3 % e gira até 7°, em períodos que não se repetem juntos."
+          "texto": "As estrelas cintilam: cada uma pulsa 5 % e gira até 11°, em períodos que não se repetem juntos."
         },
         {
           "t": 3.4,
@@ -274,6 +274,15 @@
       ],
       "fps": 60,
       "nota": "Corpos parados; movimento nas cabeças, braços e mãos"
+    },
+    {
+      "v": 2,
+      "data": "2026-10-17",
+      "formatos": [
+        "9x16"
+      ],
+      "fps": 60,
+      "nota": "Corpos parados; o movimento vem das cabeças, braços e mãos"
     }
   ],
   "criadoEm": "2026-10-17",

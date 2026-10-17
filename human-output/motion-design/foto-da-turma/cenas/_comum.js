@@ -161,8 +161,8 @@
       const fx = 527.5 + 8 * Math.sin((2 * Math.PI * t) / 6.5) * Math.min(1, (T_FLASH - t) / 2);
       return { zoom, fx, fy };
     }
-    // a foto: parada no enquadramento exato enquanto moldura e estrelas chegam; depois um push-in vivo
-    return { zoom: 1 + 0.0045 * Math.max(0, t - 10.6) ** 1.5, fx: 527.5, fy: 745.5 };
+    // a foto: parada no enquadramento exato enquanto a moldura chega; depois um push-in vivo e lento
+    return { zoom: 1 + 0.003 * Math.max(0, t - 9.4) ** 1.5, fx: 527.5, fy: 745.5 };
   }
 
   const f = (v) => (Math.round(v * 1000) / 1000).toString();
@@ -196,6 +196,7 @@
     el.camadas = {};
     el.$$('.pessoa').forEach((im) => (el.camadas[im.dataset.id] = im));
     el.moldura = el.$('.moldura');
+    api.pintura.camada(el.moldura); // camada própria: a escala da moldura não re-rasteriza no meio do gesto
     el.estrelas = el.$$('.estrela').map((im, i) => ({ el: im, i, cx: ESTRELAS[i][5], cy: ESTRELAS[i][6] }));
     el.brilho = el.$('.brilho-foto');
     el.flash = el.$('.flash');
@@ -246,8 +247,8 @@
       const ab = clamp(u / 0.07);
       const sc = u <= 0 ? 0.5 : 1 - 0.5 * Math.exp(-7 * u) * Math.cos(2 * Math.PI * 1.7 * u);
       const vivo = Math.max(0, Math.min(1, (t - t0 - 0.5) / 1.2));
-      const rot = (u <= 0 ? -70 : -70 * Math.exp(-6 * u) * Math.cos(2 * Math.PI * 0.9 * u)) + vivo * 7 * Math.sin((2 * Math.PI * (t - t0)) / (3.3 + 0.37 * (s.i % 4)) + s.i);
-      const pul = 1 + vivo * 0.03 * Math.sin((2 * Math.PI * (t - t0)) / (2.1 + 0.29 * (s.i % 3)) + s.i * 1.7);
+      const rot = (u <= 0 ? -70 : -70 * Math.exp(-6 * u) * Math.cos(2 * Math.PI * 0.9 * u)) + vivo * 11 * Math.sin((2 * Math.PI * (t - t0)) / (3.3 + 0.37 * (s.i % 4)) + s.i);
+      const pul = 1 + vivo * 0.05 * Math.sin((2 * Math.PI * (t - t0)) / (2.1 + 0.29 * (s.i % 3)) + s.i * 1.7);
       api.set(s.el, {
         pre: `translate(${PX(0) + s.cx}px, ${s.cy}px) rotate(${f(rot)}deg) scale(${f(sc * pul)}) translate(${-s.cx}px, ${-s.cy}px)`,
         o: ab,
