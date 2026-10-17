@@ -283,6 +283,15 @@
       ],
       "fps": 60,
       "nota": "Corpos parados; o movimento vem das cabeças, braços e mãos"
+    },
+    {
+      "v": 3,
+      "data": "2026-10-17",
+      "formatos": [
+        "9x16"
+      ],
+      "fps": 60,
+      "nota": "Corpos parados; o movimento vem das cabeças, braços e mãos"
     }
   ],
   "criadoEm": "2026-10-17",
