@@ -185,8 +185,6 @@
         </div>
         <div class="turma">${pessoas}</div>
       </div>
-      <div class="revela-cinza"></div>
-      <div class="revela-branco"></div>
       <div class="brilho-foto"></div>
       <div class="flash"></div>`;
   }
@@ -200,8 +198,7 @@
     el.estrelas = el.$$('.estrela').map((im, i) => ({ el: im, i, cx: ESTRELAS[i][5], cy: ESTRELAS[i][6] }));
     el.brilho = el.$('.brilho-foto');
     el.flash = el.$('.flash');
-    el.cinza = el.$('.revela-cinza');
-    el.branco = el.$('.revela-branco');
+    api.pintura.filtroFixo(el.palco); // a revelação é um filtro contínuo, ligado a cena toda
     el.k = api.largura / PW;
   }
 
@@ -224,14 +221,16 @@
     // câmera
     const cam = camera(t), k = el.k * cam.zoom;
     const tx = api.largura / 2 - PX(cam.fx) * k, ty = api.altura / 2 - PY(cam.fy) * k;
-    // o flash: estoura em 3 quadros e apaga; a foto nasce clara e revela a cor
+    // o flash: estoura em 3 quadros e apaga até zero em 0,6 s; a foto nasce clara e revela a cor
     const tf = t - T_FLASH;
-    const fl = tf < 0 ? 0 : tf < 0.05 ? ease.outCubic(tf / 0.05) : Math.exp(-(tf - 0.05) / 0.16);
+    const fl = tf < 0 ? 0 : tf < 0.05 ? ease.outCubic(tf / 0.05) : Math.exp(-(tf - 0.05) / 0.15) * (1 - api.suave(prog(tf, 0.3, 0.6)));
     const rev = tf < 0 ? 0 : 1 - ease.outCubic(clamp((tf - 0.02) / 0.95));
-    api.set(el.palco, { pre: `translate(${f(tx)}px, ${f(ty)}px) scale(${Math.round(k * 1e6) / 1e6})` });
+    api.set(el.palco, {
+      pre: `translate(${f(tx)}px, ${f(ty)}px) scale(${Math.round(k * 1e6) / 1e6})`,
+      bright: 1 + 0.5 * rev,
+      sat: 1 - 0.4 * rev,
+    });
     api.set(el.flash, { o: 0.96 * fl });
-    api.set(el.branco, { o: 0.42 * rev });
-    api.set(el.cinza, { o: 0.45 * rev });
     // a moldura chega de fora para dentro, elástica, e assenta (antes do clique ela não existe)
     const tm = t - (T_FLASH + 0.28);
     const ent = ease.inOutSine(clamp(tm / 0.14));

@@ -6,10 +6,8 @@
 .palco .moldura-grupo, .palco .turma { position: absolute; inset: 0; }
 .palco .tc { position: absolute; display: block; max-width: none; user-select: none; }
 .palco .estrela { opacity: 0; }
-.flash, .revela-branco, .revela-cinza, .brilho-foto { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.flash, .brilho-foto { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
 .flash { background: var(--luz-flash); }
-.revela-branco { background: var(--luz-flash); mix-blend-mode: screen; }
-.revela-cinza { background: var(--cinza-revela); mix-blend-mode: saturation; }
 /* reflexo de papel fotográfico: faixa larga, sem borda, que passa uma vez */
 .brilho-foto {
   inset: -20% -40%;
