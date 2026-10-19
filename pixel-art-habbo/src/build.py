@@ -1307,8 +1307,8 @@ def scene_pra_ontem():
         return base
 
     room(S, walnut(rgb('#6A4A32')), walnut(rgb('#58402A')), floor)
-    on_wall(S, wall_clock(), 'l', 16, 50)
-    wall_sign(S, 'URGENTE', 'r', 58, 46, 30, 10, rgb('#D7302A'), WHITE, edge=rgb('#7E1612'))
+    on_wall(S, wall_clock(), 'l', 5, 54)
+    wall_sign(S, 'URGENTE', 'r', 66, 28, 28, 10, rgb('#D7302A'), WHITE, edge=rgb('#7E1612'))
     potted_palm(S, 82, 94)
     tx_, ty_ = office_desk(S, 30, 108, 5, 10, 15)
     paper_stack(S, tx_ - 11, ty_ - 4, 10, ('#D9453B', '#F4C04F', '#D9453B'))

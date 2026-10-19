@@ -153,6 +153,32 @@ def _ear(S, P):
     S.add(ear)
 
 
+def _beard_on(S, rows, base, dark, sk, tex=None, stubble=False):
+    """Barba presa ao rosto: só a borda de baixo (e a que dá para fora da
+    cabeça) ganha contorno escuro; a borda que encosta na bochecha se mistura
+    com a pele. stubble=True deixa tudo suave, como barba por fazer."""
+    L = Layer(base, dark)
+    L.rows(rows)
+    if tex:
+        L.recolor(tex)
+    pts = set(L.px)
+    for (x, y), c in list(L.px.items()):
+        hard = soft = False
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            q = (x + dx, y + dy)
+            if q in pts:
+                continue
+            if dy == 1 or q not in S.px:
+                hard = True
+            else:
+                soft = True
+        if hard and not stubble:
+            L.px[(x, y)] = dark
+        elif soft or hard:
+            L.px[(x, y)] = mix(c, sk, 0.45)
+    S.add(L)
+
+
 def guilherme():
     S = Sprite(40, 70)
     P = dict(
@@ -319,17 +345,16 @@ def gabriel():
     _neck_head(S, P)
     _ear(S, P)
 
-    # barba cheia: costeleta, maxilar, queixo e bigode
-    bd = Layer(beard, beardd)
-    bd.rows({14: (15, 16), 15: (15, 16), 16: (15, 16), 17: (15, 17),
-             18: (15, 18), 19: (15, 27), 20: (15, 27), 21: (15, 27),
-             22: (15, 26), 23: (15, 26), 24: (16, 25), 25: (17, 24), 26: (18, 23)})
-    bd.recolor(lambda x, y, c: beardl if (x * 3 + y) % 5 == 0 else (beardd if (x + y * 2) % 7 == 0 else None))
-    bd.outline()
-    # bochecha aparecendo acima da barba
-    for p in ((19, 19), (20, 19), (21, 19), (19, 20), (20, 20)):
-        bd.px.pop(p, None)
-    S.add(bd)
+    # barba cheia: nasce na costeleta, desce pelo maxilar, fecha no queixo
+    # e no bigode; presa ao rosto (sem contorno do lado da bochecha)
+    _beard_on(S, {12: (14, 15), 13: (14, 15), 14: (14, 16), 15: (15, 16), 16: (15, 16),
+                  17: (15, 17), 18: (15, 18), 19: (15, 27), 20: (12, 27), 21: (12, 27),
+                  22: (12, 26), 23: (13, 26), 24: (14, 26), 25: (15, 25), 26: (16, 24),
+                  27: (18, 22)},
+              beard, beardd, P['sks'],
+              tex=lambda x, y, c: beardl if (x * 3 + y) % 5 == 0 else (beardd if (x + y * 2) % 7 == 0 else None))
+    for x, y in ((19, 19), (20, 19)):
+        S.set(x, y, mix(beard, P['sks'], 0.4))
     # boca no meio da barba
     for x in range(22, 26):
         S.set(x, 22, rgb('#B4655A'))
@@ -735,10 +760,14 @@ def caio(pose='tablet'):
     S.set(28, 18, P['sk'])
     S.set(27, 19, P['sks'])
     S.set(26, 19, P['sks'])
-    stub = mix(P['sks'], haird, 0.28)
-    for x, y in ((15, 21), (16, 22), (17, 23), (18, 24), (19, 24), (20, 25), (21, 25),
-                 (22, 24), (25, 24), (26, 23), (20, 20), (21, 20), (26, 20)):
-        S.set(x, y, stub)
+    # barba completa, mas por fazer: costeleta, bochecha, queixo e buço
+    # sombreados, sem fio comprido
+    stub, stubd = mix(P['sks'], haird, 0.24), mix(P['sks'], haird, 0.4)
+    _beard_on(S, {16: (15, 16), 17: (15, 16), 18: (15, 16), 19: (15, 17),
+                  20: [(14, 18), (21, 26)], 21: (12, 19), 22: (12, 20), 23: (13, 26),
+                  24: (15, 25), 25: (17, 24)},
+              stub, stubd, P['sks'], stubble=True,
+              tex=lambda x, y, c: stubd if (x * 3 + y) % 5 == 0 else None)
     mouth = rgb('#5E2A1E')
     S.set(20, 21, mouth)
     S.set(27, 21, mouth)
@@ -1045,9 +1074,9 @@ def strands(base, dark, light):
 
 
 def otto():
-    """Otto: cabelo grisalho ondulado, barba branca aparada, óculos redondos
-    de tartaruga, camisa branca com a manga dobrada, colete de tricô verde
-    oliva, gravata listrada, calça de lã e sapato de couro."""
+    """Otto: calvo no alto, com os lados brancos e fofos; barba branca cheia,
+    óculos redondos de tartaruga, camisa branca com a manga dobrada, colete de
+    tricô verde oliva, gravata listrada, calça de lã e sapato de couro."""
     S = Sprite(40, 70)
     P = dict(sk=rgb('#D6A27C'), sks=rgb('#BA8562'), skl=rgb('#E6B894'), skline=rgb('#7E5038'),
              pant=rgb('#5E4E42'), pants=rgb('#4A3D33'), pantline=rgb('#2A221C'),
@@ -1056,7 +1085,7 @@ def otto():
     shirt = (rgb('#F6F5F0'), rgb('#DADBDE'), rgb('#9C9EA6'))
     vest = (rgb('#4E5838'), rgb('#3E462C'), rgb('#23281A'))
     P['teeline'] = vest[2]
-    grey, greyd, greyl = rgb('#A9A9AE'), rgb('#6E6E75'), rgb('#DADADE')
+    grey, greyd, greyl = rgb('#E6E5E2'), rgb('#A8A6A0'), rgb('#FFFFFF')
 
     _far_arm_sl(S, P, shirt, 40, cuff=rgb('#C9CBD0'), watch=(rgb('#5C3A22'), rgb('#E9DFC6')))
     _legs_shoes(S, P, top=45)
@@ -1092,16 +1121,15 @@ def otto():
         S.set(x, 29, tie)
     _ear(S, P)
 
-    # barba branca aparada, bigode um pouco mais escuro
-    bd = Layer(rgb('#D4D1CC'), rgb('#9C9893'))
-    bd.rows({15: (15, 16), 16: (15, 16), 17: (15, 16), 18: (15, 17), 19: (15, 18),
-             20: (15, 27), 21: (15, 27), 22: (15, 26), 23: (16, 26), 24: (17, 25), 25: (18, 24)})
-    bd.recolor(lambda x, y, c: rgb('#EDEBE7') if (x * 3 + y) % 5 == 0 else
-               (rgb('#B5B1AB') if (x + y * 2) % 6 == 0 else None))
-    bd.outline()
-    S.add(bd)
+    # barba branca cheia e fofa, emendada nas costeletas
+    _beard_on(S, {13: (15, 16), 14: (15, 16), 15: (15, 16), 16: (15, 16), 17: (15, 17),
+                  18: (15, 18), 19: (15, 27), 20: (12, 27), 21: (12, 27), 22: (12, 27),
+                  23: (13, 26), 24: (14, 26), 25: (14, 26), 26: (15, 25), 27: (16, 24), 28: (18, 22)},
+              rgb('#E8E6E2'), rgb('#A9A6A0'), P['sks'],
+              tex=lambda x, y, c: rgb('#FFFFFF') if (x * 3 + y) % 5 == 0 else
+              (rgb('#C9C6C0') if (x + y * 2) % 6 == 0 else None))
     for x in range(21, 28):
-        S.set(x, 20, rgb('#8E8A85'))
+        S.set(x, 20, rgb('#BDB9B3'))
     for x in range(22, 26):
         S.set(x, 21, rgb('#8A4A3E'))
     S.set(21, 21, rgb('#6E3A2E'))
@@ -1123,26 +1151,21 @@ def otto():
     for x in (14, 15, 16):
         S.set(x, 15, tort)
     for x in (18, 19, 20, 24, 25):
-        S.set(x, 12, greyd)
+        S.set(x, 12, rgb('#C9C6C0'))
 
-    # cabelo grisalho ondulado, cheio, penteado para trás
+    # calvo no alto (com brilho), cabelo branco e fofo só dos lados e atrás
+    for x, y in ((18, 10), (19, 10), (20, 10), (21, 10), (17, 11), (18, 11)):
+        S.set(x, y, P['skl'])
+    S.set(19, 10, rgb('#F6D2B4'))
     hr = Layer(grey, greyd)
-    hr.rows({4: (15, 23), 5: (13, 25), 6: (11, 27), 7: (10, 28), 8: (9, 28), 9: (9, 28),
-             10: (9, 27), 11: (9, 23), 12: (9, 19), 13: (9, 16), 14: (9, 14)})
-    hr.rows({y: (9, 12) for y in range(15, 21)})
-    hr.rows({21: (10, 12), 22: (10, 11)})
-
-    def waves(x, y, c):
-        k = (x + (y // 2) * 2) % 5
-        if k == 0:
-            return greyl
-        if k == 3:
-            return greyd
-        return None
-    hr.recolor(waves)
+    hr.rows({8: (12, 15), 9: (10, 15), 10: (9, 14), 11: (8, 13)})
+    hr.rows({y: (7, 13) for y in range(12, 20)})
+    hr.rows({20: (8, 13), 21: (9, 12), 22: (10, 11)})
+    hr.recolor(curls(grey, greyd, greyl))
     hr.outline()
-    for p in ((28, 7), (9, 9), (9, 18)):
-        hr.px.pop(p, None)
+    for (x, y) in hr.edges():
+        if (x * 5 + y * 3) % 4 == 0 and x < 10:
+            hr.px.pop((x, y), None)
     S.add(hr)
     return S.image()
 
@@ -1235,9 +1258,11 @@ def _necklace(S, pendant=GOLD, y0=30):
 
 
 def pra_ontem(pose='parado'):
-    """Sr. Pra Ontem, do Departamento das Urgências: grisalho, óculos pretos
-    grossos, barba grisalha, terno grafite, camisa branca, gravata verde e
-    lenço no bolso. pose='telefone': o fone vermelho no ouvido."""
+    """Sr. Pra Ontem, do Departamento das Urgências: cabelo escuro com as
+    têmporas grisalhas, topete espetado de quem está com pressa, óculos
+    pretos grossos, bigode e cavanhaque escuros com fios brancos, terno
+    grafite, gravata verde e lenço no bolso.
+    pose='telefone': o fone vermelho no ouvido."""
     S = Sprite(40, 70)
     P = dict(sk=rgb('#D9A580'), sks=rgb('#BE8962'), skl=rgb('#E8BA96'), skline=rgb('#7E5038'),
              pant=rgb('#3E3E45'), pants=rgb('#303036'), pantline=rgb('#17171B'),
@@ -1247,7 +1272,8 @@ def pra_ontem(pose='parado'):
     suit_l = rgb('#5A5A64')
     P['teeline'] = suit[2]
     white, whites = rgb('#F6F5F0'), rgb('#DADBDE')
-    grey, greyd, greyl = rgb('#9C9CA1'), rgb('#66666C'), rgb('#D0D0D4')
+    grey, greyd, greyl = rgb('#34343A'), rgb('#1C1C20'), rgb('#56565E')
+    silver, silverd = rgb('#C2C2C8'), rgb('#8E8E96')
 
     _far_arm_sl(S, P, suit, 41, cuff=white, watch=(rgb('#C9A24A'), rgb('#F7EFD0')))
     _legs_shoes(S, P, top=46)
@@ -1289,36 +1315,42 @@ def pra_ontem(pose='parado'):
     for x in (22, 14, 15, 16):
         S.set(x, 15, gl)
     for x, y in ((18, 12), (19, 12), (20, 13), (21, 13), (23, 13), (24, 12), (25, 12), (26, 12)):
-        S.set(x, y, greyd)
+        S.set(x, y, rgb('#2A2A30'))
     S.set(28, 18, P['sk'])
     S.set(27, 19, P['sks'])
     S.set(26, 19, P['sks'])
-    # barba por fazer, bigodão e cavanhaque grisalhos
-    for x, y in ((15, 21), (16, 22), (17, 23), (18, 24), (16, 20), (17, 22), (15, 19)):
-        S.set(x, y, mix(P['sks'], greyl, 0.45))
+    # barba por fazer escura, bigodão e cavanhaque escuros com fios brancos
+    stub = mix(P['sks'], greyd, 0.3)
+    for x, y in ((15, 21), (16, 22), (17, 23), (18, 24), (16, 20), (17, 22), (15, 19), (19, 25)):
+        S.set(x, y, stub)
     for x in range(21, 28):
-        S.set(x, 20, rgb('#7A7672'))
-        S.set(x, 21, rgb('#8E8A86') if x in (21, 27) else rgb('#7A7672'))
+        S.set(x, 20, greyd)
+        S.set(x, 21, silverd if x in (21, 27) else grey)
+    S.set(23, 20, silverd)
+    S.set(26, 20, silverd)
     for x in range(23, 26):
         S.set(x, 22, rgb('#3A1A12'))
     S.set(24, 23, rgb('#8A3A2E'))
     for x, y in ((20, 22), (21, 22), (22, 22), (26, 22), (20, 23), (21, 23), (22, 23), (23, 23),
                  (25, 23), (26, 23), (21, 24), (22, 24), (23, 24), (24, 24), (25, 24), (22, 25), (23, 25), (24, 25)):
-        S.set(x, y, rgb('#D4D1CC') if (x + y) % 3 else rgb('#A9A6A1'))
+        S.set(x, y, silver if (x * 2 + y) % 5 == 0 else (grey if (x + y) % 2 else greyl))
 
+    # topete escuro e espetado, têmporas e nuca grisalhas
     hr = Layer(grey, greyd)
-    hr.rows({3: (15, 23), 4: (13, 25), 5: (11, 27), 6: (10, 28), 7: (9, 28), 8: (9, 28),
+    hr.rows({0: [(16, 17), (22, 23)], 1: [(15, 18), (21, 24), (26, 27)], 2: [(14, 19), (20, 28)],
+             3: (13, 28), 4: (12, 29), 5: (11, 28), 6: (10, 28), 7: (10, 28), 8: (9, 28),
              9: (9, 27), 10: (9, 25), 11: (9, 21), 12: (9, 17), 13: (9, 15), 14: (9, 13)})
     hr.rows({y: (9, 12) for y in range(15, 21)})
     hr.rows({21: (10, 12)})
 
-    def waves(x, y, c):
-        k = (x + (y // 2) * 2) % 5
-        return greyl if k == 0 else (greyd if k == 3 else None)
-    hr.recolor(waves)
+    def temples(x, y, c):
+        if (x <= 13 and y >= 9) or (y >= 11 and x <= 15):
+            return silver if (x + y) % 3 else silverd
+        if (x + y * 2) % 5 == 0:
+            return greyl
+        return None
+    hr.recolor(temples)
     hr.outline()
-    for p in ((15, 3), (19, 3), (28, 6), (9, 8)):
-        hr.px.pop(p, None)
     S.add(hr)
 
     if pose == 'telefone':
