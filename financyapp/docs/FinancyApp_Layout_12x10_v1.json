@@ -1,0 +1,696 @@
+{
+  "versao": "1.1",
+  "data": "2026-10-19",
+  "status": "PROPOSTA — layout padrão",
+  "sala": {
+    "tiles": [
+      12,
+      10
+    ],
+    "tile_px": [
+      64,
+      32
+    ],
+    "projecao": "isometrico 2:1",
+    "altura_parede_px": 100,
+    "convencao": "tile [A,B]. A0/B0 = canto do fundo. A cresce ao longo da parede direita (B=0); B cresce ao longo da parede esquerda (A=0). olha_para: direção para onde a pessoa sentada olha. modelo: id do sprite no manifest.json (ver FinancyApp_Assets_v2.md)."
+  },
+  "entrada": [
+    0,
+    8
+  ],
+  "pecas_piso": [
+    {
+      "id": "mesa_reuniao",
+      "nome": "Mesa de reunião",
+      "tipo": "movel",
+      "modelo": "mesa_reuniao",
+      "tile": [
+        1,
+        1
+      ],
+      "base": [
+        2,
+        2
+      ],
+      "zona": "reuniao"
+    },
+    {
+      "id": "cad_reuniao_1",
+      "nome": "Cadeira — cabeceira (Guilherme)",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        1,
+        3
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "reuniao",
+      "olha_para": "-B",
+      "ocupante_padrao": "Guilherme"
+    },
+    {
+      "id": "cad_reuniao_2",
+      "nome": "Cadeira — Vivi",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        2,
+        3
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "reuniao",
+      "olha_para": "-B",
+      "ocupante_padrao": "Vivi"
+    },
+    {
+      "id": "cad_reuniao_3",
+      "nome": "Cadeira — Caio",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        0,
+        1
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "reuniao",
+      "olha_para": "+A",
+      "ocupante_padrao": "Caio"
+    },
+    {
+      "id": "cad_reuniao_4",
+      "nome": "Cadeira — convidado / Gabriel",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        0,
+        2
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "reuniao",
+      "olha_para": "+A",
+      "ocupante_padrao": "convidado"
+    },
+    {
+      "id": "cad_reuniao_5",
+      "nome": "Cadeira — Saldanha",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        3,
+        1
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "reuniao",
+      "olha_para": "-A",
+      "ocupante_padrao": "Saldanha"
+    },
+    {
+      "id": "cad_reuniao_6",
+      "nome": "Cadeira — vaga",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        3,
+        2
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "reuniao",
+      "olha_para": "-A",
+      "ocupante_padrao": "vaga"
+    },
+    {
+      "id": "cad_saldanha",
+      "nome": "Cadeira do Saldanha",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        5,
+        0
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "saldanha",
+      "olha_para": "+B",
+      "ocupante_padrao": "Saldanha"
+    },
+    {
+      "id": "mesa_saldanha",
+      "nome": "Mesa do Saldanha (monitor + bandeja)",
+      "tipo": "movel",
+      "modelo": "mesa_trabalho",
+      "tile": [
+        5,
+        1
+      ],
+      "base": [
+        2,
+        1
+      ],
+      "zona": "saldanha",
+      "objetos": [
+        "monitor",
+        "bandeja"
+      ]
+    },
+    {
+      "id": "planta",
+      "nome": "Planta (viva/murcha)",
+      "tipo": "movel",
+      "modelo": "planta",
+      "tile": [
+        6,
+        0
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "saldanha"
+    },
+    {
+      "id": "cad_caio",
+      "nome": "Cadeira do Caio",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        7,
+        3
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "caio",
+      "olha_para": "+B",
+      "ocupante_padrao": "Caio"
+    },
+    {
+      "id": "mesa_caio",
+      "nome": "Mesa do Caio (sineta + headset)",
+      "tipo": "movel",
+      "modelo": "mesa_trabalho",
+      "tile": [
+        6,
+        4
+      ],
+      "base": [
+        2,
+        1
+      ],
+      "zona": "caio",
+      "objetos": [
+        "monitor",
+        "sineta",
+        "headset"
+      ]
+    },
+    {
+      "id": "cad_guilherme",
+      "nome": "Cadeira do fundador",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        10,
+        2
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "guilherme",
+      "olha_para": "+B",
+      "ocupante_padrao": "Guilherme"
+    },
+    {
+      "id": "mesa_guilherme",
+      "nome": "Mesa do fundador",
+      "tipo": "movel",
+      "modelo": "mesa_fundador",
+      "tile": [
+        9,
+        3
+      ],
+      "base": [
+        2,
+        1
+      ],
+      "zona": "guilherme",
+      "objetos": [
+        "monitor"
+      ]
+    },
+    {
+      "id": "manta_flora",
+      "nome": "Manta da Flora",
+      "tipo": "caminha_pet",
+      "modelo": "manta_flora",
+      "tile": [
+        11,
+        3
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "pets"
+    },
+    {
+      "id": "caminha_lupin",
+      "nome": "Caminha do Lupin",
+      "tipo": "caminha_pet",
+      "modelo": "caminha_lupin",
+      "tile": [
+        11,
+        4
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "pets"
+    },
+    {
+      "id": "balcao_vivi",
+      "nome": "Balcão da recepção",
+      "tipo": "movel",
+      "modelo": "balcao_recepcao",
+      "tile": [
+        2,
+        5
+      ],
+      "base": [
+        1,
+        3
+      ],
+      "zona": "recepcao"
+    },
+    {
+      "id": "cad_vivi",
+      "nome": "Cadeira da Vivi",
+      "tipo": "cadeira",
+      "modelo": "cadeira",
+      "tile": [
+        1,
+        6
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "recepcao",
+      "olha_para": "+A",
+      "ocupante_padrao": "Vivi"
+    },
+    {
+      "id": "malote",
+      "nome": "Malote",
+      "tipo": "movel",
+      "modelo": "malote",
+      "tile": [
+        0,
+        7
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "recepcao"
+    },
+    {
+      "id": "flex_mesa",
+      "nome": "Estação flexível — mesa (reservada)",
+      "tipo": "reservado",
+      "modelo": "mesa_trabalho",
+      "tile": [
+        9,
+        6
+      ],
+      "base": [
+        2,
+        1
+      ],
+      "zona": "flex"
+    },
+    {
+      "id": "flex_cadeira",
+      "nome": "Estação flexível — cadeira (reservada)",
+      "tipo": "reservado",
+      "modelo": "cadeira",
+      "tile": [
+        10,
+        5
+      ],
+      "base": [
+        1,
+        1
+      ],
+      "zona": "flex",
+      "olha_para": "+B"
+    }
+  ],
+  "pecas_parede": [
+    {
+      "id": "quadro",
+      "nome": "Quadro branco",
+      "modelo": "quadro_branco",
+      "parede": "direita",
+      "tiles": [
+        1,
+        2
+      ],
+      "altura_px": [
+        38,
+        82
+      ]
+    },
+    {
+      "id": "porta_tesouraria",
+      "nome": "Porta trancada — Tesouraria",
+      "modelo": "porta_trancada",
+      "parede": "direita",
+      "tiles": [
+        3
+      ],
+      "altura_px": [
+        0,
+        72
+      ],
+      "porta": true,
+      "plaquinha": "Tesouraria"
+    },
+    {
+      "id": "mural_alertas",
+      "nome": "Mural de alertas",
+      "modelo": "mural_alertas",
+      "parede": "direita",
+      "tiles": [
+        4
+      ],
+      "altura_px": [
+        40,
+        80
+      ]
+    },
+    {
+      "id": "tela",
+      "nome": "Tela de parede (FECHADO)",
+      "modelo": "tela_parede",
+      "parede": "direita",
+      "tiles": [
+        5,
+        6
+      ],
+      "altura_px": [
+        48,
+        88
+      ]
+    },
+    {
+      "id": "calendario",
+      "nome": "Calendário",
+      "modelo": "calendario",
+      "parede": "direita",
+      "tiles": [
+        7
+      ],
+      "altura_px": [
+        52,
+        80
+      ]
+    },
+    {
+      "id": "porta_metas",
+      "nome": "Porta trancada — Metas",
+      "modelo": "porta_trancada",
+      "parede": "direita",
+      "tiles": [
+        9
+      ],
+      "altura_px": [
+        0,
+        72
+      ],
+      "porta": true,
+      "plaquinha": "Metas"
+    },
+    {
+      "id": "porta_auditoria",
+      "nome": "Porta trancada — Auditoria",
+      "modelo": "porta_trancada",
+      "parede": "direita",
+      "tiles": [
+        11
+      ],
+      "altura_px": [
+        0,
+        72
+      ],
+      "porta": true,
+      "plaquinha": "Auditoria"
+    },
+    {
+      "id": "porta_arquivo",
+      "nome": "Porta do Arquivo (sem plaquinha)",
+      "modelo": "porta_arquivo",
+      "parede": "esquerda",
+      "tiles": [
+        0
+      ],
+      "altura_px": [
+        0,
+        72
+      ],
+      "porta": true
+    },
+    {
+      "id": "janela",
+      "nome": "Janela (céu por horário)",
+      "modelo": "janela",
+      "parede": "esquerda",
+      "tiles": [
+        1,
+        2
+      ],
+      "altura_px": [
+        32,
+        84
+      ]
+    },
+    {
+      "id": "mural_recordacoes",
+      "nome": "Mural de recordações (Vivi)",
+      "modelo": "mural_recordacoes",
+      "parede": "esquerda",
+      "tiles": [
+        5,
+        6
+      ],
+      "altura_px": [
+        40,
+        82
+      ]
+    },
+    {
+      "id": "porta_entrada",
+      "nome": "Porta de entrada",
+      "modelo": "porta_entrada",
+      "parede": "esquerda",
+      "tiles": [
+        8
+      ],
+      "altura_px": [
+        0,
+        72
+      ],
+      "porta": true
+    }
+  ],
+  "pontos_de_uso": [
+    {
+      "id": "p_quadro",
+      "nome": "Quem apresenta no quadro",
+      "tiles": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "p_saldanha",
+      "nome": "Visita à mesa do Saldanha",
+      "tiles": [
+        [
+          5,
+          2
+        ],
+        [
+          6,
+          2
+        ]
+      ]
+    },
+    {
+      "id": "p_caio",
+      "nome": "Atendimento do Caio",
+      "tiles": [
+        [
+          6,
+          5
+        ],
+        [
+          7,
+          5
+        ]
+      ]
+    },
+    {
+      "id": "p_guilherme",
+      "nome": "Visita à mesa do fundador",
+      "tiles": [
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          4
+        ]
+      ]
+    },
+    {
+      "id": "p_balcao",
+      "nome": "Visitante no balcão da Vivi",
+      "tiles": [
+        [
+          3,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "p_malote",
+      "nome": "Malote (Gabriel deixa / Saldanha pega)",
+      "tiles": [
+        [
+          0,
+          8
+        ],
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "id": "p_flex",
+      "nome": "Visita à estação flexível",
+      "tiles": [
+        [
+          9,
+          7
+        ],
+        [
+          10,
+          7
+        ]
+      ]
+    }
+  ],
+  "frentes_de_porta": {
+    "porta_tesouraria": [
+      3,
+      0
+    ],
+    "porta_metas": [
+      9,
+      0
+    ],
+    "porta_auditoria": [
+      11,
+      0
+    ],
+    "porta_arquivo": [
+      0,
+      0
+    ]
+  },
+  "circulacao_obrigatoria": [
+    [
+      0,
+      3
+    ],
+    [
+      0,
+      4
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      11,
+      1
+    ],
+    [
+      11,
+      2
+    ]
+  ],
+  "validacao": {
+    "vizinhanca": "4 direções",
+    "regras": [
+      "nenhuma peça fora da sala ou sobreposta",
+      "tile de entrada livre",
+      "todo ponto de uso livre e alcançável a partir da entrada",
+      "frente de toda porta livre e alcançável",
+      "toda cadeira, caminha e estação reservada com pelo menos um vizinho alcançável",
+      "estação reservada conta como ocupada desde já"
+    ]
+  }
+}
