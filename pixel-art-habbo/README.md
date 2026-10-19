@@ -1,7 +1,8 @@
 # Pixel art: estilo Habbo e Escritório de Finanças
 
-Seis personagens em duas versões: cartões no estilo Habbo Hotel e uma
-versão de jogo em grade, com tiles de 16x16 e personagens de 16x32.
+Nove personagens em cartões no estilo Habbo Hotel, as peças do Escritório
+de Finanças para o jogo (`assets/`) e, dos seis primeiros, uma versão em
+grade com tiles de 16x16 e personagens de 16x32.
 
 | # | Quem | Cenário |
 |---|---|---|
@@ -11,11 +12,14 @@ versão de jogo em grade, com tiles de 16x16 e personagens de 16x32.
 | 04 | Lupin: vira-lata pequeno, pelo duro, barba e sobrancelhas caramelo | manta xadrez azul, caminha, ossinho |
 | 05 | Saldanha (contador): grisalho, óculos, barba branca, polo marinho, cinto marrom, chino cinza, tablet | escritório: parede verde, janela para a cidade, quadro com gráfico, mesa, planta |
 | 06 | Caio (consultor): cachos curtos, sorrisão, camisa verde-oliva aberta, crachá, tablet com check verde | recepção: ripado de madeira, placa de check, balcão com campainha, ficus |
+| 07 | Vivi: cachos volumosos com luzes caramelo, argolas e colar dourados, blusa laranja canelada, pantalona creme, scarpin | agência de viagens: quadro do Pão de Açúcar, prateleira com a torre Eiffel e o globo, balcão de ripas com câmera antiga, mala |
+| 08 | Nina: coque bagunçado, argolas, blazer verde-oliva com a manga puxada, regata creme, cinto marrom, calça creme | estúdio de arquitetura: moodboard, estante com livros, mesa com planta impressa, amostras e maquete, ficus |
+| 09 | Otto: grisalho ondulado, barba branca, óculos redondos de tartaruga, camisa branca, colete de tricô oliva, gravata listrada | arquivo da memória: parede de madeira, gravura antiga, retratos sépia, fichário de gavetinhas, mesa com luminária verde e chá |
 
 ## Estilo Habbo (`out/`)
 
-`out/01-guilherme.png` a `out/06-caio.png`, mais `out/00-todos.png` com
-os seis juntos. Cada arte tem 96x120 pixels ampliados 10x (960x1200).
+`out/01-guilherme.png` a `out/09-otto.png`, mais `out/00-todos.png` com
+todos juntos. Cada arte tem 96x120 pixels ampliados 10x (960x1200).
 
 ## Escritório de Finanças (`assets/`)
 
@@ -33,8 +37,8 @@ assets/
                  (+ monitor em camada), bandeja, cadeira-contador (frente,
                  costas), balcao, sineta, malote, planta, manta-flora,
                  caminha-lupin
-  personagens/   guilherme, gabriel, contador, consultor, flora, lupin
-                 (folha PNG + JSON com quadros, âncora e fps)
+  personagens/   guilherme, gabriel, contador, consultor, flora, lupin,
+                 vivi, nina, otto (folha PNG + JSON com quadros, âncora e fps)
   manifest.json  tamanho em tiles, âncora, estados e posição de cada peça
   previa/        a sala montada a partir desses arquivos e a prancha de escala
 ```

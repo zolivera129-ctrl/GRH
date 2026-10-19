@@ -502,6 +502,45 @@
         14,
         25
       ]
+    },
+    "vivi": {
+      "json": "personagens/vivi.json",
+      "nome": "Vivi",
+      "papel": null,
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
+    },
+    "nina": {
+      "json": "personagens/nina.json",
+      "nome": "Nina",
+      "papel": null,
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
+    },
+    "otto": {
+      "json": "personagens/otto.json",
+      "nome": "Otto",
+      "papel": null,
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
     }
   }
 }

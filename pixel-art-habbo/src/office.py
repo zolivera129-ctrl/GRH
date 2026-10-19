@@ -754,6 +754,9 @@ PERSONAGENS = [
     ('consultor', 'Caio', 'Consultor', lambda: chars.caio('parado')),
     ('flora', 'Flora', None, lambda: pad(chars.flora(FLORA_K), 2, 2, 2, 2)),
     ('lupin', 'Lupin', None, lambda: pad(chars.lupin(LUPIN_K), 2, 2, 2, 2)),
+    ('vivi', 'Vivi', None, lambda: chars.vivi()),
+    ('nina', 'Nina', None, lambda: chars.nina()),
+    ('otto', 'Otto', None, lambda: chars.otto()),
 ]
 
 
@@ -1130,7 +1133,7 @@ def preview(man, show=None):
 
     # escala: os seis lado a lado, com a âncora na mesma linha
     chars_ = [(man['personagens'][c], load(man['personagens'][c]['json'].replace('.json', '.png')))
-              for c in ('guilherme', 'gabriel', 'contador', 'consultor', 'flora', 'lupin')]
+              for c in man['personagens']]
     sw = sum(img.width for _, img in chars_) + 8 * (len(chars_) + 1)
     sc = Image.new('RGBA', (sw, 84), (196, 205, 212, 255))
     base_y = 74
