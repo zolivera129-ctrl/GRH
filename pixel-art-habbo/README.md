@@ -1,4 +1,4 @@
-# Pixel art: estilo Habbo + versão em grade 16x16
+# Pixel art: estilo Habbo e Escritório de Finanças
 
 Seis personagens em duas versões: cartões no estilo Habbo Hotel e uma
 versão de jogo em grade, com tiles de 16x16 e personagens de 16x32.
