@@ -1,0 +1,23 @@
+{
+  "id": "lupin",
+  "nome": "Lupin",
+  "papel": null,
+  "folha": "lupin.png",
+  "tela": [
+    33,
+    30
+  ],
+  "ancora": [
+    14,
+    25
+  ],
+  "layout": "cada animação numa linha da folha, quadros da esquerda para a direita",
+  "espelhar": true,
+  "animacoes": {
+    "parado_frente": {
+      "linha": 0,
+      "quadros": 1,
+      "fps": 1
+    }
+  }
+}

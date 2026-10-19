@@ -1,5 +1,7 @@
 """Os personagens, desenhados pixel a pixel em vista 3/4 (olhando
 para a direita, como os avatares do Habbo na direção 2)."""
+import math
+
 from px import Layer, Sprite, rgb, mul, mix
 
 
@@ -400,10 +402,11 @@ def _white_sneakers(P):
     return P
 
 
-def saldanha():
+def saldanha(pose='tablet'):
     """Contador: grisalho, óculos, barba curta branca, polo marinho para
     dentro da calça, cinto marrom, chino cinza-claro e tênis branco.
-    Segura o tablet com as duas mãos, conferindo os números."""
+    pose='tablet': segura o tablet com as duas mãos, conferindo os números.
+    pose='parado': em pé, braços soltos (o parado do jogo)."""
     S = Sprite(40, 70)
     P = _white_sneakers(dict(
         sk=rgb('#D3A07B'), sks=rgb('#B8835F'), skl=rgb('#E4B794'), skline=rgb('#83533A'),
@@ -412,6 +415,18 @@ def saldanha():
     ))
     P['shoeline'] = rgb('#878A92')
     navy_l = rgb('#34446D')
+
+    if pose == 'parado':
+        # braço de trás solto, com o relógio no pulso
+        fa = Layer(P['sk'], P['skline'])
+        fa.rows({y: (27, 30) for y in range(35, 46)})
+        fa.rows({46: (27, 30), 47: (27, 30), 48: (28, 30)})
+        fa.shade_side('r', 1, P['sks'])
+        fa.outline()
+        for x in range(27, 31):
+            fa.set(x, 44, rgb('#141416'))
+        fa.set(29, 44, rgb('#3E4A5E'))
+        S.add(fa)
 
     # manga de trás (polo justa)
     fsl = Layer(P['tee'], P['teeline'])
@@ -444,48 +459,65 @@ def saldanha():
     for x in (13, 24):
         S.set(x, 44, rgb('#A5A8AD'))
 
-    # tablet (costas prateadas), inclinado na frente do peito
-    tb = Layer(rgb('#C3C7CF'), rgb('#555A64'))
-    for x in range(17, 31):
-        top = 38 - (x - 17) // 2
-        for y in range(top, top + 8):
-            tb.set(x, y)
-    tb.outline()
-    for x in range(18, 30):
-        top = 38 - (x - 17) // 2
-        tb.set(x, top, rgb('#8FD0F4'))       # brilho da tela virada para ele
-        tb.set(x, top + 1, rgb('#E8EAEE'))
-        tb.set(x, top + 6, rgb('#A3A8B2'))
-    tb.set(26, 37, rgb('#8A8F99'))
-    S.add(tb)
+    if pose == 'parado':
+        nsl = Layer(P['tee'], P['teeline'])
+        nsl.rows({29: (9, 13), 30: (8, 14)})
+        nsl.rows({y: (7, 14) for y in range(31, 35)})
+        nsl.rows({35: (7, 13)})
+        nsl.shade_side('l', 1, P['tees'])
+        nsl.outline()
+        for x in range(8, 13):
+            nsl.set(x, 34, navy_l)
+        S.add(nsl)
+        na = Layer(P['sk'], P['skline'])
+        na.rows({y: (8, 11) for y in range(36, 47)})
+        na.rows({47: (8, 11), 48: (8, 11), 49: (9, 11)})
+        na.shade_side('l', 1, P['sks'])
+        na.outline()
+        S.add(na)
+    else:
+        # tablet (costas prateadas), inclinado na frente do peito
+        tb = Layer(rgb('#C3C7CF'), rgb('#555A64'))
+        for x in range(17, 31):
+            top = 38 - (x - 17) // 2
+            for y in range(top, top + 8):
+                tb.set(x, y)
+        tb.outline()
+        for x in range(18, 30):
+            top = 38 - (x - 17) // 2
+            tb.set(x, top, rgb('#8FD0F4'))       # brilho da tela virada para ele
+            tb.set(x, top + 1, rgb('#E8EAEE'))
+            tb.set(x, top + 6, rgb('#A3A8B2'))
+        tb.set(26, 37, rgb('#8A8F99'))
+        S.add(tb)
 
-    # mão de trás segurando a borda do tablet, com relógio no pulso
-    fh = Layer(P['sk'], P['skline'])
-    fh.rows({33: (28, 30), 34: (27, 30), 35: (27, 30), 36: (28, 30)})
-    fh.outline()
-    S.add(fh)
-    for x in (29, 30, 31):
-        S.set(x, 37, rgb('#141416'))
-    S.set(30, 37, rgb('#3E4A5E'))
+        # mão de trás segurando a borda do tablet, com relógio no pulso
+        fh = Layer(P['sk'], P['skline'])
+        fh.rows({33: (28, 30), 34: (27, 30), 35: (27, 30), 36: (28, 30)})
+        fh.outline()
+        S.add(fh)
+        for x in (29, 30, 31):
+            S.set(x, 37, rgb('#141416'))
+        S.set(30, 37, rgb('#3E4A5E'))
 
-    # braço da frente dobrado, a mão tocando a tela
-    nsl = Layer(P['tee'], P['teeline'])
-    nsl.rows({29: (9, 13), 30: (8, 14)})
-    nsl.rows({y: (7, 14) for y in range(31, 35)})
-    nsl.rows({35: (7, 13)})
-    nsl.shade_side('l', 1, P['tees'])
-    nsl.outline()
-    for x in range(8, 13):
-        nsl.set(x, 34, navy_l)
-    S.add(nsl)
-    na = Layer(P['sk'], P['skline'])
-    na.rows({36: (8, 11), 37: (8, 11), 38: (8, 13), 39: (8, 19), 40: (9, 20),
-             41: (11, 20), 42: (17, 19)})
-    na.shade_side('l', 1, P['sks'])
-    na.outline()
-    na.set(21, 38, P['sk'])
-    S.add(na)
-    S.set(21, 38, P['skline'])
+        # braço da frente dobrado, a mão tocando a tela
+        nsl = Layer(P['tee'], P['teeline'])
+        nsl.rows({29: (9, 13), 30: (8, 14)})
+        nsl.rows({y: (7, 14) for y in range(31, 35)})
+        nsl.rows({35: (7, 13)})
+        nsl.shade_side('l', 1, P['tees'])
+        nsl.outline()
+        for x in range(8, 13):
+            nsl.set(x, 34, navy_l)
+        S.add(nsl)
+        na = Layer(P['sk'], P['skline'])
+        na.rows({36: (8, 11), 37: (8, 11), 38: (8, 13), 39: (8, 19), 40: (9, 20),
+                 41: (11, 20), 42: (17, 19)})
+        na.shade_side('l', 1, P['sks'])
+        na.outline()
+        na.set(21, 38, P['sk'])
+        S.add(na)
+        S.set(21, 38, P['skline'])
 
     _neck_head(S, P)
     # gola da polo e a carcela com botões
@@ -561,10 +593,11 @@ def saldanha():
     return S.image()
 
 
-def caio():
+def caio(pose='tablet'):
     """Consultor: cabelo cacheado curto, sorrisão, camisa de linho verde-oliva
     aberta sobre camiseta branca, crachá no cordão, chino marinho e tênis
-    branco. Mostra o tablet com o check verde."""
+    branco. pose='tablet': mostra o tablet com o check verde.
+    pose='parado': em pé, braços soltos (o parado do jogo)."""
     S = Sprite(40, 70)
     P = _white_sneakers(dict(
         sk=rgb('#D9A47E'), sks=rgb('#BE8763'), skl=rgb('#E9BC99'), skline=rgb('#86553A'),
@@ -618,35 +651,54 @@ def caio():
     for x in range(24, 26):
         S.set(x, 33, olive_l)
 
-    # braço da frente erguido segurando o tablet
-    nsl = Layer(P['tee'], P['teeline'])
-    nsl.rows({29: (9, 13), 30: (8, 14), 31: (7, 14), 32: (6, 13), 33: (5, 12),
-              34: (4, 11), 35: (4, 10), 36: (4, 9), 37: (4, 8), 38: (5, 8)})
-    nsl.shade_side('l', 1, P['tees'])
-    nsl.outline()
-    for x in range(5, 9):
-        nsl.set(x, 36, olive_ll)
-        nsl.set(x, 37, olive_l)
-    S.add(nsl)
-    na = Layer(P['sk'], P['skline'])
-    na.rows({y: (3, 6) for y in range(28, 36)})
-    na.shade_side('l', 1, P['sks'])
-    na.outline()
-    S.add(na)
-    # tablet com a tela virada para quem olha
-    tb = Layer(rgb('#1C1C21'), rgb('#08080A'))
-    tb.rect(0, 14, 10, 28)
-    tb.outline()
-    tb.rect(1, 15, 9, 27, rgb('#F5F7F8'))
-    S.add(tb)
-    green, greend = rgb('#3DB64B'), rgb('#26863A')
-    for x, y in ((2, 21), (3, 22), (4, 23), (5, 22), (6, 21), (7, 20), (8, 19)):
-        S.set(x, y, green)
-        S.set(x, y + 1, greend)
-    hand = Layer(P['sk'], P['skline'])
-    hand.rows({25: (2, 6), 26: (1, 7), 27: (1, 7), 28: (2, 7), 29: (3, 6)})
-    hand.outline()
-    S.add(hand)
+    if pose == 'parado':
+        # braço da frente solto, manga dobrada no antebraço
+        nsl = Layer(P['tee'], P['teeline'])
+        nsl.rows({29: (9, 13), 30: (8, 14)})
+        nsl.rows({y: (7, 14) for y in range(31, 40)})
+        nsl.rows({40: (7, 13)})
+        nsl.shade_side('l', 1, P['tees'])
+        nsl.outline()
+        for x in range(8, 13):
+            nsl.set(x, 38, olive_ll)
+            nsl.set(x, 39, olive_l)
+        S.add(nsl)
+        na = Layer(P['sk'], P['skline'])
+        na.rows({y: (8, 11) for y in range(41, 47)})
+        na.rows({47: (8, 11), 48: (8, 11), 49: (9, 11)})
+        na.shade_side('l', 1, P['sks'])
+        na.outline()
+        S.add(na)
+    else:
+        # braço da frente erguido segurando o tablet
+        nsl = Layer(P['tee'], P['teeline'])
+        nsl.rows({29: (9, 13), 30: (8, 14), 31: (7, 14), 32: (6, 13), 33: (5, 12),
+                  34: (4, 11), 35: (4, 10), 36: (4, 9), 37: (4, 8), 38: (5, 8)})
+        nsl.shade_side('l', 1, P['tees'])
+        nsl.outline()
+        for x in range(5, 9):
+            nsl.set(x, 36, olive_ll)
+            nsl.set(x, 37, olive_l)
+        S.add(nsl)
+        na = Layer(P['sk'], P['skline'])
+        na.rows({y: (3, 6) for y in range(28, 36)})
+        na.shade_side('l', 1, P['sks'])
+        na.outline()
+        S.add(na)
+        # tablet com a tela virada para quem olha
+        tb = Layer(rgb('#1C1C21'), rgb('#08080A'))
+        tb.rect(0, 14, 10, 28)
+        tb.outline()
+        tb.rect(1, 15, 9, 27, rgb('#F5F7F8'))
+        S.add(tb)
+        green, greend = rgb('#3DB64B'), rgb('#26863A')
+        for x, y in ((2, 21), (3, 22), (4, 23), (5, 22), (6, 21), (7, 20), (8, 19)):
+            S.set(x, y, green)
+            S.set(x, y + 1, greend)
+        hand = Layer(P['sk'], P['skline'])
+        hand.rows({25: (2, 6), 26: (1, 7), 27: (1, 7), 28: (2, 7), 29: (3, 6)})
+        hand.outline()
+        S.add(hand)
 
     _neck_head(S, P)
     # gola da camiseta e gola da camisa
@@ -711,6 +763,42 @@ def caio():
 
 
 # ----------------------------------------------------------------- cachorros
+class _SLayer(Layer):
+    """Camada que desenha numa escala k: as coordenadas do desenho original
+    são convertidas na hora e o contorno sai já no tamanho final."""
+    def __init__(self, k, base, line=None):
+        super().__init__(base, line)
+        self.k = k
+
+    def _m(self, v):
+        return int(math.floor(v * self.k + 0.5))
+
+    def set(self, x, y, c=None):
+        super().set(self._m(x), self._m(y), c)
+
+    def rows(self, spec, c=None):
+        out = {}
+        for y, segs in spec.items():
+            if isinstance(segs[0], int):
+                segs = [segs]
+            out.setdefault(self._m(y), []).extend((self._m(a), self._m(b)) for a, b in segs)
+        super().rows(out, c)
+
+    def rect(self, x0, y0, x1, y1, c=None):
+        super().rect(self._m(x0), self._m(y0), self._m(x1), self._m(y1), c)
+
+
+class _SSprite(Sprite):
+    def __init__(self, k, w, h):
+        self.k = k
+        dim = (lambda v: v) if k == 1 else (lambda v: int(math.ceil(v * k)) + 1)
+        super().__init__(dim(w), dim(h))
+
+    def set(self, x, y, c):
+        m = lambda v: int(math.floor(v * self.k + 0.5))
+        super().set(m(x), m(y), c)
+
+
 def _tufts(layer, seed, c, every=4):
     """Pelo duro: pontinhas soltas para fora do contorno."""
     for (x, y) in layer.edges():
@@ -723,20 +811,21 @@ def _tufts(layer, seed, c, every=4):
                 break
 
 
-def flora():
+def flora(k=1.0):
     """Labrador preta, sentada, pelo brilhante e coleira vermelha."""
-    S = Sprite(48, 46)
+    L = lambda base, line=None: _SLayer(k, base, line)
+    S = _SSprite(k, 48, 46)
     fur, furd, furl, furll = rgb('#2A2A31'), rgb('#141418'), rgb('#434552'), rgb('#666A7D')
     line = rgb('#09090B')
 
     # rabo no chão
-    tl = Layer(fur, line)
+    tl = L(fur, line)
     tl.rows({38: (4, 9), 39: (3, 11), 40: (3, 12), 41: (5, 12)})
     tl.outline()
     S.add(tl)
 
     # corpo sentado (anca grande atrás, peito na frente)
-    bd = Layer(fur, line)
+    bd = L(fur, line)
     bd.rows({18: (19, 30), 19: (17, 32), 20: (15, 33), 21: (13, 33), 22: (12, 33),
              23: (11, 33), 24: (10, 33), 25: (9, 33), 26: (9, 33)})
     bd.rows({y: (8, 33) for y in range(27, 37)})
@@ -753,14 +842,14 @@ def flora():
         bd.set(x, y, furd)
     S.add(bd)
 
-    hp = Layer(fur, line)
+    hp = L(fur, line)
     hp.rows({40: (10, 19), 41: (9, 20), 42: (9, 21), 43: (10, 21)})
     hp.outline()
     hp.set(13, 41, furl)
     S.add(hp)
 
     for x0, y1 in ((25, 43), (30, 44)):
-        lg = Layer(fur, line)
+        lg = L(fur, line)
         lg.rect(x0, 30, x0 + 4, y1 - 2)
         lg.rows({y1 - 1: (x0, x0 + 5), y1: (x0, x0 + 5)})
         lg.shade_side('l', 1, furd)
@@ -771,7 +860,7 @@ def flora():
         lg.set(x0 + 4, y1, furd)
         S.add(lg)
 
-    ch = Layer(fur, line)
+    ch = L(fur, line)
     ch.rows({18: (26, 33), 19: (25, 34), 20: (24, 35), 21: (24, 35), 22: (24, 35),
              23: (24, 35), 24: (24, 35), 25: (24, 34), 26: (25, 34), 27: (25, 34),
              28: (26, 34), 29: (26, 33), 30: (27, 33), 31: (28, 32)})
@@ -781,7 +870,7 @@ def flora():
     S.add(ch)
 
     # coleira vermelha com plaquinha dourada
-    col = Layer(rgb('#D7352E'), rgb('#8E1C18'))
+    col = L(rgb('#D7352E'), rgb('#8E1C18'))
     col.rows({19: (23, 35), 20: (23, 35)})
     col.outline()
     for x in range(25, 34):
@@ -793,7 +882,7 @@ def flora():
 
     # cabeça grande (proporção de pet do Habbo): crânio largo e focinho
     # largo de labrador apontando para a frente-direita
-    hd = Layer(fur, line)
+    hd = L(fur, line)
     hd.rows({0: (22, 30), 1: (20, 32), 2: (19, 34), 3: (18, 35), 4: (17, 36),
              5: (17, 37), 6: (17, 39), 7: (17, 41), 8: (17, 43), 9: (17, 44),
              10: (17, 45), 11: (17, 45), 12: (18, 45), 13: (18, 44), 14: (19, 43),
@@ -844,7 +933,7 @@ def flora():
     S.set(35, 5, furl)
 
     # orelha caída do lado de perto
-    ear = Layer(fur, line)
+    ear = L(fur, line)
     ear.rows({3: (18, 22), 4: (16, 23), 5: (15, 24), 6: (14, 24), 7: (14, 24),
               8: (14, 24), 9: (14, 24), 10: (14, 23), 11: (14, 23), 12: (15, 23),
               13: (15, 22), 14: (16, 22), 15: (17, 21), 16: (18, 20)})
@@ -857,21 +946,22 @@ def flora():
     return S.image()
 
 
-def lupin():
+def lupin(k=1.0):
     """Vira-lata pequeno: preto, pelo duro, barba e bochechas caramelo,
     sobrancelhas de velhinho e orelhas com a pontinha dobrada."""
-    S = Sprite(38, 34)
+    L = lambda base, line=None: _SLayer(k, base, line)
+    S = _SSprite(k, 38, 34)
     fur, furd, furl = rgb('#25242A'), rgb('#121115'), rgb('#403E4A')
     tan, tand, tanl = rgb('#7C4B2A'), rgb('#55321B'), rgb('#A66C40')
     line = rgb('#070708')
 
-    tl = Layer(fur, line)
+    tl = L(fur, line)
     tl.rows({17: (5, 6), 18: (4, 7), 19: (4, 7), 20: (5, 8), 21: (5, 9), 22: (6, 10)})
     _tufts(tl, 1, line, 3)
     tl.outline()
     S.add(tl)
 
-    bd = Layer(fur, line)
+    bd = L(fur, line)
     bd.rows({16: (13, 21), 17: (11, 23), 18: (10, 24), 19: (9, 24), 20: (8, 24)})
     bd.rows({y: (7, 24) for y in range(21, 27)})
     bd.rows({27: (8, 24), 28: (8, 24)})
@@ -884,20 +974,20 @@ def lupin():
         bd.set(x, y, furd)
     S.add(bd)
 
-    hp = Layer(fur, line)
+    hp = L(fur, line)
     hp.rows({27: (8, 14), 28: (7, 15), 29: (7, 15)})
     hp.outline()
     S.add(hp)
 
     for x0, y1 in ((17, 30), (21, 31)):
-        lg = Layer(fur, line)
+        lg = L(fur, line)
         lg.rect(x0, 22, x0 + 2, y1 - 2)
         lg.rows({y1 - 1: (x0, x0 + 3), y1: (x0, x0 + 3)})
         lg.outline()
         lg.set(x0 + 1, 24, furl)
         S.add(lg)
 
-    ch = Layer(fur, line)
+    ch = L(fur, line)
     ch.rows({15: (19, 25), 16: (18, 26), 17: (18, 26), 18: (18, 26), 19: (18, 26),
              20: (19, 26), 21: (19, 25), 22: (20, 25)})
     ch.outline(skip='t')
@@ -907,7 +997,7 @@ def lupin():
     S.add(ch)
 
     # cabeça quadradinha de terrier
-    hd = Layer(fur, line)
+    hd = L(fur, line)
     hd.rows({3: (16, 23), 4: (14, 25), 5: (13, 26), 6: (13, 27), 7: (13, 28),
              8: (13, 30), 9: (13, 32), 10: (13, 33), 11: (13, 33), 12: (13, 33),
              13: (14, 33), 14: (14, 32), 15: (15, 31), 16: (16, 30)})
@@ -925,11 +1015,11 @@ def lupin():
     for x, y in ((22, 10), (23, 11), (21, 11), (22, 12)):
         S.set(x, y, tand)
     S.set(23, 10, tan)
-    mz = Layer(fur, line)
+    mz = L(fur, line)
     mz.rows({8: (27, 31), 9: (25, 33), 10: (24, 34), 11: (24, 34), 12: (23, 33)})
     mz.outline(skip='lt')
     S.add(mz)
-    br = Layer(tan, line)
+    br = L(tan, line)
     br.rows({12: (24, 32), 13: (23, 33), 14: (23, 32), 15: (23, 32), 16: (24, 31),
              17: [(24, 26), (28, 30)], 18: [(25, 25), (29, 29)]})
 
@@ -960,13 +1050,13 @@ def lupin():
         S.set(x, y, tanl if (x + y) % 2 else tan)
 
     # orelhas semi-erguidas com a pontinha dobrada para a frente
-    near = Layer(fur, line)
+    near = L(fur, line)
     near.rows({1: (15, 17), 2: (14, 18), 3: (12, 18), 4: (11, 17), 5: (10, 15), 6: (10, 13)})
     near.outline()
     near.set(14, 3, furl)
     near.set(13, 4, furd)
     S.add(near)
-    far = Layer(fur, line)
+    far = L(fur, line)
     far.rows({0: (22, 25), 1: (22, 27), 2: (23, 28), 3: (25, 29), 4: (27, 29)})
     far.outline()
     far.set(24, 1, furl)

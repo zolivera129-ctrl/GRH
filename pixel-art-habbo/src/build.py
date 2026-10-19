@@ -691,4 +691,8 @@ if __name__ == '__main__':
     for i, im in enumerate(ims):
         sheet.alpha_composite(im, (gap + (i % cols) * (W + gap), gap + (i // cols) * (H + gap)))
     up(sheet, 6).save(os.path.join(OUT, '00-todos.png'))
+
+    # peças isoladas do jogo (Escritório de Finanças): ../assets/
+    import office
+    office.build()
     print('ok')
