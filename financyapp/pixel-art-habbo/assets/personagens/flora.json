@@ -2,16 +2,21 @@
   "pasta": "personagens",
   "folha": "personagens/flora.png",
   "tela": [
-    41,
-    40
+    47,
+    41
   ],
   "ancora": [
-    19,
-    36
+    20,
+    37
   ],
   "animacoes": {
-    "sentado_frente": {
+    "parado_frente": {
       "linha": 0,
+      "quadros": 1,
+      "fps": 0
+    },
+    "sentado_frente": {
+      "linha": 1,
       "quadros": 1,
       "fps": 0
     }

@@ -1,0 +1,24 @@
+{
+  "pasta": "personagens",
+  "folha": "personagens/sr_pra_ontem.png",
+  "tela": [
+    40,
+    70
+  ],
+  "ancora": [
+    20,
+    63
+  ],
+  "animacoes": {
+    "parado_frente": {
+      "linha": 0,
+      "quadros": 1,
+      "fps": 0
+    },
+    "sentado_frente": {
+      "linha": 1,
+      "quadros": 1,
+      "fps": 0
+    }
+  }
+}

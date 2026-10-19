@@ -2,16 +2,21 @@
   "pasta": "personagens",
   "folha": "personagens/lupin.png",
   "tela": [
-    34,
-    31
+    38,
+    32
   ],
   "ancora": [
-    14,
-    26
+    16,
+    27
   ],
   "animacoes": {
-    "sentado_frente": {
+    "parado_frente": {
       "linha": 0,
+      "quadros": 1,
+      "fps": 0
+    },
+    "sentado_frente": {
+      "linha": 1,
       "quadros": 1,
       "fps": 0
     }

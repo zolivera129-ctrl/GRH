@@ -1,0 +1,24 @@
+{
+  "pasta": "personagens",
+  "folha": "personagens/iris.png",
+  "tela": [
+    40,
+    70
+  ],
+  "ancora": [
+    20,
+    62
+  ],
+  "animacoes": {
+    "parado_frente": {
+      "linha": 0,
+      "quadros": 1,
+      "fps": 0
+    },
+    "sentado_frente": {
+      "linha": 1,
+      "quadros": 1,
+      "fps": 0
+    }
+  }
+}

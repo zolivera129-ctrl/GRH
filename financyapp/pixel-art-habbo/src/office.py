@@ -26,10 +26,9 @@ TW, TH = 64, 32
 WALL_H = 100
 BASEBOARD = 6
 WHITE = rgb('#FFFFFF')
-# escala dos cachorros no escritório: a sugestão da v2, escolhida na prancha
-# de escala (Flora sentada com 34 px, Lupin com 24 px). A da v1 era 0.82 e 0.72.
+# escala dos cachorros no escritório, fechada na v2.2: Flora sentada com
+# 34 px e Lupin com 24 px
 FLORA_K, LUPIN_K = 0.75, 0.75
-FLORA_K_V1, LUPIN_K_V1 = 0.82, 0.72
 
 PAREDE = {
     'esquerda': '#AEBC9F', 'direita': '#94A386',
@@ -760,15 +759,20 @@ def _humano(fn):
     return {'parado_frente': lambda: fn('parado'), 'sentado_frente': lambda: fn('sentado')}
 
 
-# id -> (nome, {animação: desenho}). A folha tem uma animação por linha, nesta
-# ordem. Os cachorros já são desenhados sentados.
+def _cachorro(fn, k):
+    # parado é o cachorro em pé, nas quatro patas
+    return {'parado_frente': lambda: dog(fn(k, 'em_pe')), 'sentado_frente': lambda: dog(fn(k))}
+
+
+# id -> (nome, {animação: desenho}). Todos vão para o assets/; a folha tem
+# uma animação por linha, nesta ordem.
 PERSONAGENS = {
     'guilherme': ('Guilherme', _humano(chars.guilherme)),
     'saldanha': ('Saldanha', _humano(chars.saldanha)),
     'caio': ('Caio', _humano(chars.caio)),
     'vivi': ('Vivi', _humano(chars.vivi)),
-    'flora': ('Flora', {'sentado_frente': lambda: dog(chars.flora(FLORA_K))}),
-    'lupin': ('Lupin', {'sentado_frente': lambda: dog(chars.lupin(LUPIN_K))}),
+    'flora': ('Flora', _cachorro(chars.flora, FLORA_K)),
+    'lupin': ('Lupin', _cachorro(chars.lupin, LUPIN_K)),
     'gabriel': ('Gabriel', _humano(chars.gabriel)),
     'nina': ('Nina', _humano(chars.nina)),
     'otto': ('Otto', _humano(chars.otto)),
@@ -778,16 +782,11 @@ PERSONAGENS = {
     'malu': ('Malu', _humano(chars.malu)),
     'duda': ('Duda', _humano(chars.duda)),
 }
-# O que vai para o assets/: o elenco do corte 1, como no "Como entregar" da
-# v2.1. Os outros só aparecem na prancha: o Gabriel entra no corte 2, o Otto
-# só ganha sprite na estreia do Arquivo (GDD §4.1) e os demais são
-# pré-produção, com sprite ainda por aprovar (GDD §4.2).
-CORTE_1 = ('guilherme', 'saldanha', 'caio', 'vivi', 'flora', 'lupin')
 
 
 def anchor_of(cid, im):
     """Cachorros: o meio das patas. Humanos: o meio dos pés, no meio da tela
-    e rente à sola do parado."""
+    e rente à sola (no sentado, o chão embaixo do quadril, no mesmo ponto)."""
     if cid in ('flora', 'lupin'):
         return paw_anchor(im)
     return [im.width // 2, im.getbbox()[3]]
@@ -803,15 +802,19 @@ def save(im, rel):
 
 def character(cid, anims):
     """Folha de sprites (uma animação por linha, quadros da esquerda para a
-    direita) e a entrada do manifesto, que também vai no JSON do personagem."""
+    direita) e a entrada do manifesto, que também vai no JSON do personagem.
+    Os quadros entram numa tela comum, alinhados pela âncora (o cachorro em
+    pé é mais largo que o sentado)."""
     frames = [fn() for fn in anims.values()]
-    w, h = frames[0].size
-    assert all(f.size == (w, h) for f in frames), cid
+    anchors = [anchor_of(cid, f) for f in frames]
+    ax, ay = max(a[0] for a in anchors), max(a[1] for a in anchors)
+    w = ax + max(f.width - a[0] for f, a in zip(frames, anchors))
+    h = ay + max(f.height - a[1] for f, a in zip(frames, anchors))
     sheet = Image.new('RGBA', (w, h * len(frames)), (0, 0, 0, 0))
-    for i, f in enumerate(frames):
-        sheet.alpha_composite(f, (0, h * i))
+    for i, (f, a) in enumerate(zip(frames, anchors)):
+        sheet.alpha_composite(f, (ax - a[0], h * i + ay - a[1]))
     entry = {'pasta': 'personagens', 'folha': save(sheet, f'personagens/{cid}.png'),
-             'tela': [w, h], 'ancora': anchor_of(cid, frames[0]),
+             'tela': [w, h], 'ancora': [ax, ay],
              'animacoes': {name: {'linha': i, 'quadros': 1, 'fps': 0}
                            for i, name in enumerate(anims)}}
     with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:
@@ -836,12 +839,12 @@ def check(man):
 
 
 def build():
-    """Gera ../assets/ do zero com o que o lote do corte 1 já tem desenhado
-    (personagens, manta e caminha) e o manifest.json, com os nomes e as
-    âncoras do "Como entregar" da v2.1. As chaves do manifesto são os ids de
+    """Gera ../assets/ do zero com o que já está desenhado (todos os
+    personagens, a manta e a caminha) e o manifest.json, com os nomes e as
+    âncoras do "Como entregar" da v2.2. As chaves do manifesto são os ids de
     modelo da planta. Móveis, objetos, parede e piso entram depois."""
     shutil.rmtree(ROOT, ignore_errors=True)
-    man = {cid: character(cid, PERSONAGENS[cid][1]) for cid in CORTE_1}
+    man = {cid: character(cid, anims) for cid, (_, anims) in PERSONAGENS.items()}
     for modelo, fn in (('manta_flora', flora_blanket), ('caminha_lupin', lupin_bed)):
         im, anchor = fn()
         save(im, f'moveis/{modelo}.png')
@@ -869,24 +872,16 @@ def chair_block():
 
 
 def escala(man):
-    """Prancha para fechar a escala no olho, com os 14 lado a lado no piso.
-    Uma faixa em pé (os cachorros nas quatro patas) e outra sentada (humanos
-    na cadeira em bloco, cachorros nas camas), na escala dos assets. A
-    terceira compara os cachorros em pé nas escalas da v2 e da v1. A linha
-    pontilhada é o queixo do Guilherme. Sai em 2x, a escala do jogo."""
+    """Prancha de escala: os 14 personagens do assets/ lado a lado no piso,
+    lidos dos próprios arquivos. Uma faixa em pé (os cachorros nas quatro
+    patas) e outra sentada (humanos na cadeira em bloco, cachorros nas
+    camas). A linha pontilhada é o queixo do Guilherme. Sai em 2x, a escala
+    do jogo."""
     def sprite(cid, anim):
-        # do arquivo, para quem está no assets/; desenhado na hora, para os outros
-        if cid in man:
-            e = man[cid]
-            (w, h), row = e['tela'], e['animacoes'][anim]['linha']
-            im = Image.open(os.path.join(ROOT, e['folha'])).convert('RGBA')
-            return im.crop((0, h * row, w, h * (row + 1))), e['ancora']
-        im = PERSONAGENS[cid][1][anim]()
-        return im, anchor_of(cid, im)
-
-    def standing(cid, k):
-        im = dog((chars.flora if cid == 'flora' else chars.lupin)(k, 'em_pe'))
-        return im, paw_anchor(im)
+        e = man[cid]
+        (w, h), row = e['tela'], e['animacoes'][anim]['linha']
+        im = Image.open(os.path.join(ROOT, e['folha'])).convert('RGBA')
+        return im.crop((0, h * row, w, h * (row + 1))), e['ancora']
 
     def bed(modelo):
         im = Image.open(os.path.join(ROOT, 'moveis', f'{modelo}.png')).convert('RGBA')
@@ -897,34 +892,16 @@ def escala(man):
     order = ['guilherme', 'saldanha', 'caio', 'vivi', 'flora', 'lupin', None,
              'gabriel', 'nina', 'otto', 'sr_pra_ontem', 'iris', 'joana', 'malu', 'duda']
     # cada faixa: título, se é sentada, colunas (coluna, nome, sprite, peça
-    # embaixo), grupos (primeira e última coluna, rótulo) e a coluna vazia
-    # onde vai o rótulo do queixo
+    # embaixo: cadeira ou cama), grupos (primeira e última coluna, rótulo) e
+    # a coluna vazia onde vai o rótulo do queixo
     strips = []
     for title, sit in (('Em pé (os cachorros nas quatro patas)', False),
                        ('Sentados: humanos na cadeira em bloco (assento a 14 px), cachorros nas camas', True)):
-        items = []
-        for c, cid in enumerate(order):
-            if cid is None:
-                continue
-            name = PERSONAGENS[cid][0]
-            if cid in ('flora', 'lupin'):
-                k = FLORA_K if cid == 'flora' else LUPIN_K
-                items.append((c, name, sprite(cid, 'sentado_frente') if sit else standing(cid, k),
-                              beds[cid] if sit else None))
-            else:
-                items.append((c, name, sprite(cid, 'sentado_frente' if sit else 'parado_frente'),
-                              chair if sit else None))
-        strips.append((title, sit, items, [(0, 5, 'corte 1: vão para o assets/'),
-                                           (7, 14, 'fora do corte 1: só na prancha')],
+        items = [(c, PERSONAGENS[cid][0], sprite(cid, 'sentado_frente' if sit else 'parado_frente'),
+                  (beds.get(cid, chair) if sit else None))
+                 for c, cid in enumerate(order) if cid]
+        strips.append((title, sit, items, [(0, 5, 'corte 1'), (7, 14, 'cortes seguintes')],
                        order.index(None)))
-    g = sprite('guilherme', 'parado_frente')
-    strips.append(('Cachorros em pé nas duas escalas, ao lado do Guilherme', False,
-                   [(0, 'Guilherme', g, None),
-                    (2, 'Flora', standing('flora', FLORA_K), None),
-                    (3, 'Lupin', standing('lupin', LUPIN_K), None),
-                    (5, 'Flora', standing('flora', FLORA_K_V1), None),
-                    (6, 'Lupin', standing('lupin', LUPIN_K_V1), None)],
-                   [(2, 3, 'v2, a escolhida'), (5, 6, 'v1')], 8))
 
     ncol, top, band, foot = len(order), 22, 74, 54
     W = 64 * ncol + 32

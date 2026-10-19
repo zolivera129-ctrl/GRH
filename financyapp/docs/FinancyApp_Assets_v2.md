@@ -1,10 +1,16 @@
 # FinancyApp — Peças para desenhar
 
-**Versão:** 2.1 · **Data:** 19/10/2026
+**Versão:** 2.2 · **Data:** 19/10/2026
 **Substitui:** a lista de peças de 18/10 (v1).
 **Segue:** a planta `FinancyApp_Planta_12x10_v1.md` (versão 1.1) e o GDD v2.
 
 O lote do corte 1 está completo. Os lotes seguintes estão resumidos e ganham detalhe quando o corte chegar. Os ids de modelo deste documento são os mesmos do campo `modelo` em `FinancyApp_Layout_12x10_v1.json`.
+
+## O que mudou na versão 2.2
+
+- A escala dos cachorros foi fechada: Flora sentada com 34 px e Lupin com 24 px.
+- A sobrecamisa do Caio já está em verde-sálvia no sprite.
+- O corte 2 ganhou os cachorros parados em pé, que servem de base para o andar.
 
 ## O que mudou na versão 2.1
 
@@ -56,7 +62,7 @@ Isso vale para os personagens. A cadeira é a exceção entre os móveis: a plan
 
 - **Humanos:** tela de 40×70 px, com uns 63 px de altura em pé, como o Guilherme e o Gabriel já estão.
 - **Sentado:** mesma tela e mesmo ponto de âncora do parado, [20, 63]. No sentado, esse ponto é o chão embaixo do quadril, e os pés ficam à frente dele. O jogo põe a âncora no centro do tile da cadeira, e o quadril fica uns 14 px acima, na altura do assento.
-- **Cachorros:** nos assets atuais, a Flora tem 37 px e o Lupin 23 px (nas artes de vitrine são 45 e 32 px). A sugestão é 34 e 24 px. A prancha `pixel-art-habbo/previa/escala@2x.png` mostra as duas escalas ao lado dos humanos, e a escolha sai dela. Até lá, os assets ficam com 37 e 23 px.
+- **Cachorros:** Flora sentada com 34 px e Lupin com 24 px, escolhidos na prancha `pixel-art-habbo/previa/escala@2x.png`, ao lado dos humanos. Os assets já estão nessa escala. As artes de vitrine continuam com 45 e 32 px.
 
 ### Alturas de referência
 
@@ -151,9 +157,9 @@ Cada mesa marca no manifesto onde os objetos encaixam (ver "Como entregar").
 |---|---|---|
 | Guilherme | Sentado de frente | O parado de frente já existe. Na mesa ele olha +B, então usa o sentado espelhado |
 | Saldanha | Sentado de frente | O parado de frente já existe (era o Contador). Uns 50 anos, cabelo grisalho curto, barba aparada, óculos de armação fina, polo de tricô azul-marinho, chino cinza, smartwatch e tablet [F01 §7]. Na mesa olha +B, espelhado |
-| Caio | Sentado de frente | O parado de frente já existe (era o Consultor). Uns 30 anos, cabelo escuro cacheado, sobrecamisa verde-sálvia aberta, camiseta branca, calça azul-marinho, tênis branco e crachá [F01 §8]. O sprite atual está com a sobrecamisa verde-oliva; falta trocar para sálvia. Na mesa olha +B, espelhado |
+| Caio | Sentado de frente | O parado de frente já existe (era o Consultor). Uns 30 anos, cabelo escuro cacheado, sobrecamisa verde-sálvia aberta, camiseta branca, calça azul-marinho, tênis branco e crachá [F01 §8]. Na mesa olha +B, espelhado |
 | Vivi | Sentado de frente | O parado de frente já existe. Mulher negra, cabelos cacheados, roupas coloridas e salto alto [F01 §9A]. Na recepção olha +A, então usa o sentado sem espelhar |
-| Flora e Lupin | Nada novo | Os sentados de frente já existem. Só falta acertar a escala. Na cena padrão eles ficam nas camas |
+| Flora e Lupin | Nada novo | Os sentados de frente já existem, na escala de 34 e 24 px. Na cena padrão eles ficam nas camas |
 
 O Gabriel fica fora do corte 1, porque só entra no escritório com um gatilho real da planilha. O Otto não tem sprite até a estreia do Arquivo.
 
@@ -177,7 +183,7 @@ Vale para os lotes seguintes. No corte 1 só entram o parado e o sentado de fren
 
 | Corte | O que entra |
 |---|---|
-| 2 — Livro do Saldanha, sinais e malote | Bandeja em mais três estados: pilha baixa (1 ou 2 contas), média (3 a 5) e alta (6 ou mais). Calendário com dia vermelho. Um post-it solto para o mural (o jogo põe de 0 a 3). Planta murcha. Malote com envelope e com bandeirinha vermelha, e o envelope solto. Porta de entrada aberta. Os outros três céus: manhã, fim de tarde e noite. Gabriel parado, andando e deixando o envelope (braço estendido, 2 quadros). Saldanha andando, digitando (sentado, 2 quadros) e em alerta (mão na testa, 2 quadros). Vivi e Guilherme andando. Flora e Lupin andando, dormindo na cama (2 quadros) e inquietos (2 quadros). Nos quadros de andar do Gabriel e do Saldanha, a posição da mão marcada no JSON, para o jogo colar o envelope |
+| 2 — Livro do Saldanha, sinais e malote | Bandeja em mais três estados: pilha baixa (1 ou 2 contas), média (3 a 5) e alta (6 ou mais). Calendário com dia vermelho. Um post-it solto para o mural (o jogo põe de 0 a 3). Planta murcha. Malote com envelope e com bandeirinha vermelha, e o envelope solto. Porta de entrada aberta. Os outros três céus: manhã, fim de tarde e noite. Gabriel parado, andando e deixando o envelope (braço estendido, 2 quadros). Saldanha andando, digitando (sentado, 2 quadros) e em alerta (mão na testa, 2 quadros). Vivi e Guilherme andando. Flora e Lupin parados em pé, de lado, que também servem de base para o andar (o desenho já existe em `chars.flora(k, 'em_pe')` e `chars.lupin(k, 'em_pe')`). Flora e Lupin andando, dormindo na cama (2 quadros) e inquietos (2 quadros). Nos quadros de andar do Gabriel e do Saldanha, a posição da mão marcada no JSON, para o jogo colar o envelope |
 | 3 — Consulta ao Caio | Sineta tocando (2 quadros). Caio andando e mostrando o tablet (1 quadro), mais os três selos que o jogo cola na tela do tablet: verde, amarelo e vermelho. Caio com o headset na cabeça, se a ligação de voz entrar (PROD-01) |
 | 4 — Reunião do dia 6 | Todos sentados de costas. Saldanha em pé apresentando no quadro e comemorando com o tablet erguido (2 quadros cada). Quadro com o report (rabiscos e um gráfico). Tela com o selo FECHADO. Vivi tirando foto (2 quadros), porque a primeira reunião termina com a foto oficial dela [F01 §16A] |
 | 5 — Carteira e recompensas | Nada no cenário. É interface |
@@ -258,8 +264,7 @@ Os encaixes são medidos a partir da âncora da mesa. O JSON da planta já diz q
 
 ## Em aberto
 
-1. **Escala da Flora e do Lupin.** 37 e 23 px (os assets atuais) ou 34 e 24 px (a sugestão). A escolha sai da prancha `escala@2x.png`.
-2. **Espelhamento dos personagens.** Aceitar os detalhes invertidos ou desenhar quatro direções para quem tem detalhe de um lado só.
-3. **Fenda de correspondência na porta do Arquivo** [PROPOSTA]. Se entrar, já vai no desenho do corte 1.
-4. **Headset na cabeça do Caio.** Depende da ligação de voz (PROD-01).
-5. **Girar móveis na decoração.** Cada orientação nova é um desenho a mais, então a lista de móveis giráveis sai junto com o catálogo da loja.
+1. **Espelhamento dos personagens.** Aceitar os detalhes invertidos ou desenhar quatro direções para quem tem detalhe de um lado só.
+2. **Fenda de correspondência na porta do Arquivo** [PROPOSTA]. Se entrar, já vai no desenho do corte 1.
+3. **Headset na cabeça do Caio.** Depende da ligação de voz (PROD-01).
+4. **Girar móveis na decoração.** Cada orientação nova é um desenho a mais, então a lista de móveis giráveis sai junto com o catálogo da loja.

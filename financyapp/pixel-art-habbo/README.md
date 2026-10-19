@@ -28,46 +28,42 @@ todos juntos. Cada arte tem 96x120 pixels ampliados 10x (960x1200).
 
 ## FinancyApp (`assets/`)
 
-Peças isoladas para o jogo, seguindo `../docs/FinancyApp_Assets_v2.md` (v2.1):
+Peças isoladas para o jogo, seguindo `../docs/FinancyApp_Assets_v2.md` (v2.2):
 isométrico 2:1, tile de 64x32, luz da esquerda, PNG transparente em 1x,
 sem sombra e sem etiqueta. As chaves do `manifest.json` são os ids de
 modelo da planta (campo `modelo` de `../docs/FinancyApp_Layout_12x10_v1.json`).
 
-O `build.py` apaga e refaz o `assets/` a cada rodada. Por enquanto ele traz
-do lote do corte 1 só os personagens, a manta e a caminha; móveis, objetos,
-parede e piso entram depois. Os outros oito personagens (Gabriel, Nina,
-Otto, Sr. Pra Ontem, Íris, Joana, Malu e Duda) já têm o sentado desenhado,
-mas só aparecem na prancha: estão fora do corte 1, e o GDD ainda não aprova
-o sprite deles (§4.1 e §4.2). A lista do que é exportado é `CORTE_1`, no
-`office.py`.
+O `build.py` apaga e refaz o `assets/` a cada rodada. Hoje ele traz os 14
+personagens, todos prontos para uso, a manta e a caminha. Móveis, objetos,
+parede e piso entram depois.
 
 ```
 assets/
   moveis/        manta_flora.png, caminha_lupin.png
-  personagens/   guilherme, saldanha, caio, vivi, flora, lupin
+  personagens/   guilherme, saldanha, caio, vivi, flora, lupin, gabriel,
+                 nina, otto, sr_pra_ontem, iris, joana, malu, duda
                  (folha PNG + JSON com tela, âncora e animações)
   manifest.json  por modelo: pasta, base em tiles e âncora (peças);
-                 folha, tela, âncora e animações (personagens)
+                 pasta, folha, tela, âncora e animações (personagens)
 ```
 
 - Personagens: uma animação por linha da folha, quadros da esquerda para a
-  direita. Os humanos têm `parado_frente` e `sentado_frente`; a Flora e o
-  Lupin, `sentado_frente`. A âncora é o meio dos pés (cachorros: das patas);
-  no sentado, é o chão embaixo do quadril, no mesmo ponto da tela do parado.
+  direita. Todos têm `parado_frente` (linha 0) e `sentado_frente`
+  (linha 1); nos cachorros, o parado é em pé, nas quatro patas. Os quadros
+  de uma folha ficam numa tela comum, alinhados pela âncora.
+- Âncora: o meio dos pés (cachorros: das patas). No sentado, é o chão
+  embaixo do quadril, no mesmo ponto da tela do parado.
 - Móveis: âncora no vértice de baixo do losango da base. A imagem é justa
   na base, então a âncora fica em [32 × tiles em A, pé da imagem].
 - O `build.py` confere as âncoras antes de gravar o manifesto.
 - A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
   (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
   dobram para a frente.
-- Cachorros na escala da v2, escolhida na prancha: Flora sentada com 34 px
-  e Lupin com 24 px (`FLORA_K` e `LUPIN_K`, no `office.py`; a da v1 fica em
-  `FLORA_K_V1` e `LUPIN_K_V1`).
-- Os cachorros também têm um desenho em pé, nas quatro patas
-  (`chars.flora(k, 'em_pe')` e `chars.lupin(k, 'em_pe')`). Ele ainda não
-  está em nenhum lote, então só aparece na prancha.
+- Cachorros na escala fechada na v2.2: Flora sentada com 34 px e Lupin com
+  24 px (`FLORA_K` e `LUPIN_K`, no `office.py`). O em pé vem de
+  `chars.flora(k, 'em_pe')` e `chars.lupin(k, 'em_pe')`.
 - A prancha `previa/escala@2x.png` mostra os 14 lado a lado no piso, em pé
-  e sentados, e os cachorros em pé nas escalas da v2 e da v1.
+  e sentados, lidos dos próprios arquivos do `assets/`.
 
 ## Grade 16x16 (`out/grade16/`)
 
