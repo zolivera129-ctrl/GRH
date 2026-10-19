@@ -8,15 +8,15 @@ where py >nul 2>nul && set "PY=py"
 if not defined PY (where python >nul 2>nul && set "PY=python")
 if not defined PY goto sem_python
 
-%PY% -c "import playwright" 2>nul
+%PY% -c "import PIL" 2>nul
 if errorlevel 1 (
-  echo Instalando o Playwright, so na primeira vez...
-  %PY% -m pip install --user --quiet playwright
+  echo Instalando o Pillow, so na primeira vez...
+  %PY% -m pip install --user --quiet pillow
 )
 
 if not "%~1"=="" goto com_argumentos
 echo.
-echo   1 - Conferir a foto de cada pessoa, sem abrir o site
+echo   1 - Conferir a foto de cada pessoa, sem ir ao site
 echo   2 - Testar com uma pessoa
 echo   3 - Rodar a lista toda
 echo.
