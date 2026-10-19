@@ -1367,9 +1367,9 @@ def pra_ontem(pose='parado'):
 
 
 def iris():
-    """Íris, analista de cenários financeiros: coque alto de cachos com
-    mechas soltas, óculos de tartaruga gatinho, blazer verde-escuro, blusa
-    creme, argolas, colar de moeda e relógio dourado."""
+    """Íris, analista de cenários financeiros: black power redondo, óculos
+    de tartaruga gatinho, blazer verde-escuro, blusa creme, argolas, colar
+    de moeda e relógio dourado."""
     S = Sprite(40, 70)
     P = dict(sk=rgb('#A86A44'), sks=rgb('#8C5536'), skl=rgb('#BE8158'), skline=rgb('#5A3420'))
     blazer = (rgb('#2F4A36'), rgb('#263D2C'), rgb('#13221A'))
@@ -1379,15 +1379,19 @@ def iris():
     tex = curls(hair, haird, hairl)
     ctex = lambda x, y, c: hairll if (x * 5 + y * 3) % 19 == 0 else tex(x, y, c)
 
+    # black power: uma nuvem redonda de cachinhos em volta da cabeça
+    def afro(x, y):
+        return y >= 0 and ((x - 19.5) / 14.5) ** 2 + ((y - 11.5) / 12.5) ** 2 <= 1
     hb = Layer(hair, haird)
-    hb.rows({y: (8, 29) for y in range(6, 10)})
-    hb.rows({y: (7, 30) for y in range(10, 20)})
-    hb.rows({y: [(8, 13), (26, 29)] for y in range(20, 26)})
-    hb.rows({26: (9, 12), 27: (10, 11)})
+    for y in range(0, 26):
+        for x in range(4, 36):
+            if afro(x, y):
+                hb.set(x, y)
     hb.recolor(ctex)
     hb.outline()
-    for p in ((7, 14), (30, 16), (29, 24)):
-        hb.px.pop(p, None)
+    for (x, y) in hb.edges():
+        if (x * 7 + y * 3) % 5 == 0:
+            hb.px.pop((x, y), None)
     S.add(hb)
 
     _far_arm_sl(S, P, blazer, 40, watch=(GOLD, rgb('#F7EFD0')))
@@ -1418,41 +1422,34 @@ def iris():
     for p in ((22, 15), (16, 14), (27, 14), (27, 13), (14, 15), (15, 15)):
         S.set(*p, tort)
 
+    # a parte da frente do black emoldura a testa e cobre as orelhas
     hf = Layer(hair, haird)
-    hf.rows({0: (14, 22), 1: (11, 25), 2: (9, 27), 3: (8, 28), 4: (7, 29), 5: (7, 29), 6: (7, 29),
-             7: (8, 29), 8: (9, 28), 9: (9, 28), 10: [(9, 15), (24, 28)], 11: [(9, 13), (27, 28)]})
-    hf.rows({y: (9, 11) for y in range(12, 23)})
+    for y in range(0, 26):
+        for x in range(4, 36):
+            front = y <= 10 or x <= 12 or (y <= 11 and (x <= 15 or x >= 25))
+            if afro(x, y) and front:
+                hf.set(x, y)
     hf.recolor(ctex)
     hf.outline()
-    for p in ((7, 4), (29, 6), (15, 10), (9, 16), (9, 21)):
-        hf.px.pop(p, None)
+    for (x, y) in hf.edges():
+        if (x * 7 + y * 3) % 5 == 0 and (x < 8 or x > 31 or y < 2):
+            hf.px.pop((x, y), None)
     S.add(hf)
     _hoop(S, 14, 20)
     return S.image()
 
 
 def joana():
-    """Joana, negociadora de resultados: tranças longas com luzes caramelo
-    e coque no alto, blazer bege com botões dourados, blusa creme, argolas
-    grandes, colar e relógio dourado."""
+    """Joana, negociadora de resultados: careca e estilosa, com brilho na
+    cabeça, argolas grandes e piercings dourados na orelha, delineado e
+    batom vinho; blazer bege com botões dourados, blusa creme, colar e
+    relógio dourado."""
     S = Sprite(40, 70)
     P = dict(sk=rgb('#8A5232'), sks=rgb('#6E3E24'), skl=rgb('#A0623E'), skline=rgb('#3E2010'))
     blazer = (rgb('#D9C2A0'), rgb('#C2A983'), rgb('#8A7350'))
     P['teeline'] = blazer[2]
     light = rgb('#EAD8BA')
-    tw = twists(rgb('#140C07'), rgb('#2A1A12'), rgb('#9A6A34'), rgb('#D2A456'))
 
-    hb = Layer(rgb('#2A1A12'), rgb('#140C07'))
-    hb.rows({0: (15, 21), 1: (13, 23), 2: (13, 23), 3: (14, 22), 4: (12, 25), 5: (10, 27)})
-    hb.rows({y: (9, 28) for y in range(6, 10)})
-    hb.rows({y: [(6, 13), (26, 31)] for y in range(10, 25)})
-    hb.rows({y: [(5, 14), (26, 31)] for y in range(25, 41)})
-    hb.rows({y: (5, 14) for y in range(41, 47)})
-    hb.recolor(lambda x, y, c: tw(x, y, c) if y > 5 else (rgb('#9A6A34') if (x + y) % 4 == 0 else None))
-    hb.outline()
-    for p in ((5, 46), (8, 46), (11, 46), (14, 46), (31, 40), (28, 40)):
-        hb.px.pop(p, None)
-    S.add(hb)
 
     _far_arm_sl(S, P, blazer, 40, watch=(GOLD, rgb('#F7EFD0')))
     _slacks(S, blazer, top=44)
@@ -1473,42 +1470,64 @@ def joana():
     S.set(22, 22, rgb('#6E3428'))
     S.set(25, 22, rgb('#6E3428'))
 
-    hf = Layer(rgb('#2A1A12'), rgb('#140C07'))
-    hf.rows({y: (9, 12) for y in range(10, 20)})
-    hf.rows({y: (8, 13) for y in range(20, 25)})
-    hf.rows({y: (6, 13) for y in range(25, 45)})
-    hf.rows({45: (7, 12)})
-    hf.recolor(tw)
-    hf.outline()
-    for p in ((6, 44), (9, 45), (12, 45)):
-        hf.px.pop(p, None)
-    S.add(hf)
-    for dx, dy in ((0, 0), (-1, 1), (-1, 2), (-1, 3), (0, 4), (1, 3), (1, 2), (1, 1)):
-        S.set(15 + dx, 19 + dy, GOLD if dy < 2 else GOLDD)
+    # careca: brilho no alto da cabeça e a nuca na sombra
+    shine, shine2 = rgb('#B8784C'), rgb('#DCA27A')
+    for x, y in ((19, 10), (20, 10), (21, 10), (22, 11), (23, 11), (18, 11)):
+        S.set(x, y, shine)
+    S.set(20, 10, shine2)
+    S.set(21, 10, shine2)
+    # delineado gatinho, sobrancelha arqueada e batom vinho
+    for x, y in ((17, 14), (27, 14), (26, 15)):
+        S.set(x, y, rgb('#0E0805'))
+    for x, y in ((18, 13), (19, 12), (20, 12), (21, 13), (24, 12), (25, 12), (26, 13)):
+        S.set(x, y, rgb('#140A06'))
+    for x in (19, 20, 24, 25):
+        S.set(x, 13, P['sk'])
+    for x in range(22, 26):
+        S.set(x, 21, rgb('#7A2430'))
+    S.set(22, 22, rgb('#5A1A22'))
+    S.set(25, 22, rgb('#5A1A22'))
+    S.set(23, 21, rgb('#A0404A'))
+    # orelha à mostra: piercings na borda e argola grande
+    for x, y in ((12, 15), (12, 17)):
+        S.set(x, y, GOLD)
+    S.set(13, 15, GOLDD)
+    for x, y in ((14, 20), (13, 21), (12, 22), (12, 23), (12, 24), (13, 25), (14, 26), (15, 25),
+                 (16, 24), (16, 23), (16, 22), (15, 21)):
+        S.set(x, y, GOLD if y < 23 else GOLDD)
     return S.image()
 
 
 def malu():
-    """Malu, de experiências, viagens e histórias: cabelo longo ondulado com
-    luzes, óculos de sol na cabeça, camisa de linho creme aberta sobre
-    regata branca, colares e pulseiras dourados, jeans claro e tênis."""
+    """Malu, de experiências, viagens e histórias: cabelo longo, liso e
+    preto-azulado, óculos de sol na cabeça, camisa de linho creme aberta
+    sobre regata branca, colares e pulseiras dourados, jeans claro e tênis."""
     S = Sprite(40, 70)
     P = _white_sneakers(dict(sk=rgb('#E0A982'), sks=rgb('#C68C66'), skl=rgb('#EDBE9A'), skline=rgb('#8A5638'),
                              pant=rgb('#A9C4E0'), pants=rgb('#8AA8C8'), pantline=rgb('#56769A')))
     linen = (rgb('#EFE6D6'), rgb('#D8CDBA'), rgb('#A69C8A'))
     P['teeline'] = linen[2]
-    wv = waves_tex(rgb('#4A2E1E'), rgb('#2A180E'), rgb('#A06A3A'), rgb('#D49E5E'))
+    hair, haird = rgb('#151A28'), rgb('#07090F')
+    blue, sheen = rgb('#2A3656'), rgb('#4A5C8E')
 
-    hb = Layer(rgb('#4A2E1E'), rgb('#2A180E'))
+    def sleek(x, y, c):
+        # liso: fios retos com reflexo azul e um brilho no alto da cabeça
+        if y < 10 and (x + y) % 4 == 0:
+            return sheen
+        if x % 4 == 1:
+            return blue
+        if x % 4 == 3:
+            return haird
+        return None
+
+    hb = Layer(hair, haird)
     hb.rows({4: (14, 24), 5: (11, 27)})
     hb.rows({y: (9, 29) for y in range(6, 10)})
-    hb.rows({y: (6, 31) for y in range(10, 31)})
-    hb.rows({y: [(6, 13), (26, 31)] for y in range(31, 39)})
-    hb.rows({y: (7, 12) for y in range(39, 43)})
-    hb.recolor(wv)
+    hb.rows({y: (7, 30) for y in range(10, 31)})
+    hb.rows({y: [(7, 13), (26, 30)] for y in range(31, 39)})
+    hb.rows({y: (7, 12) for y in range(39, 42)})
+    hb.recolor(sleek)
     hb.outline()
-    for p in ((6, 12), (31, 20), (6, 27), (31, 33), (7, 42)):
-        hb.px.pop(p, None)
     S.add(hb)
 
     _far_arm_sl(S, P, linen, 39, cuff=rgb('#F7F1E6'))
@@ -1536,15 +1555,13 @@ def malu():
     S.set(25, 22, rgb('#8E4440'))
     S.set(24, 19, P['skl'])
 
-    hf = Layer(rgb('#4A2E1E'), rgb('#2A180E'))
-    hf.rows({5: (12, 26), 6: (10, 28), 7: (9, 28), 8: (9, 28), 9: (9, 27), 10: [(9, 18), (23, 28)],
+    hf = Layer(hair, haird)
+    hf.rows({5: (12, 26), 6: (10, 28), 7: (9, 28), 8: (9, 28), 9: (9, 27), 10: [(9, 19), (22, 28)],
              11: [(9, 15), (26, 28)], 12: [(9, 13), (27, 28)]})
     hf.rows({y: (9, 12) for y in range(13, 22)})
-    hf.rows({y: (6 + (1 if (y // 3) % 2 else 0), 12) for y in range(22, 43)})
-    hf.recolor(wv)
+    hf.rows({y: (7, 12) for y in range(22, 42)})
+    hf.recolor(sleek)
     hf.outline()
-    for p in ((6, 42), (9, 21), (28, 7)):
-        hf.px.pop(p, None)
     S.add(hf)
     # óculos de sol na cabeça: lentes pretas, aro âmbar
     amber = rgb('#C9853E')
@@ -1562,26 +1579,16 @@ def malu():
 
 
 def duda():
-    """Duda, de auditoria e clareza financeira: tranças longas com o alto
-    preso e volumoso, blazer verde-oliva com botões dourados, blusa creme
+    """Duda, de auditoria e clareza financeira: coque alto com dois cachos
+    caindo na testa, blazer verde-oliva com botões dourados, blusa creme
     canelada, argolas grandes, colar de gráfico e relógio dourado."""
     S = Sprite(40, 70)
     P = dict(sk=rgb('#8E5536'), sks=rgb('#723F24'), skl=rgb('#A66A44'), skline=rgb('#40200E'))
     blazer = (rgb('#4E5634'), rgb('#3E452A'), rgb('#22271A'))
     P['teeline'] = blazer[2]
     light = rgb('#66704A')
-    tw = twists(rgb('#120A05'), rgb('#24160E'), rgb('#7A5028'), rgb('#B88A44'))
+    hair, haird, hairl = rgb('#24160E'), rgb('#120A05'), rgb('#5A3A22')
 
-    hb = Layer(rgb('#24160E'), rgb('#120A05'))
-    hb.rows({0: (13, 23), 1: (11, 25), 2: (10, 26), 3: (9, 27)})
-    hb.rows({y: (9, 28) for y in range(4, 10)})
-    hb.rows({y: [(5, 13), (26, 31)] for y in range(10, 37)})
-    hb.rows({y: (5, 13) for y in range(37, 45)})
-    hb.recolor(lambda x, y, c: tw(x, y, c) if y > 9 else curls(rgb('#24160E'), rgb('#120A05'), rgb('#7A5028'))(x, y, c))
-    hb.outline()
-    for p in ((5, 44), (8, 44), (11, 44), (31, 36), (28, 36)):
-        hb.px.pop(p, None)
-    S.add(hb)
 
     _far_arm_sl(S, P, blazer, 40, watch=(GOLD, rgb('#F7EFD0')))
     _slacks(S, blazer, top=44, flare=False)
@@ -1604,14 +1611,32 @@ def duda():
     S.set(22, 22, rgb('#6A3228'))
     S.set(25, 22, rgb('#6A3228'))
 
-    hf = Layer(rgb('#24160E'), rgb('#120A05'))
-    hf.rows({y: (9, 12) for y in range(10, 21)})
-    hf.rows({y: (6, 12) for y in range(21, 44)})
-    hf.recolor(tw)
-    hf.outline()
-    for p in ((6, 43), (9, 43), (12, 43)):
-        hf.px.pop(p, None)
-    S.add(hf)
+    # cabelo puxado para trás, liso na cabeça
+    cap = Layer(hair, haird)
+    cap.rows({5: (13, 24), 6: (11, 26), 7: (10, 27), 8: (9, 28), 9: (9, 28), 10: (9, 14), 11: (9, 13)})
+    cap.rows({y: (9, 12) for y in range(12, 19)})
+    cap.recolor(lambda x, y, c: hairl if (x * 2 - y) % 7 == 0 else None)
+    cap.outline()
+    S.add(cap)
+    # coque alto de cachos
+    bun = Layer(hair, haird)
+    bun.rows({0: (15, 21), 1: (13, 23), 2: (12, 24), 3: (12, 24), 4: (13, 23), 5: (14, 22)})
+    bun.recolor(curls(hair, haird, hairl))
+    bun.outline()
+    S.add(bun)
+    # os dois cachos caindo na testa: cada um sai da linha do cabelo e
+    # termina num anelzinho; alturas diferentes, para não virar par de óculos
+    for x in (18, 19, 20, 24, 25):
+        S.set(x, 13, P['sk'])
+    curls_ = (((20, 9), (20, 10), (19, 11), (18, 12), (20, 12), (19, 13), (20, 14)),
+              ((24, 9), (25, 10), (24, 11), (26, 11), (25, 12)))
+    for pts in curls_:
+        for k, p in enumerate(pts):
+            S.set(*p, haird if k % 2 == 0 else hair)
+    S.set(19, 12, P['sks'])
+    S.set(25, 11, P['sks'])
+    S.set(18, 13, rgb('#140A05'))
+    S.set(26, 13, rgb('#140A05'))
     for dx, dy in ((0, 0), (-1, 1), (-1, 2), (-1, 3), (0, 4), (1, 3), (1, 2), (1, 1)):
         S.set(15 + dx, 19 + dy, GOLD if dy < 2 else GOLDD)
     return S.image()

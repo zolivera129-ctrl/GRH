@@ -16,10 +16,10 @@ grade com tiles de 16x16 e personagens de 16x32.
 | 08 | Nina: coque bagunçado, argolas, blazer verde-oliva com a manga puxada, regata creme, cinto marrom, calça creme | estúdio de arquitetura: moodboard, estante com livros, mesa com planta impressa, amostras e maquete, ficus |
 | 09 | Otto: grisalho ondulado, barba branca, óculos redondos de tartaruga, camisa branca, colete de tricô oliva, gravata listrada | arquivo da memória: parede de madeira, gravura antiga, retratos sépia, fichário de gavetinhas, mesa com luminária verde e chá |
 | 10 | Sr. Pra Ontem (Departamento das Urgências): grisalho, óculos pretos, barba grisalha, terno grafite, gravata verde, fone vermelho no ouvido | relógio de parede, placa URGENTE, mesa com pilhas de papel etiquetadas, telefone vermelho, despertador e ampulheta |
-| 11 | Íris (Analista de Cenários Financeiros): coque alto de cachos, óculos gatinho de tartaruga, blazer verde-escuro | quadro de gráfico, janela de fim de tarde, mesa com notebook, papéis e ampulheta, globo de chão |
-| 12 | Joana (Negociadora de Resultados): tranças longas com luzes e coque, blazer bege com botões dourados | quadro de alvo, estante de livros, mesa com notebook, caneca e livros, planta |
-| 13 | Malu (Experiências, Viagens e Histórias): cabelo longo ondulado com luzes, óculos de sol na cabeça, camisa de linho creme, jeans | mapa-múndi com polaroides, janela para o Pão de Açúcar, mesa com notebook, passaporte e câmera, mala com chapéu de palha |
-| 14 | Duda (Auditoria e Clareza Financeira): tranças com o alto preso, blazer verde-oliva com botões dourados | letreiro DUDA, quadro com o relatório (pizza e barras), mesa com notebook, papéis, lupa e ampulheta |
+| 11 | Íris (Analista de Cenários Financeiros): black power, óculos gatinho de tartaruga, blazer verde-escuro | quadro de gráfico, janela de fim de tarde, mesa com notebook, papéis e ampulheta, globo de chão |
+| 12 | Joana (Negociadora de Resultados): careca, argolas grandes e piercings dourados, delineado e batom vinho, blazer bege com botões dourados | quadro de alvo, estante de livros, mesa com notebook, caneca e livros, planta |
+| 13 | Malu (Experiências, Viagens e Histórias): cabelo longo, liso e preto-azulado, óculos de sol na cabeça, camisa de linho creme, jeans | mapa-múndi com polaroides, janela para o Pão de Açúcar, mesa com notebook, passaporte e câmera, mala com chapéu de palha |
+| 14 | Duda (Auditoria e Clareza Financeira): coque alto com dois cachos caindo na testa, blazer verde-oliva com botões dourados | letreiro DUDA, quadro com o relatório (pizza e barras), mesa com notebook, papéis, lupa e ampulheta |
 
 ## Estilo Habbo (`out/`)
 
