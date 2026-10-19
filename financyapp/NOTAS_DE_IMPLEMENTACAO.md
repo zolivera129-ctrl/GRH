@@ -29,6 +29,34 @@ Pontos em que o código mostrou que os documentos não fecham. Cada um diz o que
 - **Onde:** `FinancyApp_Layout_12x10_v1.json` no projeto de design.
 - **Sugestão:** conferir que o projeto guarda só a 1.1, ou renomear o arquivo para `_v1_1`.
 
+### 4. Um encaixe por modelo não serve às duas mesas de trabalho
+
+- **O que foi:** a `mesa_trabalho` atende o Saldanha e o Caio, mas cada um senta numa ponta. O Saldanha fica na frente da metade A5 da mesa dele, e o Caio na frente da metade A7 da dele. Como os encaixes são por modelo, o monitor não consegue ficar na frente dos dois. Ficou no meio da mesa, meio tile fora da linha de cada um.
+- **Onde:** `FinancyApp_Assets_v2.md` (v2.2), "Como entregar" (`encaixes`); `FinancyApp_Layout_12x10_v1.json`, `mesa_saldanha` e `mesa_caio`.
+- **Sugestão:** deixar o layout escolher o encaixe de cada instância. Por exemplo, a mesa ganha dois encaixes de monitor (`monitor_a5` e `monitor_a6`, um em cada metade), e o campo `objetos` da planta diz qual usar.
+
+### 5. Nome das salas nas plaquinhas
+
+- **O que foi:** a porta tem 30 px de largura. Na fonte de pixel, "TESOURARIA" e "AUDITORIA" não cabem. Cada plaquinha ganhou um ícone gravado no latão: pilha de moedas (Tesouraria), alvo (Metas) e lupa (Auditoria).
+- **Onde:** `FinancyApp_Assets_v2.md` (v2.2), "Piso e paredes", porta trancada.
+- **Sugestão:** confirmar os ícones, e o nome por extenso fica na etiqueta que o jogo escreve ao passar o mouse.
+
+### 6. Cadeira de costas precisa do encosto em outra camada
+
+- **O que foi:** quando alguém senta olhando para -A ou -B, o encosto fica entre a pessoa e quem olha a tela, então precisa ser desenhado por cima dela. Com a cadeira num desenho só, o jogo não consegue pôr a pessoa entre o assento e o encosto. No corte 1 isso não aparece, porque as cadeiras da reunião ficam vazias, mas aparece no corte 4.
+- **Onde:** `FinancyApp_Assets_v2.md` (v2.2), "Móveis e objetos", cadeira; "Lotes seguintes", corte 4.
+- **Sugestão:** nas direções de costas, entregar o encosto como camada separada (`cadeira__costas-dir-encosto.png`), ou definir que o jogo desenha a pessoa antes da cadeira nessas direções.
+
+### 7. Campos e âncoras que o documento não define
+
+O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar:
+
+- **Peça de parede:** a âncora é a ponta esquerda (na tela) do vão, na altura da base. Na parede esquerda, essa ponta é o fim do último tile; na direita, o começo do primeiro. O manifesto repete a altura em `altura: [base, topo]`, que o build confere contra o `altura_px` do layout.
+- **Camadas:** ficam no campo `camadas`, na ordem de desenho, no mesmo recorte e com a mesma âncora da peça. São o céu e a moldura da janela, a silhueta e as plaquinhas da porta trancada, e as fotos do mural de recordações.
+- **Objeto de mesa:** a âncora é o centro da base do objeto, no tampo. O jogo cola o objeto em `âncora da mesa + encaixe - âncora do objeto`.
+- **Piso:** as três variações ficam em `variacoes`, e a âncora segue a regra dos móveis (vértice de baixo, [32, 32]).
+- **Cores da parede:** ficam na chave `parede` do manifesto (altura, rodapé, cores e borda do piso), que não é um modelo da planta.
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.

@@ -33,37 +33,61 @@ isométrico 2:1, tile de 64x32, luz da esquerda, PNG transparente em 1x,
 sem sombra e sem etiqueta. As chaves do `manifest.json` são os ids de
 modelo da planta (campo `modelo` de `../docs/FinancyApp_Layout_12x10_v1.json`).
 
-O `build.py` apaga e refaz o `assets/` a cada rodada. Hoje ele traz os 14
-personagens, todos prontos para uso, a manta e a caminha. Móveis, objetos,
-parede e piso entram depois.
+O `build.py` apaga e refaz o `assets/` a cada rodada, com o lote do corte 1
+inteiro e os 14 personagens. No fim, confere o manifesto contra o layout:
+todo modelo existe, com a mesma base, parede, tiles e altura, e os objetos
+de cada mesa têm encaixe.
 
 ```
 assets/
-  moveis/        manta_flora.png, caminha_lupin.png
+  piso/          piso_madeira__1.png, __2, __3
+  parede/        porta_entrada__fechada, porta_trancada__trancada (+ silhueta e
+                 plaquinha-tesouraria, -metas, -auditoria), porta_arquivo__fechada,
+                 janela__ceu-tarde + janela__moldura, quadro_branco__limpo,
+                 mural_alertas__vazio, tela_parede__apagada, calendario__normal,
+                 mural_recordacoes__vazio (+ foto-1 a foto-4)
+  moveis/        mesa_trabalho, mesa_fundador, mesa_reuniao, balcao_recepcao,
+                 cadeira__frente-dir, __frente-esq, __costas-dir, __costas-esq,
+                 malote__vazio, planta__viva, manta_flora, caminha_lupin
+  objetos/       monitor__ligado, bandeja__vazia, sineta__parada, headset
   personagens/   guilherme, saldanha, caio, vivi, flora, lupin, gabriel,
                  nina, otto, sr_pra_ontem, iris, joana, malu, duda
                  (folha PNG + JSON com tela, âncora e animações)
-  manifest.json  por modelo: pasta, base em tiles e âncora (peças);
-                 pasta, folha, tela, âncora e animações (personagens)
+  manifest.json  por modelo: pasta, base, âncora, estados, direções,
+                 variações, camadas e encaixes; a chave parede traz as cores
 ```
+
+Âncoras:
+
+- Piso e móveis: o vértice de baixo do losango da base. A imagem é justa
+  na base, então a âncora fica em [32 × tiles em A, pé da imagem].
+- Peças de parede: a ponta esquerda (na tela) do vão, na altura da base.
+  Na parede esquerda, é o fim do último tile; na direita, o começo do
+  primeiro. As camadas vêm no mesmo recorte, com a mesma âncora.
+- Objetos de mesa: o centro da base, no tampo. O objeto vai em
+  `âncora da mesa + encaixe - âncora do objeto`.
+- Personagens: o meio dos pés (cachorros: das patas). No sentado, é o chão
+  embaixo do quadril, no mesmo ponto da tela do parado.
+
+Detalhes:
 
 - Personagens: uma animação por linha da folha, quadros da esquerda para a
   direita. Todos têm `parado_frente` (linha 0) e `sentado_frente`
   (linha 1); nos cachorros, o parado é em pé, nas quatro patas. Os quadros
   de uma folha ficam numa tela comum, alinhados pela âncora.
-- Âncora: o meio dos pés (cachorros: das patas). No sentado, é o chão
-  embaixo do quadril, no mesmo ponto da tela do parado.
-- Móveis: âncora no vértice de baixo do losango da base. A imagem é justa
-  na base, então a âncora fica em [32 × tiles em A, pé da imagem].
-- O `build.py` confere as âncoras antes de gravar o manifesto.
+- Móveis não são espelhados: a cadeira tem as quatro direções desenhadas.
 - A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
   (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
   dobram para a frente.
-- Cachorros na escala fechada na v2.2: Flora sentada com 34 px e Lupin com
-  24 px (`FLORA_K` e `LUPIN_K`, no `office.py`). O em pé vem de
-  `chars.flora(k, 'em_pe')` e `chars.lupin(k, 'em_pe')`.
-- A prancha `previa/escala@2x.png` mostra os 14 lado a lado no piso, em pé
-  e sentados, lidos dos próprios arquivos do `assets/`.
+- Cachorros na escala da v2.2: Flora sentada com 34 px e Lupin com 24 px
+  (`FLORA_K` e `LUPIN_K`, no `office.py`).
+
+Prévias (`previa/`):
+
+- `sala-parada.png` e `@2x`: a sala montada só com o layout e os arquivos
+  do `assets/`, como o jogo vai montar. Cada um fica no seu posto, sentado,
+  e a estação flexível, reservada, sai pontilhada.
+- `escala@2x.png`: os 14 personagens lado a lado no piso, em pé e sentados.
 
 ## Grade 16x16 (`out/grade16/`)
 
@@ -97,9 +121,9 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
 - `sprites16.py`: os sprites 16x32, um desenho em texto por personagem.
 - `scene16.py`: as salas em tiles 16x16, os tilesets e as exportações.
 - `office.py`: as peças do FinancyApp: pintor isométrico, peças, a
-  exportação do `assets/` e a prancha de escala.
+  exportação do `assets/`, a conferência contra o layout e as prévias.
 
-Para gerar tudo de novo (o `build.py` também gera o `assets/` e a prancha):
+Para gerar tudo de novo (o `build.py` também gera o `assets/` e as prévias):
 
 ```
 pip install pillow

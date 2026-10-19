@@ -22,6 +22,7 @@ from px import Layer, rgb, mul, mix, up  # noqa: E402
 import chars  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'assets')
+LAYOUT = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'FinancyApp_Layout_12x10_v1.json')
 TW, TH = 64, 32
 WALL_H = 100
 BASEBOARD = 6
@@ -36,10 +37,6 @@ PAREDE = {
     'topo_esquerda': '#CAD5BE', 'topo_direita': '#B1BEA4',
     'canto': '#7F8D72',
 }
-
-
-def hexs(c):
-    return '#%02X%02X%02X' % c
 
 
 # ------------------------------------------------------------ pintor iso
@@ -183,40 +180,42 @@ class Iso:
     def put(self, x, y, c):
         self.px[(int(x), int(y))] = c
 
-    def image(self):
-        """Recorta no que foi desenhado e no losango da base e devolve
-        (imagem, âncora), com a âncora no vértice de baixo do losango. Numa
-        peça que não passa da base, a âncora fica em [32 × tiles em A, pé
-        da imagem], como pede a v2."""
+    def box_of(self):
+        """Retângulo do que foi desenhado, esticado até o losango da base."""
         xs = [p[0] for p in self.px]
         ys = [p[1] for p in self.px]
-        x0, y0, x1, y1 = min(xs), min(ys), max(xs), max(ys)
-        x0 = min(x0, self.scr(0, self.b)[0])
-        x1 = max(x1, self.scr(self.a, 0)[0] - 1)
-        y1 = max(y1, self.scr(self.a, self.b)[1] - 1)
+        return (min(min(xs), self.scr(0, self.b)[0]), min(ys),
+                max(max(xs), self.scr(self.a, 0)[0] - 1), max(max(ys), self.scr(self.a, self.b)[1] - 1))
+
+    def image(self, anchor_at=None, frame=None):
+        """Devolve (imagem, âncora). Sem anchor_at, recorta no que foi
+        desenhado e no losango da base, com a âncora no vértice de baixo do
+        losango: numa peça que não passa da base, ela fica em [32 × tiles em
+        A, pé da imagem], como pede a v2. Com anchor_at = (s, t, z), recorta
+        só no desenho e põe a âncora nesse ponto (objetos sobre a mesa).
+        frame força o retângulo (camadas que se encaixam no mesmo recorte)."""
+        if frame:
+            x0, y0, x1, y1 = frame
+        elif anchor_at:
+            xs = [p[0] for p in self.px]
+            ys = [p[1] for p in self.px]
+            x0, y0, x1, y1 = min(xs), min(ys), max(xs), max(ys)
+        else:
+            x0, y0, x1, y1 = self.box_of()
         im = Image.new('RGBA', (x1 - x0 + 1, y1 - y0 + 1), (0, 0, 0, 0))
         for (x, y), c in self.px.items():
             im.putpixel((x - x0, y - y0), (c + (255,)) if len(c) == 3 else c)
-        bx, by = self.scr(self.a, self.b)
-        return im, [int(bx - x0), int(by - y0)]
+        bx, by = self.scr(*anchor_at) if anchor_at else self.scr(self.a, self.b)
+        return im, [int(round(bx - x0)), int(round(by - y0))]
 
 
 def same_frame(*canvases):
-    """Recorta várias camadas no mesmo retângulo (ex.: mesa e monitor), para
-    que se encaixem coladas no mesmo ponto."""
-    xs, ys = [], []
-    for cv in canvases:
-        xs += [p[0] for p in cv.px]
-        ys += [p[1] for p in cv.px]
-    x0, y0, x1, y1 = min(xs), min(ys), max(xs), max(ys)
-    out = []
-    for cv in canvases:
-        im = Image.new('RGBA', (x1 - x0 + 1, y1 - y0 + 1), (0, 0, 0, 0))
-        for (x, y), c in cv.px.items():
-            im.putpixel((x - x0, y - y0), c + (255,))
-        bx, by = cv.scr(cv.a, cv.b)
-        out.append((im, [int(bx - x0), int(by - y0)]))
-    return out
+    """Recorta várias camadas no mesmo retângulo (as direções da cadeira),
+    para que todas tenham a mesma âncora."""
+    boxes = [cv.box_of() for cv in canvases]
+    frame = (min(b[0] for b in boxes), min(b[1] for b in boxes),
+             max(b[2] for b in boxes), max(b[3] for b in boxes))
+    return [cv.image(frame=frame) for cv in canvases]
 
 
 # ------------------------------------------------------------------ piso
@@ -316,8 +315,9 @@ def door_entrance(state='fechada'):
     return px, w, h
 
 
-def window_frame():
-    w, h = 60, 42
+def window_frame(h=52):
+    """Moldura da janela, 32 a 84 px do chão (52 de altura)."""
+    w = 60
     L = Layer(rgb('#F4F3EE'), rgb('#B8B5AC'))
     L.rect(0, 0, w - 1, h - 1)
     glass = set()
@@ -352,7 +352,9 @@ def window_frame():
 
 
 def sky(period, glass, w, h):
-    """Céu de São Paulo com a linha de prédios, um para cada período."""
+    """Céu de São Paulo com a linha de prédios, um para cada período. Os
+    prédios foram desenhados para 42 px de altura e descem junto com a
+    janela."""
     P = {
         'manha': dict(top='#94CCF1', bot='#DDF1FA', b1='#A9B9C9', b2='#93A6B8', win='#D9E6F0'),
         'tarde': dict(top='#5EA8E2', bot='#BFE1F6', b1='#8FA3B6', b2='#7A90A6', win='#C6D4E0'),
@@ -399,8 +401,9 @@ def sky(period, glass, w, h):
                 if ((x - cx_) / 4.5) ** 2 + ((y - cy_) / 1.6) ** 2 <= 1 or ((x - cx_ - 2) / 3) ** 2 + ((y - cy_ + 1.3) / 1.4) ** 2 <= 1:
                     px[(x, y)] = rgb('#FFFFFF') if y < cy_ else rgb('#E8F2F8')
     # prédios (a mesma silhueta em todos os céus)
-    blds = [(3, 8, 27), (8, 12, 22), (12, 17, 30), (17, 21, 19), (21, 26, 25), (31, 35, 23),
-            (35, 41, 28), (41, 44, 16), (44, 50, 24), (50, 56, 20)]
+    blds = [(x0, x1, top + h - 42) for x0, x1, top in
+            ((3, 8, 27), (8, 12, 22), (12, 17, 30), (17, 21, 19), (21, 26, 25), (31, 35, 23),
+             (35, 41, 28), (41, 44, 16), (44, 50, 24), (50, 56, 20))]
     for i, (x0, x1, top) in enumerate(blds):
         col = rgb(P['b1']) if i % 2 else rgb(P['b2'])
         for x in range(x0, x1):
@@ -414,16 +417,17 @@ def sky(period, glass, w, h):
                     c = mix(col, rgb(P['win']), 0.55 if period != 'noite' else 1.0) if on else col
                 px[(x, y)] = c
     # antena
-    for y in range(12, 16):
+    for y in range(12 + h - 42, 16 + h - 42):
         if (43, y) in glass:
             px[(43, y)] = rgb(P['b2'])
-    if (43, 11) in glass:
-        px[(43, 11)] = rgb('#E2453C')
+    if (43, 11 + h - 42) in glass:
+        px[(43, 11 + h - 42)] = rgb('#E2453C')
     return px
 
 
 def whiteboard(state='limpo'):
-    w, h = 58, 34
+    """Quadro branco da reunião, 38 a 82 px do chão."""
+    w, h = 58, 44
     fr = Layer(rgb('#C3C8CF'), rgb('#7E848D'))
     fr.rect(0, 0, w - 1, h - 1)
     fr.outline()
@@ -447,7 +451,8 @@ def whiteboard(state='limpo'):
 
 
 def calendar(state='normal'):
-    w, h = 22, 26
+    """Calendário, 52 a 80 px do chão."""
+    w, h = 22, 28
     pg = Layer(rgb('#FAFAF7'), rgb('#B9B6AE'))
     pg.rect(0, 3, w - 1, h - 1)
     pg.outline()
@@ -470,7 +475,8 @@ def calendar(state='normal'):
 
 
 def corkboard(state='vazio'):
-    w, h = 28, 22
+    """Mural de alertas, de cortiça, 40 a 80 px do chão."""
+    w, h = 28, 40
     fr = Layer(rgb('#8A5C34'), rgb('#55361C'))
     fr.rect(0, 0, w - 1, h - 1)
     fr.outline()
@@ -485,7 +491,8 @@ def corkboard(state='vazio'):
 
 
 def wall_screen(state='apagada'):
-    w, h = 58, 33
+    """Tela do FECHADO, 48 a 88 px do chão."""
+    w, h = 58, 40
     bz = Layer(rgb('#1C1C21'), rgb('#08080A'))
     bz.rect(0, 0, w - 1, h - 1)
     bz.outline()
@@ -502,179 +509,334 @@ def wall_screen(state='apagada'):
     return px, w, h
 
 
+def _door_frame(w, h):
+    fr = Layer(rgb('#F1EEE7'), rgb('#B9B3A6'))
+    fr.rect(0, 0, w - 1, h - 1)
+    fr.outline()
+    return dict(fr.px)
+
+
+def door_plain(state='fechada'):
+    """Porta do Arquivo: folha lisa de madeira escura, sem cadeado, sem
+    silhueta e sem plaquinha; só a maçaneta."""
+    w, h = 30, 72
+    px = _door_frame(w, h)
+    leaf = Layer(rgb('#8E6440'), rgb('#5A3C22'))
+    leaf.rect(3, 3, w - 4, h - 1)
+    leaf.outline(skip='b')
+    for y in range(4, h - 1):
+        leaf.set(4, y, rgb('#A0744C'))
+    px.update(leaf.px)
+    for x, y, c in ((22, 37, '#C9CBD0'), (23, 37, '#EEF0F2'), (22, 38, '#8C9098'), (23, 38, '#C9CBD0')):
+        px[(x, y)] = rgb(c)
+    return px, w, h
+
+
+# plaquinhas das portas trancadas: o nome não cabe nos 30 px da porta na
+# fonte de pixel, então cada sala tem um ícone gravado no latão
+PLAQUINHAS = {
+    'tesouraria': [".###.", "#####", ".###.", "#####", ".###."],      # pilha de moedas
+    'metas': [".###.", "#...#", "#.#.#", "#...#", ".###."],           # alvo
+    'auditoria': [".##..", "#..#.", ".##..", "...#.", "....#"],       # lupa
+}
+
+
+def door_locked():
+    """Porta trancada: folha de madeira com visor de vidro fosco e cadeado.
+    Devolve (folha, silhueta, {sala: plaquinha}, w, h): a silhueta genérica
+    atrás do vidro e as plaquinhas são camadas no mesmo recorte."""
+    w, h = 30, 72
+    px = _door_frame(w, h)
+    leaf = Layer(rgb('#A9784A'), rgb('#6E4A2A'))
+    leaf.rect(3, 3, w - 4, h - 1)
+    leaf.outline(skip='b')
+    px.update(leaf.px)
+    glass = {(x, y) for x in range(9, 21) for y in range(9, 33)}
+    for (x, y) in glass:
+        px[(x, y)] = rgb('#CBD6E0') if (x + y) % 7 else rgb('#D8E1E9')
+    vis = Layer(rgb('#6E4A2A'))
+    frame_rect(vis, 8, 8, 21, 33, rgb('#6E4A2A'))
+    px.update(vis.px)
+    for k in range(6):
+        px[(10 + k, 10 + k)] = rgb('#E8EEF3')
+    # maçaneta e cadeado
+    for x, y, c in ((22, 38, '#E2B648'), (23, 38, '#F4D47A'), (22, 39, '#B88A28'), (23, 39, '#E2B648')):
+        px[(x, y)] = rgb(c)
+    lock = {(21, 41): '#5E6168', (22, 40): '#5E6168', (23, 40): '#5E6168', (24, 41): '#5E6168'}
+    for x in range(20, 26):
+        for y in range(42, 47):
+            lock[(x, y)] = '#C99A2E' if x < 23 else '#A87C22'
+    lock[(22, 44)] = '#3A2A10'
+    lock[(22, 45)] = '#3A2A10'
+    px.update({p: rgb(c) for p, c in lock.items()})
+    # silhueta genérica: cabeça e ombros de alguém do outro lado do vidro
+    sil = {}
+    for (x, y) in glass:
+        head = ((x - 14.5) / 3.6) ** 2 + ((y - 17) / 4.2) ** 2 <= 1
+        body = y >= 22 and abs(x - 14.5) <= 2 + (y - 22) * 0.9
+        if head or body:
+            sil[(x, y)] = rgb('#7D8CA3')
+    # plaquinhas de latão com o ícone de cada sala
+    plates = {}
+    for name, icon in PLAQUINHAS.items():
+        pl = Layer(rgb('#E2B648'), rgb('#8A6A20'))
+        pl.rect(9, 50, 20, 58)
+        pl.outline()
+        for x in range(10, 20):
+            pl.set(x, 51, rgb('#F4D47A'))
+        for j, row in enumerate(icon):
+            for i, v in enumerate(row):
+                if v == '#':
+                    pl.set(12 + i, 52 + j, rgb('#5E4310'))
+        plates[name] = dict(pl.px)
+    return px, sil, plates, w, h
+
+
+def memory_board():
+    """Mural de recordações da Vivi, 40 a 82 px do chão: quadro de tecido
+    rosa com moldura, e quatro fotos soltas, em camadas no mesmo recorte,
+    que o jogo cola por cima. As fotos são genéricas por enquanto."""
+    w, h = 58, 42
+    fr = Layer(rgb('#D98AA3'), rgb('#9C4F67'))
+    fr.rect(0, 0, w - 1, h - 1)
+    fr.outline()
+    px = dict(fr.px)
+    for y in range(2, h - 2):
+        for x in range(2, w - 2):
+            px[(x, y)] = rgb('#F6DCE4') if (x * 3 + y * 5) % 13 else rgb('#EFCBD6')
+    scenes = (('#8FC6EE', '#6DB55A'), ('#F7BC6A', '#E07A86'), ('#BFE1F6', '#E3C48F'), ('#5EA8E2', '#2F6FD0'))
+    pins = ('#D9453B', '#2F6FD0', '#3DB64B', '#E2B648')
+    photos = []
+    for k, ((x0, y0), (sky_c, ground_c)) in enumerate(zip(((5, 5), (19, 9), (33, 4), (45, 10)), scenes)):
+        ph = {}
+        for y in range(y0, y0 + 14):
+            for x in range(x0, x0 + 10):
+                ph[(x, y)] = rgb('#FFFFFF')
+        for y in range(y0 + 1, y0 + 10):
+            for x in range(x0 + 1, x0 + 9):
+                ph[(x, y)] = rgb(sky_c) if y < y0 + 6 else rgb(ground_c)
+        for x in range(x0, x0 + 10):
+            ph[(x, y0 + 13)] = rgb('#D7D2C8')
+        ph[(x0 + 4, y0)] = rgb(pins[k])
+        ph[(x0 + 5, y0)] = rgb(pins[k])
+        photos.append(ph)
+    return px, photos, w, h
+
+
 # ---------------------------------------------------------------- móveis
 OAK = (rgb('#DDBD8B'), rgb('#CDA673'), rgb('#AE895A'))
 WHITEF = (rgb('#F4F3EF'), rgb('#E6E4DE'), rgb('#CDCAC2'))
 METAL = (rgb('#4A4A52'), rgb('#3A3A42'), rgb('#2A2A30'))
-GREEN = (rgb('#93A574'), rgb('#7D8F60'), rgb('#65754B'))
-LEATHER = (rgb('#3F404A'), rgb('#33343C'), rgb('#26272E'))
+
+
+NAVY = (rgb('#46568A'), rgb('#36446F'), rgb('#283353'))
+WALNUT = (rgb('#9A6A44'), rgb('#83573A'), rgb('#62402A'))
+DESK_TOP = 24          # altura do tampo das mesas de trabalho e do fundador
 
 
 def round_table():
+    """Mesa de reunião redonda, 2x2, tampo a 22 px."""
     iso = Iso(2, 2, 40)
     iso.cyl(1, 1, 0.3, 0, 2, *METAL)
-    iso.cyl(1, 1, 0.07, 2, 21, *METAL)
+    iso.cyl(1, 1, 0.07, 2, 19, *METAL)
 
     def top_tex(s, t):
         r = math.hypot(s - 1, t - 1)
         if 0.52 < r < 0.56 or 0.3 < r < 0.33:
             return mix(OAK[0], WHITE, 0.15)
         return OAK[0]
-    iso.cyl(1, 1, 0.8, 21, 24, OAK[0], OAK[1], OAK[2], tex=top_tex)
+    iso.cyl(1, 1, 0.8, 19, 22, OAK[0], OAK[1], OAK[2], tex=top_tex)
     return iso.image()
 
 
-def meeting_chair(direction):
-    iso = Iso(1, 1, 40)
-    for (s, t) in ((0.3, 0.3), (0.7, 0.3), (0.3, 0.7), (0.7, 0.7)):
-        iso.cyl(s, t, 0.035, 0, 12, *METAL, outline=False)
-    iso.box(0.25, 0.75, 0.25, 0.75, 12, 15, *GREEN)
-    if direction == 'frente':
-        iso.box(0.22, 0.31, 0.27, 0.73, 15, 31, *GREEN)
-    else:
-        iso.box(0.27, 0.73, 0.69, 0.78, 15, 31, *GREEN)
-    return iso.image()
+# direção da cadeira -> (s0, s1, t0, t1) do encosto. Ela olha para onde olha
+# quem senta: frente-dir +A, frente-esq +B, costas-dir -B, costas-esq -A.
+ENCOSTO = {
+    'frente-dir': (0.22, 0.30, 0.26, 0.74),
+    'frente-esq': (0.26, 0.74, 0.22, 0.30),
+    'costas-dir': (0.26, 0.74, 0.70, 0.78),
+    'costas-esq': (0.70, 0.78, 0.26, 0.74),
+}
 
 
-def boss_chair(direction):
-    iso = Iso(1, 1, 44)
-    c0 = iso.scr(0.5, 0.5, 2)
-    for ang in range(5):
-        a = ang * 2 * math.pi / 5 + 0.3
-        for k in range(1, 12):
-            f = k / 11
-            x, y = iso.scr(0.5 + 0.32 * f * math.cos(a), 0.5 + 0.32 * f * math.sin(a), 2)
-            iso.put(x, y, rgb('#2A2A30'))
-        x, y = iso.scr(0.5 + 0.32 * math.cos(a), 0.5 + 0.32 * math.sin(a), 0)
-        iso.put(x, y, rgb('#111114'))
-        iso.put(x + 1, y, rgb('#111114'))
-    iso.put(c0[0], c0[1], rgb('#2A2A30'))
-    iso.cyl(0.5, 0.5, 0.035, 2, 13, rgb('#7A7A84'), rgb('#6A6A72'), rgb('#55555C'))
-    iso.box(0.27, 0.73, 0.27, 0.73, 13, 17, *LEATHER)
-    if direction == 'frente':
-        iso.box(0.25, 0.29, 0.47, 0.53, 15, 21, *METAL)
-        iso.box(0.22, 0.31, 0.29, 0.71, 20, 38, *LEATHER)
-    else:
-        iso.box(0.47, 0.53, 0.71, 0.75, 15, 21, *METAL)
-        iso.box(0.29, 0.71, 0.69, 0.78, 20, 38, *LEATHER)
-    return iso.image()
+def chairs():
+    """A cadeira nas quatro direções, no mesmo recorte: pés de metal,
+    assento estofado a 14 px e encosto até 34 px. Nenhuma é espelho de
+    outra, para a luz continuar vindo da esquerda."""
+    out = {}
+    for d, (s0, s1, t0, t1) in ENCOSTO.items():
+        iso = Iso(1, 1, 40)
+        for (s, t) in ((0.3, 0.3), (0.7, 0.3), (0.3, 0.7), (0.7, 0.7)):
+            iso.cyl(s, t, 0.035, 0, 11, *METAL, outline=False)
+        iso.box(0.24, 0.76, 0.24, 0.76, 11, 14, *NAVY)
+        iso.box(s0, s1, t0, t1, 14, 34, *NAVY)
+        out[d] = iso
+    return dict(zip(out, same_frame(*out.values())))
 
 
-def boss_desk():
-    """Mesa do Contador (2x1) e, em camadas separadas no mesmo recorte, o
-    monitor e a bandeja de entrada."""
-    desk = Iso(2, 1, 60)
+def desk(wood, inlay=None):
+    """Mesa 2x1 ao longo de A, tampo a 24 px. Quem senta fica do lado -B,
+    então a face que dá para +B, a que se vê, é o painel da frente. inlay
+    pinta o meio do tampo (a do fundador tem couro verde)."""
+    iso = Iso(2, 1, 40)
+    iso.box(0.04, 0.14, 0.12, 0.88, 0, DESK_TOP - 3, *wood)
+    iso.box(1.86, 1.96, 0.12, 0.88, 0, DESK_TOP - 3, *wood)
+    iso.box(0.14, 1.86, 0.74, 0.82, 7, DESK_TOP - 3, wood[1], mul(wood[1], 0.9), mul(wood[2], 0.9))
 
-    def drawers(face, s, t, z, c):
-        if face == 'left' and s < 0.62:
-            if abs(z - 8) < 0.6 or abs(z - 15) < 0.6:
-                return mul(c, 0.8)
-            if (abs(z - 11.5) < 0.6 or abs(z - 18.5) < 0.6 or abs(z - 4.5) < 0.6) and 0.27 < s < 0.41:
-                return rgb('#8A6A40')
+    def top(face, s, t, z, c):
+        if face == 'top' and inlay and 0.2 < s < 1.8 and 0.24 < t < 0.76:
+            edge = s < 0.25 or s > 1.75 or t < 0.29 or t > 0.71
+            return mix(inlay, WHITE, 0.25) if edge else inlay
         return c
-    desk.box(1.84, 1.94, 0.12, 0.88, 0, 22, *OAK)
-    desk.box(0.62, 1.84, 0.45, 0.5, 6, 22, OAK[1], mul(OAK[1], 0.85), mul(OAK[2], 0.85))
-    desk.box(0.06, 0.62, 0.14, 0.86, 0, 22, *OAK, tex=drawers)
-    desk.box(0.0, 2.0, 0.08, 0.92, 22, 25, *OAK)
-    # teclado do lado de quem senta
-    kb = desk.box(0.78, 1.32, 0.14, 0.32, 25, 26, rgb('#5A5E68'), rgb('#4A4D55'), rgb('#3A3D44'), outline=False)
-    for (x, y) in list(kb):
-        if (x + y) % 3 == 0:
-            desk.px[(x, y)] = rgb('#7A7E88')
-
-    mon = Iso(2, 1, 60)
-    mon.box(0.2, 0.45, 0.38, 0.62, 25, 26, *METAL)
-    mon.box(0.27, 0.36, 0.45, 0.55, 26, 32, *METAL)
-    mon.box(0.36, 0.42, 0.16, 0.84, 30, 50, rgb('#2A2A30'), rgb('#232328'), rgb('#18181C'))
-
-    def screen(u, w):
-        if not (0.06 < u < 0.94 and 0.08 < w < 0.92):
-            return None
-        if w > 0.8:
-            return rgb('#3A4A66')
-        # painel parado: linhas de tabela e um gráfico baixo e plano
-        if 0.45 < w < 0.75 and 0.12 < u < 0.88:
-            if abs(w - (0.55 + 0.04 * math.sin(u * 9))) < 0.05:
-                return rgb('#5FB0E8')
-            return rgb('#1E2A3E')
-        if w < 0.4 and (int(w * 30) % 3 == 0) and 0.12 < u < 0.85:
-            return rgb('#4A5A78')
-        return rgb('#1B2536')
-    mon.face_paint('right', 0.42, 0.16, 0.84, 30, 50, screen)
-
-    tray = Iso(2, 1, 60)
-    tray.box(1.42, 1.8, 0.42, 0.8, 25, 26, *METAL)
-    tray.box(1.42, 1.46, 0.42, 0.8, 26, 30, *METAL)
-    tray.box(1.42, 1.8, 0.42, 0.46, 26, 30, *METAL)
-    tray.box(1.76, 1.8, 0.42, 0.8, 26, 29, *METAL)
-    return same_frame(desk, mon, tray)
+    iso.box(0.0, 2.0, 0.06, 0.94, DESK_TOP - 3, DESK_TOP, *wood, tex=top)
+    return iso.image()
 
 
-def counter():
-    """Balcão 3x1: frente de ripas de madeira virada para quem chega (+B),
-    tampo branco e um parapeito mais alto na frente. A sineta é outra camada."""
-    iso = Iso(3, 1, 60)
+# onde cada objeto fica no tampo, em (s, t) da mesa. O monitor fica no meio
+# do lado +B, com a tela virada para quem senta; o modelo serve ao Saldanha
+# (cadeira em A5) e ao Caio (cadeira em A7), então não dá para pô-lo na
+# frente de um só (ver NOTAS).
+ENCAIXES = {
+    'mesa_trabalho': {'monitor': (1.0, 0.62), 'bandeja': (1.6, 0.48), 'sineta': (0.4, 0.55),
+                      'headset': (1.6, 0.4)},
+    'mesa_fundador': {'monitor': (1.0, 0.62)},
+}
 
-    def slats(face, s, t, z, c):
-        if face == 'left':
-            if z < 3:
-                return mul(c, 0.78)
-            if int(s * 32) % 4 == 0:
-                return mul(c, 0.86)
-        return c
-    iso.box(0.04, 2.96, 0.18, 0.78, 0, 30, *OAK, tex=slats)
-    iso.box(0.0, 3.0, 0.12, 0.84, 30, 33, *WHITEF)
-    iso.box(0.0, 3.0, 0.76, 0.9, 33, 39, *WHITEF)
 
-    bell = Iso(3, 1, 60)
-    bx, by = bell.scr(1.5, 0.83, 39)
+def encaixes(modelo, base):
+    """Encaixes em px, a partir da âncora da mesa (o vértice de baixo da base)."""
+    iso = Iso(*base, 40)
+    bx, by = iso.scr(*base)
+    out = {}
+    for obj, (s, t) in ENCAIXES[modelo].items():
+        x, y = iso.scr(s, t, DESK_TOP)
+        out[obj] = [int(round(x - bx)), int(round(y - by))]
+    return out
+
+
+def _halo(iso, pts, c):
+    """Borda de luz: um pixel de brilho em volta dos pontos, menos embaixo."""
+    for (x, y) in list(pts):
+        for dx, dy in ((0, -1), (-1, 0), (1, 0)):
+            q = (x + dx, y + dy)
+            if q not in iso.px:
+                iso.px[q] = c
+
+
+def monitor(state='ligado'):
+    """Monitor ligado, visto de costas: quem senta olha para +B, então a
+    tela fica virada para ele e daqui se vê a traseira, com a luz da tela
+    vazando pelas bordas. A âncora é o centro do pé, no tampo."""
+    iso = Iso(1, 1, 30)
+    iso.box(0.36, 0.64, 0.38, 0.62, 0, 1, *METAL)
+    iso.box(0.46, 0.54, 0.5, 0.58, 1, 6, *METAL)
+    back = iso.box(0.16, 0.84, 0.42, 0.5, 5, 20, rgb('#3A3B44'), rgb('#2E2F37'), rgb('#202128'))
+    _halo(iso, back, (178, 222, 255, 170))
+    x, y = iso.scr(0.5, 0.5, 14)
+    iso.put(x, y, rgb('#4A4C57'))
+    iso.put(x + 1, y, rgb('#4A4C57'))
+    return iso.image(anchor_at=(0.5, 0.5, 0))
+
+
+def tray(state='vazia'):
+    """Bandeja de entrada, vazia, em cinza claro para as pilhas de papel do
+    corte 2 aparecerem por cima."""
+    iso = Iso(1, 1, 30)
+    grey = (rgb('#D3D7DD'), rgb('#B7BCC4'), rgb('#969BA4'))
+    iso.box(0.28, 0.72, 0.3, 0.7, 0, 1, *grey)
+    iso.box(0.28, 0.32, 0.3, 0.7, 1, 4, *grey)
+    iso.box(0.28, 0.72, 0.3, 0.34, 1, 4, *grey)
+    iso.box(0.68, 0.72, 0.3, 0.7, 1, 3, *grey)
+    iso.box(0.28, 0.72, 0.66, 0.7, 1, 3, *grey)
+    return iso.image(anchor_at=(0.5, 0.5, 0))
+
+
+def bell(state='parada'):
+    """Sineta de balcão, parada."""
+    iso = Iso(1, 1, 30)
+    bx, by = iso.scr(0.5, 0.5, 0)
     for dx in range(-4, 5):
-        bell.put(bx + dx, by, rgb('#2A2A2E'))
+        iso.put(bx + dx, by, rgb('#2A2A2E'))
     dome = {-1: range(-3, 4), -2: range(-3, 4), -3: range(-2, 3), -4: range(-1, 2)}
     for dy, xs in dome.items():
         for dx in xs:
-            bell.put(bx + dx, by + dy, rgb('#E2B648') if dx < 1 else rgb('#C7972F'))
-    bell.put(bx - 2, by - 3, rgb('#FFF0B0'))
-    bell.put(bx - 1, by - 3, rgb('#FFE08A'))
-    bell.put(bx, by - 5, rgb('#8A6A20'))
-    return same_frame(iso, bell)
+            iso.put(bx + dx, by + dy, rgb('#E2B648') if dx < 1 else rgb('#C7972F'))
+    iso.put(bx - 2, by - 3, rgb('#FFF0B0'))
+    iso.put(bx - 1, by - 3, rgb('#FFE08A'))
+    iso.put(bx, by - 5, rgb('#8A6A20'))
+    return iso.image(anchor_at=(0.5, 0.5, 0))
+
+
+def headset(state=None):
+    """Headset pousado no tampo: as duas conchas deitadas, o arco por cima
+    e o microfone para a frente."""
+    iso = Iso(1, 1, 30)
+    cx, cy = iso.scr(0.5, 0.5, 0)
+    dark, mid, hi = rgb('#26272E'), rgb('#3A3B44'), rgb('#5A5C68')
+    for ox in (-5, 4):
+        for dx in range(-2, 3):
+            for dy in (-2, -1, 0):
+                if abs(dx) + abs(dy + 1) <= 2:
+                    iso.put(cx + ox + dx, cy + dy, mid if dy < 0 else dark)
+        iso.put(cx + ox - 1, cy - 2, hi)
+    for dx in range(-5, 5):
+        iso.put(cx + dx, cy - 4 + (1 if abs(dx + 0.5) > 3 else 0), dark)
+    for k in range(4):
+        iso.put(cx - 5 - k, cy + 1 + k // 2, dark)
+    iso.put(cx - 9, cy + 3, rgb('#5FB0E8'))
+    return iso.image(anchor_at=(0.5, 0.5, 0))
+
+
+def reception_counter():
+    """Balcão da recepção, 1x3 ao longo de B, 34 px. A frente de ripas olha
+    para +A, para quem chega; a Vivi senta atrás, do lado -A."""
+    iso = Iso(1, 3, 50)
+
+    def slats(face, s, t, z, c):
+        if face == 'right':
+            if z < 3:
+                return mul(c, 0.78)
+            if int(t * 32) % 4 == 0:
+                return mul(c, 0.86)
+        return c
+    iso.box(0.2, 0.8, 0.04, 2.96, 0, 30, *OAK, tex=slats)
+    iso.box(0.12, 0.88, 0.0, 3.0, 30, 34, *WHITEF)
+    return iso.image()
 
 
 def mailbox(state='vazio'):
-    """Malote: caixa de correio azul num pé, encostada na parede esquerda.
-    A abertura olha para +A; a bandeirinha fica do lado que dá para +B."""
-    iso = Iso(1, 1, 60)
+    """Malote: caixa de correio azul num pé, 30 px, encostada na parede
+    esquerda. A abertura olha para +A; a bandeirinha fica do lado +B."""
+    iso = Iso(1, 1, 40)
     blue = (rgb('#5B7EAA'), rgb('#4A6C98'), rgb('#36527A'))
-    iso.box(0.28, 0.42, 0.42, 0.56, 0, 16, *METAL)
+    iso.box(0.28, 0.42, 0.42, 0.56, 0, 10, *METAL)
     iso.box(0.22, 0.48, 0.36, 0.62, 0, 2, *METAL)
-    iso.box(0.14, 0.62, 0.24, 0.76, 16, 40, *blue)
-    iso.box(0.12, 0.64, 0.22, 0.78, 40, 42, mul(blue[0], 0.9), mul(blue[1], 0.9), mul(blue[2], 0.9))
+    iso.box(0.14, 0.62, 0.24, 0.76, 10, 28, *blue)
+    iso.box(0.12, 0.64, 0.22, 0.78, 28, 30, mul(blue[0], 0.9), mul(blue[1], 0.9), mul(blue[2], 0.9))
 
     def front(u, w):
-        if 0.25 < u < 0.75 and 0.72 < w < 0.8:
+        if 0.25 < u < 0.75 and 0.7 < w < 0.8:
             return rgb('#141A26')
-        if (u < 0.12 or u > 0.88) and w < 0.62:
-            return None
-        if abs(w - 0.62) < 0.03 and 0.1 < u < 0.9:
+        if abs(w - 0.6) < 0.04 and 0.1 < u < 0.9:
             return rgb('#2A4262')
         if 0.78 < u < 0.84 and 0.3 < w < 0.4:
             return rgb('#D4D6DA')
         return None
-    iso.face_paint('right', 0.62, 0.24, 0.76, 16, 40, front)
-    # bandeirinha abaixada
-    iso.box(0.38, 0.58, 0.76, 0.79, 21, 24, rgb('#E24A40'), rgb('#D7352E'), rgb('#A82620'))
+    iso.face_paint('right', 0.62, 0.24, 0.76, 10, 28, front)
+    iso.box(0.38, 0.58, 0.76, 0.79, 14, 17, rgb('#E24A40'), rgb('#D7352E'), rgb('#A82620'))
     return iso.image()
 
 
 def plant(state='viva'):
-    iso = Iso(1, 1, 70)
+    """Vaso branco com planta de folhas compridas, 40 px."""
+    iso = Iso(1, 1, 60)
     pot = (rgb('#F2F0EA'), rgb('#E2DED5'), rgb('#C4BFB4'))
-    iso.cyl(0.5, 0.5, 0.21, 0, 15, *pot)
-    iso.cyl(0.5, 0.5, 0.17, 15, 15, rgb('#5A4030'), rgb('#5A4030'), rgb('#5A4030'), only_top=True,
+    iso.cyl(0.5, 0.5, 0.2, 0, 12, *pot)
+    iso.cyl(0.5, 0.5, 0.16, 12, 12, rgb('#5A4030'), rgb('#5A4030'), rgb('#5A4030'), only_top=True,
             outline=False)
     g, gd, gl = rgb('#3F8A3A'), rgb('#25602A'), rgb('#6DB55A')
-    x0, y0 = iso.scr(0.5, 0.5, 15)
-    leaves = ((-14, -20, 3), (-8, -34, 3), (1, -40, 3), (9, -32, 3), (15, -18, 3), (-4, -24, 2), (6, -22, 2))
+    x0, y0 = iso.scr(0.5, 0.5, 12)
+    leaves = ((-12, -14, 3), (-7, -24, 3), (1, -28, 3), (8, -22, 3), (13, -13, 3), (-4, -17, 2), (5, -16, 2))
     for dx, dy, wd in leaves:
         n = max(abs(dx), abs(dy))
         for k in range(n + 1):
@@ -686,9 +848,8 @@ def plant(state='viva'):
                 c = gd if q == ww else (gl if q == -ww else g)
                 iso.put(x + q, y, c)
             iso.put(x, y, gd)
-    lp = {p: c for p, c in iso.px.items()}
     # contorno das folhas
-    for (x, y), c in list(lp.items()):
+    for (x, y), c in list(iso.px.items()):
         if c in (g, gd, gl):
             for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 q = (x + dx, y + dy)
@@ -822,10 +983,27 @@ def character(cid, anims):
     return entry
 
 
+def files(modelo, e):
+    """Os arquivos de uma peça, pela regra de nomes da v2.2: modelo.png com
+    um estado só, modelo__estado.png ou modelo__direcao.png com vários, mais
+    as camadas (modelo__camada.png)."""
+    kinds = e.get('estados') or e.get('direcoes') or e.get('variacoes')
+    if kinds:
+        names = [f'{modelo}__{k}' for k in kinds]
+    else:
+        names = [] if e.get('camadas') else [modelo]
+    names += [f'{modelo}__{c}' for c in e.get('camadas', [])]
+    return [f"{e['pasta']}/{n}.png" for n in names]
+
+
 def check(man):
-    """Confere o que o manifesto promete: os arquivos existem e a âncora cai
-    no pé da imagem. Personagens: em todos os quadros (sentado pisa onde o
-    parado pisa). Móveis: no vértice de baixo da base, x = 32 × tiles em A."""
+    """Confere o que o manifesto promete: os arquivos existem e as âncoras
+    estão onde a regra diz.
+    - personagens: a âncora cai no pé de todos os quadros (o sentado pisa
+      onde o parado pisa);
+    - piso e móveis: no vértice de baixo da base, x = 32 × tiles em A;
+    - objetos: dentro da imagem;
+    - parede: na ponta esquerda da base, e as camadas no mesmo recorte."""
     for modelo, e in man.items():
         if 'folha' in e:
             sheet = Image.open(os.path.join(ROOT, e['folha']))
@@ -833,26 +1011,117 @@ def check(man):
             for name, a in e['animacoes'].items():
                 frame = sheet.crop((0, h * a['linha'], w * a['quadros'], h * (a['linha'] + 1)))
                 assert frame.getbbox()[3] == e['ancora'][1], (modelo, name)
+            continue
+        if 'pasta' not in e:
+            continue                    # cores da parede: o jogo desenha
+        ims = [Image.open(os.path.join(ROOT, f)) for f in files(modelo, e)]
+        assert len({im.size for im in ims}) == 1, modelo
+        w, h = ims[0].size
+        if e['pasta'] in ('piso', 'moveis'):
+            assert e['ancora'] == [32 * e['base'][0], h], modelo
+        elif e['pasta'] == 'parede':
+            assert e['ancora'][0] == 0 and 0 < e['ancora'][1] <= h, modelo
         else:
-            im = Image.open(os.path.join(ROOT, e['pasta'], f'{modelo}.png'))
-            assert e['ancora'] == [32 * e['base'][0], im.height], modelo
+            assert 0 <= e['ancora'][0] < w and 0 <= e['ancora'][1] <= h, modelo
+
+
+def check_layout(man):
+    """A ligação planta ↔ arte: todo modelo do layout existe no manifesto,
+    com a mesma base (piso), a mesma parede, o mesmo número de tiles e a
+    mesma altura (parede), e cada objeto de mesa tem encaixe."""
+    with open(LAYOUT, encoding='utf-8') as f:
+        lay = json.load(f)
+    for p in lay['pecas_piso']:
+        e = man[p['modelo']]
+        assert e['base'] == p['base'], p['id']
+        for obj in p.get('objetos', []):
+            assert obj in man and obj in e['encaixes'], (p['id'], obj)
+        if p.get('ocupante_padrao') not in (None, 'convidado', 'vaga'):
+            assert p['ocupante_padrao'].lower() in man, p['id']
+    for p in lay['pecas_parede']:
+        e = man[p['modelo']]
+        assert (e['parede'], e['tiles'], e['altura']) == (p['parede'], len(p['tiles']), p['altura_px']), p['id']
+    return lay
 
 
 def build():
-    """Gera ../assets/ do zero com o que já está desenhado (todos os
-    personagens, a manta e a caminha) e o manifest.json, com os nomes e as
-    âncoras do "Como entregar" da v2.2. As chaves do manifesto são os ids de
-    modelo da planta. Móveis, objetos, parede e piso entram depois."""
+    """Gera ../assets/ do zero, com o manifest.json, seguindo o "Como
+    entregar" da v2.2: o lote do corte 1 inteiro (piso, parede, móveis e
+    objetos) e os 14 personagens. As chaves do manifesto são os ids de
+    modelo da planta. No fim, confere tudo contra o layout e monta as
+    prévias."""
     shutil.rmtree(ROOT, ignore_errors=True)
     man = {cid: character(cid, anims) for cid, (_, anims) in PERSONAGENS.items()}
-    for modelo, fn in (('manta_flora', flora_blanket), ('caminha_lupin', lupin_bed)):
+
+    # piso e cores da parede
+    man['piso_madeira'] = {'pasta': 'piso', 'base': [1, 1], 'ancora': [TW // 2, TH],
+                           'variacoes': [str(v + 1) for v in range(3)]}
+    for v in range(3):
+        save(wood_tile(v), f'piso/piso_madeira__{v + 1}.png')
+    man['parede'] = {'altura': WALL_H, 'rodape': BASEBOARD, 'cores': PAREDE,
+                     'borda_do_piso': {'altura': 8, 'esquerda': '#B8935F', 'direita': '#9A784C'}}
+
+    # parede: cada peça é (modelo, parede, tiles, altura da base, estados,
+    # camadas), com os desenhos planos do mesmo tamanho, no mesmo recorte
+    lpx, sil, plates, dw, dh = door_locked()
+    frame_px, glass, ww, wh = window_frame()
+    board, photos, mw, mh = memory_board()
+    wall = (
+        ('porta_entrada', 'esquerda', 1, 0, {'fechada': door_entrance()[0]}, {}, 30, 72),
+        ('porta_trancada', 'direita', 1, 0, {'trancada': lpx},
+         {'silhueta': sil, **{f'plaquinha-{k}': v for k, v in plates.items()}}, dw, dh),
+        ('porta_arquivo', 'esquerda', 1, 0, {'fechada': door_plain()[0]}, {}, 30, 72),
+        ('janela', 'esquerda', 2, 32, {}, {'ceu-tarde': sky('tarde', glass, ww, wh), 'moldura': frame_px}, ww, wh),
+        ('quadro_branco', 'direita', 2, 38, {'limpo': whiteboard()[0]}, {}, *whiteboard()[1:]),
+        ('mural_alertas', 'direita', 1, 40, {'vazio': corkboard()[0]}, {}, *corkboard()[1:]),
+        ('tela_parede', 'direita', 2, 48, {'apagada': wall_screen()[0]}, {}, *wall_screen()[1:]),
+        ('calendario', 'direita', 1, 52, {'normal': calendar()[0]}, {}, *calendar()[1:]),
+        ('mural_recordacoes', 'esquerda', 2, 40, {'vazio': board},
+         {f'foto-{k + 1}': ph for k, ph in enumerate(photos)}, mw, mh),
+    )
+    for modelo, side, tiles, hb, estados, camadas, w, h in wall:
+        e = {'pasta': 'parede', 'parede': side, 'tiles': tiles, 'altura': [hb, hb + h]}
+        for kind, layers in (('estados', estados), ('camadas', camadas)):
+            for name, px in layers.items():
+                im, e['ancora'] = shear(px, w, h, side, tiles, hb)
+                save(im, f'parede/{modelo}__{name}.png')
+            if layers:
+                e[kind] = list(layers)
+        man[modelo] = e
+
+    # móveis
+    def movel(modelo, im_anchor, base, estado=None, **extra):
+        im, anchor = im_anchor
+        save(im, f'moveis/{modelo}__{estado}.png' if estado else f'moveis/{modelo}.png')
+        man[modelo] = {'pasta': 'moveis', 'base': base, 'ancora': anchor,
+                       **({'estados': [estado]} if estado else {}), **extra}
+    movel('mesa_trabalho', desk(OAK), [2, 1], encaixes=encaixes('mesa_trabalho', (2, 1)))
+    movel('mesa_fundador', desk(WALNUT, inlay=rgb('#3E6B4A')), [2, 1],
+          encaixes=encaixes('mesa_fundador', (2, 1)))
+    movel('mesa_reuniao', round_table(), [2, 2])
+    movel('balcao_recepcao', reception_counter(), [1, 3])
+    movel('malote', mailbox(), [1, 1], 'vazio')
+    movel('planta', plant(), [1, 1], 'viva')
+    movel('manta_flora', flora_blanket(), [1, 1])
+    movel('caminha_lupin', lupin_bed(), [1, 1])
+    for d, (im, anchor) in chairs().items():
+        save(im, f'moveis/cadeira__{d}.png')
+    man['cadeira'] = {'pasta': 'moveis', 'base': [1, 1], 'ancora': anchor, 'assento_px': 14,
+                      'direcoes': list(ENCOSTO)}
+
+    # objetos sobre as mesas
+    for modelo, fn, estado in (('monitor', monitor, 'ligado'), ('bandeja', tray, 'vazia'),
+                               ('sineta', bell, 'parada'), ('headset', headset, None)):
         im, anchor = fn()
-        save(im, f'moveis/{modelo}.png')
-        man[modelo] = {'pasta': 'moveis', 'base': [1, 1], 'ancora': anchor}
+        save(im, f'objetos/{modelo}__{estado}.png' if estado else f'objetos/{modelo}.png')
+        man[modelo] = {'pasta': 'objetos', 'ancora': anchor, **({'estados': [estado]} if estado else {})}
+
     check(man)
+    layout = check_layout(man)
     with open(os.path.join(ROOT, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(man, f, ensure_ascii=False, indent=2)
     escala(man)
+    sala(man, layout)
     return man
 
 
@@ -945,6 +1214,145 @@ def escala(man):
         d.text((2 * x - shift, 2 * y), text, font=font, fill=(52, 58, 66, 255))
     os.makedirs(PREVIA, exist_ok=True)
     big.save(os.path.join(PREVIA, 'escala@2x.png'))
+
+
+# quem senta olhando para cada lado: o sentado de frente, espelhado ou não
+# (frente-dir = +A sem espelhar, frente-esq = +B espelhado)
+OLHA_PARA = {'+A': ('frente-dir', False), '+B': ('frente-esq', True),
+             '-B': ('costas-dir', False), '-A': ('costas-esq', True)}
+CAMA = {'manta_flora': 'flora', 'caminha_lupin': 'lupin'}
+
+
+def sala(man, lay):
+    """A sala parada montada como o jogo vai montar: só com o layout da
+    planta e os arquivos e âncoras do assets/. Piso, paredes, peças de
+    parede, móveis com os objetos nos encaixes, cada um no seu posto,
+    sentado, e os cachorros nas camas. A estação flexível, reservada, sai
+    pontilhada. As cadeiras da reunião ficam vazias no corte 1."""
+    A, B = lay['sala']['tiles']
+    pad = 20
+    cx, cy = pad + 32 * B, pad + WALL_H + 4
+    W, H = 32 * (A + B) + 2 * pad, cy + 16 * (A + B) + 8 + pad
+    im = Image.new('RGBA', (W, H), (24, 30, 52, 255))
+
+    def P(s, t, z=0):
+        return cx + 32 * (s - t), cy + 16 * (s + t) - z
+
+    cache = {}
+
+    def put(rel, anchor, x, y, mirror=False):
+        if rel not in cache:
+            cache[rel] = Image.open(os.path.join(ROOT, rel)).convert('RGBA')
+        sp = cache[rel]
+        if mirror:
+            sp, anchor = sp.transpose(Image.FLIP_LEFT_RIGHT), [sp.width - anchor[0], anchor[1]]
+        im.alpha_composite(sp, (int(round(x - anchor[0])), int(round(y - anchor[1]))))
+
+    def frame(cid, anim):
+        e = man[cid]
+        (w, h), row = e['tela'], e['animacoes'][anim]['linha']
+        rel = f"{e['folha']}#{anim}"
+        if rel not in cache:
+            sheet = Image.open(os.path.join(ROOT, e['folha'])).convert('RGBA')
+            cache[rel] = sheet.crop((0, h * row, w, h * (row + 1)))
+        return rel, e['ancora']
+
+    # paredes (o jogo desenha com as cores do manifesto)
+    par = man['parede']
+    cores = {k: rgb(v) for k, v in par['cores'].items()}
+    px = im.load()
+    for x in range(cx - 32 * B, cx + 32 * A):
+        e = wall_edge(x, cx, cy)
+        side = 'esquerda' if x < cx else 'direita'
+        for y in range(e - par['altura'], e):
+            if y < e - par['altura'] + 2:
+                c = cores[f'topo_{side}']
+            elif y >= e - par['rodape']:
+                c = mul(cores[f'rodape_{side}'], 0.85) if y == e - par['rodape'] else cores[f'rodape_{side}']
+            else:
+                c = cores[side]
+            px[x, y] = (mul(c, 0.82) if x == cx else c) + (255,)
+
+    # piso, com a borda da frente
+    piso = man['piso_madeira']
+    for a in range(A):
+        for b in range(B):
+            v = piso['variacoes'][(a * 7 + b * 3 + a * b) % 3]
+            put(f'piso/piso_madeira__{v}.png', piso['ancora'], *P(a + 1, b + 1))
+    borda = par['borda_do_piso']
+    for x in range(P(0, B)[0], P(A, 0)[0]):
+        side = 'esquerda' if x < P(A, B)[0] else 'direita'
+        y0 = (P(0, B)[1] + (x - P(0, B)[0]) // 2) if side == 'esquerda' else (P(A, B)[1] - (x - P(A, B)[0]) // 2)
+        for y in range(y0, y0 + borda['altura']):
+            px[x, y] = rgb(borda[side]) + (255,)
+
+    # peças de parede: a âncora vai na ponta esquerda (na tela) do vão, na
+    # altura da base (parede esquerda: o fim do último tile; direita: o
+    # começo do primeiro)
+    for p in lay['pecas_parede']:
+        e = man[p['modelo']]
+        x, y = P(0, p['tiles'][-1] + 1) if e['parede'] == 'esquerda' else P(p['tiles'][0], 0)
+        y -= e['altura'][0]
+        names = e.get('estados', [])[:1] + [c for c in e.get('camadas', [])
+                                             if not c.startswith('plaquinha-')
+                                             or c == f"plaquinha-{p.get('plaquinha', '').lower()}"]
+        for n in names:
+            put(f"parede/{p['modelo']}__{n}.png", e['ancora'], x, y)
+
+    # estação reservada: só a pegada, pontilhada
+    for p in lay['pecas_piso']:
+        if p['tipo'] != 'reservado':
+            continue
+        (a, b), (da, db) = p['tile'], p['base']
+        corners = [P(a, b), P(a + da, b), P(a + da, b + db), P(a, b + db), P(a, b)]
+        for (x0, y0), (x1, y1) in zip(corners, corners[1:]):
+            n = max(abs(x1 - x0), abs(y1 - y0))
+            for k in range(0, n, 3):
+                im.putpixel((x0 + (x1 - x0) * k // n, y0 + (y1 - y0) * k // n), (70, 60, 50, 255))
+
+    # móveis, em ordem de profundidade: quem está atrás num eixo, dividindo
+    # a faixa do outro eixo, vai antes
+    items = []
+    for p in lay['pecas_piso']:
+        if p['tipo'] == 'reservado':
+            continue
+        (a, b), (da, db) = p['tile'], p['base']
+        items.append(dict(p=p, fp=(a, a + da, b, b + db)))
+
+    def behind(i, j):
+        (a0, a1, b0, b1), (c0, c1, d0, d1) = i['fp'], j['fp']
+        return (a1 <= c0 and b0 < d1 and d0 < b1) or (b1 <= d0 and a0 < c1 and c0 < a1)
+    order, done = [], set()
+    while len(order) < len(items):
+        ready = [k for k in range(len(items)) if k not in done
+                 and not any(behind(items[j], items[k]) for j in range(len(items)) if j not in done and j != k)]
+        k = min(ready or [k for k in range(len(items)) if k not in done], key=lambda k: sum(items[k]['fp']))
+        order.append(k)
+        done.add(k)
+
+    for k in order:
+        p = items[k]['p']
+        e = man[p['modelo']]
+        (a, b), (da, db) = p['tile'], p['base']
+        ax, ay = P(a + da, b + db)
+        if p['modelo'] == 'cadeira':
+            d, mirror = OLHA_PARA[p['olha_para']]
+            put(f'moveis/cadeira__{d}.png', e['ancora'], ax, ay)
+            who = p.get('ocupante_padrao', '').lower()
+            if p['zona'] != 'reuniao' and who in man:
+                put(*frame(who, 'sentado_frente'), *P(a + 0.5, b + 0.5), mirror=mirror)
+            continue
+        put(files(p['modelo'], e)[0], e['ancora'], ax, ay)
+        for obj in p.get('objetos', []):
+            o = man[obj]
+            ex, ey = e['encaixes'][obj]
+            put(files(obj, o)[0], o['ancora'], ax + ex, ay + ey)
+        if p['modelo'] in CAMA:
+            put(*frame(CAMA[p['modelo']], 'sentado_frente'), *P(a + 0.5, b + 0.5), mirror=True)
+
+    os.makedirs(PREVIA, exist_ok=True)
+    im.save(os.path.join(PREVIA, 'sala-parada.png'))
+    up(im, 2).save(os.path.join(PREVIA, 'sala-parada@2x.png'))
 
 
 if __name__ == '__main__':

@@ -335,6 +335,293 @@
       }
     }
   },
+  "piso_madeira": {
+    "pasta": "piso",
+    "base": [
+      1,
+      1
+    ],
+    "ancora": [
+      32,
+      32
+    ],
+    "variacoes": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "parede": {
+    "altura": 100,
+    "rodape": 6,
+    "cores": {
+      "esquerda": "#AEBC9F",
+      "direita": "#94A386",
+      "rodape_esquerda": "#EFEBE3",
+      "rodape_direita": "#D2CCC0",
+      "topo_esquerda": "#CAD5BE",
+      "topo_direita": "#B1BEA4",
+      "canto": "#7F8D72"
+    },
+    "borda_do_piso": {
+      "altura": 8,
+      "esquerda": "#B8935F",
+      "direita": "#9A784C"
+    }
+  },
+  "porta_entrada": {
+    "pasta": "parede",
+    "parede": "esquerda",
+    "tiles": 1,
+    "altura": [
+      0,
+      72
+    ],
+    "ancora": [
+      0,
+      88
+    ],
+    "estados": [
+      "fechada"
+    ]
+  },
+  "porta_trancada": {
+    "pasta": "parede",
+    "parede": "direita",
+    "tiles": 1,
+    "altura": [
+      0,
+      72
+    ],
+    "ancora": [
+      0,
+      72
+    ],
+    "estados": [
+      "trancada"
+    ],
+    "camadas": [
+      "silhueta",
+      "plaquinha-tesouraria",
+      "plaquinha-metas",
+      "plaquinha-auditoria"
+    ]
+  },
+  "porta_arquivo": {
+    "pasta": "parede",
+    "parede": "esquerda",
+    "tiles": 1,
+    "altura": [
+      0,
+      72
+    ],
+    "ancora": [
+      0,
+      88
+    ],
+    "estados": [
+      "fechada"
+    ]
+  },
+  "janela": {
+    "pasta": "parede",
+    "parede": "esquerda",
+    "tiles": 2,
+    "altura": [
+      32,
+      84
+    ],
+    "ancora": [
+      0,
+      83
+    ],
+    "camadas": [
+      "ceu-tarde",
+      "moldura"
+    ]
+  },
+  "quadro_branco": {
+    "pasta": "parede",
+    "parede": "direita",
+    "tiles": 2,
+    "altura": [
+      38,
+      82
+    ],
+    "ancora": [
+      0,
+      43
+    ],
+    "estados": [
+      "limpo"
+    ]
+  },
+  "mural_alertas": {
+    "pasta": "parede",
+    "parede": "direita",
+    "tiles": 1,
+    "altura": [
+      40,
+      80
+    ],
+    "ancora": [
+      0,
+      40
+    ],
+    "estados": [
+      "vazio"
+    ]
+  },
+  "tela_parede": {
+    "pasta": "parede",
+    "parede": "direita",
+    "tiles": 2,
+    "altura": [
+      48,
+      88
+    ],
+    "ancora": [
+      0,
+      39
+    ],
+    "estados": [
+      "apagada"
+    ]
+  },
+  "calendario": {
+    "pasta": "parede",
+    "parede": "direita",
+    "tiles": 1,
+    "altura": [
+      52,
+      80
+    ],
+    "ancora": [
+      0,
+      26
+    ],
+    "estados": [
+      "normal"
+    ]
+  },
+  "mural_recordacoes": {
+    "pasta": "parede",
+    "parede": "esquerda",
+    "tiles": 2,
+    "altura": [
+      40,
+      82
+    ],
+    "ancora": [
+      0,
+      73
+    ],
+    "estados": [
+      "vazio"
+    ],
+    "camadas": [
+      "foto-1",
+      "foto-2",
+      "foto-3",
+      "foto-4"
+    ]
+  },
+  "mesa_trabalho": {
+    "pasta": "moveis",
+    "base": [
+      2,
+      1
+    ],
+    "ancora": [
+      64,
+      71
+    ],
+    "encaixes": {
+      "monitor": [
+        -20,
+        -46
+      ],
+      "bandeja": [
+        4,
+        -39
+      ],
+      "sineta": [
+        -37,
+        -57
+      ],
+      "headset": [
+        6,
+        -40
+      ]
+    }
+  },
+  "mesa_fundador": {
+    "pasta": "moveis",
+    "base": [
+      2,
+      1
+    ],
+    "ancora": [
+      64,
+      71
+    ],
+    "encaixes": {
+      "monitor": [
+        -20,
+        -46
+      ]
+    }
+  },
+  "mesa_reuniao": {
+    "pasta": "moveis",
+    "base": [
+      2,
+      2
+    ],
+    "ancora": [
+      64,
+      72
+    ]
+  },
+  "balcao_recepcao": {
+    "pasta": "moveis",
+    "base": [
+      1,
+      3
+    ],
+    "ancora": [
+      32,
+      96
+    ]
+  },
+  "malote": {
+    "pasta": "moveis",
+    "base": [
+      1,
+      1
+    ],
+    "ancora": [
+      32,
+      56
+    ],
+    "estados": [
+      "vazio"
+    ]
+  },
+  "planta": {
+    "pasta": "moveis",
+    "base": [
+      1,
+      1
+    ],
+    "ancora": [
+      32,
+      58
+    ],
+    "estados": [
+      "viva"
+    ]
+  },
   "manta_flora": {
     "pasta": "moveis",
     "base": [
@@ -355,6 +642,61 @@
     "ancora": [
       32,
       34
+    ]
+  },
+  "cadeira": {
+    "pasta": "moveis",
+    "base": [
+      1,
+      1
+    ],
+    "ancora": [
+      32,
+      58
+    ],
+    "assento_px": 14,
+    "direcoes": [
+      "frente-dir",
+      "frente-esq",
+      "costas-dir",
+      "costas-esq"
+    ]
+  },
+  "monitor": {
+    "pasta": "objetos",
+    "ancora": [
+      12,
+      28
+    ],
+    "estados": [
+      "ligado"
+    ]
+  },
+  "bandeja": {
+    "pasta": "objetos",
+    "ancora": [
+      13,
+      11
+    ],
+    "estados": [
+      "vazia"
+    ]
+  },
+  "sineta": {
+    "pasta": "objetos",
+    "ancora": [
+      4,
+      5
+    ],
+    "estados": [
+      "parada"
+    ]
+  },
+  "headset": {
+    "pasta": "objetos",
+    "ancora": [
+      9,
+      4
     ]
   }
 }
