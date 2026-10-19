@@ -1,8 +1,5 @@
 {
-  "id": "flora",
-  "nome": "Flora",
-  "papel": null,
-  "folha": "flora.png",
+  "folha": "personagens/flora.png",
   "tela": [
     45,
     43
@@ -11,13 +8,11 @@
     21,
     39
   ],
-  "layout": "cada animação numa linha da folha, quadros da esquerda para a direita",
-  "espelhar": true,
   "animacoes": {
-    "parado_frente": {
+    "sentado_frente": {
       "linha": 0,
       "quadros": 1,
-      "fps": 1
+      "fps": 0
     }
   }
 }

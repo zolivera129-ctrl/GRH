@@ -1,8 +1,5 @@
 {
-  "id": "guilherme",
-  "nome": "Guilherme",
-  "papel": null,
-  "folha": "guilherme.png",
+  "folha": "personagens/guilherme.png",
   "tela": [
     40,
     70
@@ -11,13 +8,16 @@
     20,
     63
   ],
-  "layout": "cada animação numa linha da folha, quadros da esquerda para a direita",
-  "espelhar": true,
   "animacoes": {
     "parado_frente": {
       "linha": 0,
       "quadros": 1,
-      "fps": 1
+      "fps": 0
+    },
+    "sentado_frente": {
+      "linha": 1,
+      "quadros": 1,
+      "fps": 0
     }
   }
 }

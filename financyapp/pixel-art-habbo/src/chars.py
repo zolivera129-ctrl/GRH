@@ -41,25 +41,71 @@ def _legs_shoes(S, P, top=46):
 
     # tênis (o de trás fica mais alto, o da frente mais baixo)
     for (x0, y0) in ((19, 57), (11, 58)):
-        up = Layer(P['shoe'], P['shoeline'])
-        up.rows({y0: (x0, x0 + 6), y0 + 1: (x0, x0 + 8), y0 + 2: (x0, x0 + 9)})
-        up.outline()
-        S.add(up)
-        so = Layer(P['sole'], P['soleline'])
-        so.rows({y0 + 3: (x0, x0 + 9), y0 + 4: (x0 + 1, x0 + 9)})
-        so.outline(skip='t')
-        S.add(so)
-        if P.get('stripe'):
-            # a faixa lateral do Vans Old Skool
-            for x, y in ((x0 + 2, y0 + 2), (x0 + 3, y0 + 1), (x0 + 4, y0 + 1),
-                         (x0 + 5, y0 + 2), (x0 + 6, y0 + 2), (x0 + 7, y0 + 2)):
-                S.set(x, y, P['sole'])
-        else:
-            S.set(x0 + 6, y0 + 1, P['shoehl'])
-            S.set(x0 + 7, y0 + 1, P['shoehl'])
+        _sneaker(S, P, x0, y0)
 
 
-def _arms_body_legs(S, P):
+def _sneaker(S, P, x0, y0):
+    """Um tênis com o bico para a direita; (x0, y0) é o canto de cima, no calcanhar."""
+    up = Layer(P['shoe'], P['shoeline'])
+    up.rows({y0: (x0, x0 + 6), y0 + 1: (x0, x0 + 8), y0 + 2: (x0, x0 + 9)})
+    up.outline()
+    S.add(up)
+    so = Layer(P['sole'], P['soleline'])
+    so.rows({y0 + 3: (x0, x0 + 9), y0 + 4: (x0 + 1, x0 + 9)})
+    so.outline(skip='t')
+    S.add(so)
+    if P.get('stripe'):
+        # a faixa lateral do Vans Old Skool
+        for x, y in ((x0 + 2, y0 + 2), (x0 + 3, y0 + 1), (x0 + 4, y0 + 1),
+                     (x0 + 5, y0 + 2), (x0 + 6, y0 + 2), (x0 + 7, y0 + 2)):
+            S.set(x, y, P['sole'])
+    else:
+        S.set(x0 + 6, y0 + 1, P['shoehl'])
+        S.set(x0 + 7, y0 + 1, P['shoehl'])
+
+
+# pose sentada: o quadril desce até o assento, 14 px acima do chão (y 49),
+# e as coxas vão para a frente. Os pés continuam no chão, na mesma tela.
+SIT_DY = 3
+
+
+def _sit_legs(S, pant, hip, shoe, wide=False):
+    """Pernas da pose sentada, desenhadas sem o deslocamento do corpo.
+    pant = (base, sombra, contorno); hip = linha de cima do quadril, já
+    deslocada; shoe(S, x0, y0) desenha um pé (o de trás primeiro);
+    wide=True abre a canela (pantalona)."""
+    dy, S.dy = S.dy, 0
+    base, shade, line = pant
+    lit = mix(base, (255, 255, 255), 0.16)
+    hp = Layer(base, line)
+    hp.rows({y: (11, 27) for y in range(hip, 52)})
+    hp.shade_side('r', 2, shade)
+    hp.outline()
+    S.add(hp)
+    # cada perna: coxa (o alto pega luz), canela na sombra e o pé no chão.
+    # A de trás fica 5 px à direita e 2 px acima, no sentido de -B.
+    for (kx, ky), shin_y1, foot in (((32, 50), 58, (28, 57)), ((27, 52), 59, (22, 58))):
+        lg = Layer(base, line)
+        lg.rows({ky - 2: (13, kx - 3), ky - 1: (12, kx - 1), ky: (12, kx),
+                 ky + 1: (12, kx), ky + 2: (13, kx)})
+        lg.rect(kx - (6 if wide else 4), ky + 2, kx, shin_y1)
+        lg.paint([(x, ky - 1) for x in range(12, kx)], lit)
+        lg.paint([(x, y) for y in range(ky + 3, shin_y1 + 1) for x in range(kx - 2, kx + 1)], shade)
+        lg.outline()
+        S.add(lg)
+        shoe(S, *foot)
+    S.dy = dy
+
+
+def _legs(S, P, pose, top=46):
+    if pose == 'sentado':
+        _sit_legs(S, (P['pant'], P['pants'], P['pantline']), top + S.dy,
+                  lambda S, x0, y0: _sneaker(S, P, x0, y0))
+    else:
+        _legs_shoes(S, P, top)
+
+
+def _arms_body_legs(S, P, pose='parado'):
     """Corpo-base compartilhado pelos dois humanos (camiseta larga, braços
     caindo ao lado do corpo, calça e tênis). P traz a paleta."""
     # braço de trás (o da direita da tela), atrás do corpo
@@ -78,7 +124,7 @@ def _arms_body_legs(S, P):
     fsl.outline()
     S.add(fsl)
 
-    _legs_shoes(S, P)
+    _legs(S, P, pose)
 
     # tronco (camiseta larga)
     bd = Layer(P['tee'], P['teeline'])
@@ -168,7 +214,7 @@ def _beard_on(S, rows, base, dark, sk, tex=None, stubble=False):
             q = (x + dx, y + dy)
             if q in pts:
                 continue
-            if dy == 1 or q not in S.px:
+            if dy == 1 or (q[0], q[1] + S.dy) not in S.px:
                 hard = True
             else:
                 soft = True
@@ -179,8 +225,9 @@ def _beard_on(S, rows, base, dark, sk, tex=None, stubble=False):
     S.add(L)
 
 
-def guilherme():
-    S = Sprite(40, 70)
+def guilherme(pose='parado'):
+    """pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(
         sk=rgb('#C98D5F'), sks=rgb('#AD7249'), skl=rgb('#DCA67B'), skline=rgb('#7A4A2C'),
         tee=rgb('#F7F7F3'), tees=rgb('#DCDDE3'), teeline=rgb('#9A9CA9'),
@@ -192,7 +239,7 @@ def guilherme():
     blk, blkl = rgb('#1E1E23'), rgb('#44444E')
     blu, blud, pink = rgb('#3EA8E6'), rgb('#1C5FA8'), rgb('#F59CC6')
 
-    _arms_body_legs(S, P)
+    _arms_body_legs(S, P, pose)
 
     # estampa: o boneco azul voando com o raio rosa
     art = {
@@ -431,8 +478,9 @@ def saldanha(pose='tablet'):
     """Contador: grisalho, óculos, barba curta branca, polo marinho para
     dentro da calça, cinto marrom, chino cinza-claro e tênis branco.
     pose='tablet': segura o tablet com as duas mãos, conferindo os números.
-    pose='parado': em pé, braços soltos (o parado do jogo)."""
-    S = Sprite(40, 70)
+    pose='parado': em pé, braços soltos (o parado do jogo).
+    pose='sentado': o parado, sentado."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = _white_sneakers(dict(
         sk=rgb('#D3A07B'), sks=rgb('#B8835F'), skl=rgb('#E4B794'), skline=rgb('#83533A'),
         tee=rgb('#1F2B47'), tees=rgb('#18223A'), teeline=rgb('#0A0F1E'),
@@ -441,7 +489,7 @@ def saldanha(pose='tablet'):
     P['shoeline'] = rgb('#878A92')
     navy_l = rgb('#34446D')
 
-    if pose == 'parado':
+    if pose != 'tablet':
         # braço de trás solto, com o relógio no pulso
         fa = Layer(P['sk'], P['skline'])
         fa.rows({y: (27, 30) for y in range(35, 46)})
@@ -461,7 +509,7 @@ def saldanha(pose='tablet'):
     fsl.outline()
     S.add(fsl)
 
-    _legs_shoes(S, P, top=44)
+    _legs(S, P, pose, top=44)
 
     # polo por dentro da calça
     bd = Layer(P['tee'], P['teeline'])
@@ -484,7 +532,7 @@ def saldanha(pose='tablet'):
     for x in (13, 24):
         S.set(x, 44, rgb('#A5A8AD'))
 
-    if pose == 'parado':
+    if pose != 'tablet':
         nsl = Layer(P['tee'], P['teeline'])
         nsl.rows({29: (9, 13), 30: (8, 14)})
         nsl.rows({y: (7, 14) for y in range(31, 35)})
@@ -622,8 +670,9 @@ def caio(pose='tablet'):
     """Consultor: cabelo cacheado curto, sorrisão, camisa de linho verde-oliva
     aberta sobre camiseta branca, crachá no cordão, chino marinho e tênis
     branco. pose='tablet': mostra o tablet com o check verde.
-    pose='parado': em pé, braços soltos (o parado do jogo)."""
-    S = Sprite(40, 70)
+    pose='parado': em pé, braços soltos (o parado do jogo).
+    pose='sentado': o parado, sentado."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = _white_sneakers(dict(
         sk=rgb('#D9A47E'), sks=rgb('#BE8763'), skl=rgb('#E9BC99'), skline=rgb('#86553A'),
         tee=rgb('#6D7C56'), tees=rgb('#5A6845'), teeline=rgb('#333C25'),
@@ -648,7 +697,7 @@ def caio(pose='tablet'):
         fsl.set(x, 39, olive_l)
     S.add(fsl)
 
-    _legs_shoes(S, P)
+    _legs(S, P, pose)
 
     # camisa aberta por cima da camiseta branca
     bd = Layer(P['tee'], P['teeline'])
@@ -676,7 +725,7 @@ def caio(pose='tablet'):
     for x in range(24, 26):
         S.set(x, 33, olive_l)
 
-    if pose == 'parado':
+    if pose != 'tablet':
         # braço da frente solto, manga dobrada no antebraço
         nsl = Layer(P['tee'], P['teeline'])
         nsl.rows({29: (9, 13), 30: (8, 14)})
@@ -891,11 +940,21 @@ def _face(S, P, brow, lash=None, smile='teeth', lip=None):
             S.set(x, y, mouth)
 
 
-def vivi():
+def _pump(S, x0, y0, w=10):
+    """Scarpin caramelo da Vivi, com o bico para a direita."""
+    sh = Layer(rgb('#C88A57'), rgb('#6E4424'))
+    sh.rows({y0: (x0 + 1, x0 + w - 2), y0 + 1: (x0, x0 + w), y0 + 2: [(x0, x0 + 1), (x0 + 5, x0 + w)]})
+    sh.outline()
+    sh.set(x0 + w - 3, y0 + 1, rgb('#E6B585'))
+    S.add(sh)
+
+
+def vivi(pose='parado'):
     """Vivi: cachos volumosos castanhos com luzes caramelo, argolas e
     colar dourados, blusa laranja canelada de decote quadrado e manga 3/4,
-    calça pantalona creme de cintura alta e scarpin caramelo."""
-    S = Sprite(40, 70)
+    calça pantalona creme de cintura alta e scarpin caramelo.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#B07148'), sks=rgb('#93583A'), skl=rgb('#C4875C'), skline=rgb('#5E3420'),
              tee=rgb('#D9623A'), tees=rgb('#B84D2C'), teeline=rgb('#7A2E18'))
     top = (P['tee'], P['tees'], P['teeline'])
@@ -923,26 +982,24 @@ def vivi():
     _far_arm_sl(S, P, top, 40, watch=(gold, rgb('#F7EFD0')))
 
     # pantalona creme e scarpin
-    for legs in (((19, 26), (19, 27), 57), ((12, 19), (11, 19), 58)):
-        (a0, a1), (b0, b1), y1 = legs
-        lg = Layer(cream[0], cream[2])
-        lg.rows({y: (a0, a1) if y < 49 else (b0, b1) for y in range(41, y1 + 1)})
-        lg.shade_side('r', 2, cream[1])
-        lg.outline()
-        S.add(lg)
-    # vinco da pantalona
-    for y in range(45, 58):
-        S.set(15, y, mix(cream[0], cream[1], 0.6))
-    for y in range(46, 57):
-        S.set(23, y, mix(cream[0], cream[1], 0.5))
-    tan, tand, tanl = rgb('#C88A57'), rgb('#6E4424'), rgb('#E6B585')
-    for rows, hl in (({58: (20, 27), 59: (19, 29), 60: [(19, 20), (24, 29)]}, (26, 59)),
-                     ({59: (13, 21), 60: (12, 23), 61: [(12, 13), (17, 23)]}, (20, 60))):
-        sh = Layer(tan, tand)
-        sh.rows(rows)
-        sh.outline()
-        sh.set(*hl, tanl)
-        S.add(sh)
+    if pose == 'sentado':
+        # o scarpin é mais baixo que o tênis: desce 1 px para pisar onde pisa em pé
+        _sit_legs(S, cream, 41 + S.dy, lambda S, x0, y0: _pump(S, x0, y0 + 1), wide=True)
+    else:
+        for legs in (((19, 26), (19, 27), 57), ((12, 19), (11, 19), 58)):
+            (a0, a1), (b0, b1), y1 = legs
+            lg = Layer(cream[0], cream[2])
+            lg.rows({y: (a0, a1) if y < 49 else (b0, b1) for y in range(41, y1 + 1)})
+            lg.shade_side('r', 2, cream[1])
+            lg.outline()
+            S.add(lg)
+        # vinco da pantalona
+        for y in range(45, 58):
+            S.set(15, y, mix(cream[0], cream[1], 0.6))
+        for y in range(46, 57):
+            S.set(23, y, mix(cream[0], cream[1], 0.5))
+        _pump(S, 19, 58)
+        _pump(S, 12, 59, w=11)
 
     # blusa canelada por dentro da calça
     ribs = lambda x, y, c: mul(c, 0.92) if x % 2 == 0 else None

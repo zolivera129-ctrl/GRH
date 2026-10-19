@@ -93,16 +93,19 @@ class Layer:
 
 
 class Sprite:
-    def __init__(self, w, h):
+    def __init__(self, w, h, dy=0):
+        """dy desloca na vertical tudo o que for desenhado (a pose sentada
+        desce o corpo até o assento sem redesenhar cada parte)."""
         self.w, self.h = w, h
+        self.dy = dy
         self.px = {}
 
     def add(self, layer, dx=0, dy=0):
         for (x, y), c in layer.px.items():
-            self.px[(x + dx, y + dy)] = c
+            self.px[(x + dx, y + dy + self.dy)] = c
 
     def set(self, x, y, c):
-        self.px[(x, y)] = c
+        self.px[(x, y + self.dy)] = c
 
     def image(self):
         im = Image.new('RGBA', (self.w, self.h), (0, 0, 0, 0))

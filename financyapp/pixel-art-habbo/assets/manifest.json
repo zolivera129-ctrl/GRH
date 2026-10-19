@@ -1,611 +1,152 @@
 {
-  "versao": 1,
-  "lote": "sala-parada",
-  "documento": "Escritório de Finanças: peças para desenhar, v1 (18/10/2026)",
-  "convencoes": {
-    "projecao": "isométrico 2:1",
-    "tile": [
-      64,
-      32
+  "guilherme": {
+    "folha": "personagens/guilherme.png",
+    "tela": [
+      40,
+      70
     ],
-    "escala_na_tela": "2x no computador, sem suavizar (vizinho mais próximo)",
-    "luz": "da esquerda: a face voltada para a esquerda é a mais clara",
-    "eixos": "A0/B0 é o canto do fundo; A cresce para a direita-baixo ao longo da parede direita, B para a esquerda-baixo ao longo da parede esquerda",
-    "ponto_do_piso": "o canto (s, t) do piso fica na tela em (cx + 32*(s - t), cy + 16*(s + t)), com (cx, cy) no canto A0/B0",
-    "ancora_movel": "vértice de baixo do losango da base. Um móvel em Aa/Bb com base [x, y] tem esse vértice no ponto do piso (a + x, b + y). Cole a imagem em ponto - ancora.",
-    "ancora_objeto_sobre_movel": "objetos que ficam em cima de um móvel (monitor, bandeja, sineta) vêm no mesmo recorte do móvel: use a mesma âncora e cole no mesmo ponto.",
-    "ancora_parede": "ponta esquerda (na tela) da base da peça, na altura altura_base acima do chão. Parede esquerda: a ponta esquerda fica no fim do último tile (peça em B3-B4 começa em t = 5). Parede direita: no começo do primeiro tile (peça em A5-A6 começa em s = 5). A largura da imagem é 32 px por tile.",
-    "ancora_personagem": "meio dos pés (cachorros: meio das patas). Fica no centro do tile (a + 0.5, b + 0.5).",
-    "direcoes": {
-      "frente": "de frente para a direita (olhando para +A)",
-      "costas": "de costas, para a direita (olhando para -B)",
-      "espelhar": "virar a imagem na horizontal dá +B (de frente) e -A (de costas). Âncora espelhada: [largura - x, y]."
-    },
-    "arquivos": "PNG transparente em 1x, sem sombra no chão e sem etiqueta de nome"
+    "ancora": [
+      20,
+      63
+    ],
+    "animacoes": {
+      "parado_frente": {
+        "linha": 0,
+        "quadros": 1,
+        "fps": 0
+      },
+      "sentado_frente": {
+        "linha": 1,
+        "quadros": 1,
+        "fps": 0
+      }
+    }
   },
-  "sala": {
-    "tiles": [
-      12,
-      10
-    ]
+  "saldanha": {
+    "folha": "personagens/saldanha.png",
+    "tela": [
+      40,
+      70
+    ],
+    "ancora": [
+      20,
+      63
+    ],
+    "animacoes": {
+      "parado_frente": {
+        "linha": 0,
+        "quadros": 1,
+        "fps": 0
+      },
+      "sentado_frente": {
+        "linha": 1,
+        "quadros": 1,
+        "fps": 0
+      }
+    }
   },
-  "piso": {
-    "tile": [
-      64,
-      32
+  "caio": {
+    "folha": "personagens/caio.png",
+    "tela": [
+      40,
+      70
+    ],
+    "ancora": [
+      20,
+      63
+    ],
+    "animacoes": {
+      "parado_frente": {
+        "linha": 0,
+        "quadros": 1,
+        "fps": 0
+      },
+      "sentado_frente": {
+        "linha": 1,
+        "quadros": 1,
+        "fps": 0
+      }
+    }
+  },
+  "vivi": {
+    "folha": "personagens/vivi.png",
+    "tela": [
+      40,
+      70
+    ],
+    "ancora": [
+      20,
+      62
+    ],
+    "animacoes": {
+      "parado_frente": {
+        "linha": 0,
+        "quadros": 1,
+        "fps": 0
+      },
+      "sentado_frente": {
+        "linha": 1,
+        "quadros": 1,
+        "fps": 0
+      }
+    }
+  },
+  "flora": {
+    "folha": "personagens/flora.png",
+    "tela": [
+      45,
+      43
+    ],
+    "ancora": [
+      21,
+      39
+    ],
+    "animacoes": {
+      "sentado_frente": {
+        "linha": 0,
+        "quadros": 1,
+        "fps": 0
+      }
+    }
+  },
+  "lupin": {
+    "folha": "personagens/lupin.png",
+    "tela": [
+      33,
+      30
+    ],
+    "ancora": [
+      14,
+      25
+    ],
+    "animacoes": {
+      "sentado_frente": {
+        "linha": 0,
+        "quadros": 1,
+        "fps": 0
+      }
+    }
+  },
+  "manta_flora": {
+    "pasta": "moveis",
+    "base": [
+      1,
+      1
     ],
     "ancora": [
       32,
-      0
-    ],
-    "nota": "âncora no vértice de cima do losango; sortear as variações",
-    "variacoes": [
-      "piso/madeira-1.png",
-      "piso/madeira-2.png",
-      "piso/madeira-3.png"
+      30
     ]
   },
-  "parede": {
-    "altura": 100,
-    "rodape": 6,
-    "cores": {
-      "esquerda": "#AEBC9F",
-      "direita": "#94A386",
-      "rodape_esquerda": "#EFEBE3",
-      "rodape_direita": "#D2CCC0",
-      "topo_esquerda": "#CAD5BE",
-      "topo_direita": "#B1BEA4",
-      "canto": "#7F8D72"
-    },
-    "borda_do_piso": {
-      "altura": 8,
-      "esquerda": "#B8935F",
-      "direita": "#9A784C"
-    }
-  },
-  "pecas": {
-    "porta_entrada": {
-      "tipo": "parede",
-      "parede": "esquerda",
-      "tiles": 1,
-      "posicao": "B8",
-      "altura_base": 0,
-      "ancora": [
-        0,
-        88
-      ],
-      "estados": {
-        "fechada": "parede/porta-entrada__fechada.png"
-      },
-      "padrao": "fechada",
-      "falta": [
-        "aberta (lote Malote)"
-      ]
-    },
-    "janela": {
-      "tipo": "parede",
-      "parede": "esquerda",
-      "tiles": 2,
-      "posicao": "B3-B4",
-      "altura_base": 32,
-      "ancora": [
-        0,
-        73
-      ],
-      "camadas": {
-        "ceu": {
-          "manha": "parede/janela__ceu-manha.png",
-          "tarde": "parede/janela__ceu-tarde.png",
-          "fim-de-tarde": "parede/janela__ceu-fim-de-tarde.png",
-          "noite": "parede/janela__ceu-noite.png"
-        },
-        "moldura": "parede/janela__moldura.png"
-      },
-      "ordem": "céu embaixo, moldura por cima (as duas no mesmo recorte e na mesma âncora)",
-      "ceu_por_horario": {
-        "fuso": "America/Sao_Paulo",
-        "manha": [
-          6,
-          12
-        ],
-        "tarde": [
-          12,
-          17
-        ],
-        "fim-de-tarde": [
-          17,
-          19
-        ],
-        "noite": [
-          19,
-          6
-        ]
-      }
-    },
-    "quadro_branco": {
-      "tipo": "parede",
-      "parede": "esquerda",
-      "tiles": 2,
-      "posicao": "B1-B2",
-      "altura_base": 36,
-      "ancora": [
-        0,
-        65
-      ],
-      "estados": {
-        "limpo": "parede/quadro-branco__limpo.png"
-      },
-      "padrao": "limpo",
-      "falta": [
-        "com o report (lote Reunião)"
-      ]
-    },
-    "calendario": {
-      "tipo": "parede",
-      "parede": "esquerda",
-      "tiles": 1,
-      "posicao": "B5",
-      "altura_base": 46,
-      "ancora": [
-        0,
-        40
-      ],
-      "estados": {
-        "normal": "parede/calendario__normal.png"
-      },
-      "padrao": "normal",
-      "falta": [
-        "com dia vermelho (lote Objetos reagindo)"
-      ]
-    },
-    "mural": {
-      "tipo": "parede",
-      "parede": "esquerda",
-      "tiles": 1,
-      "posicao": "B6",
-      "altura_base": 44,
-      "ancora": [
-        0,
-        37
-      ],
-      "estados": {
-        "vazio": "parede/mural__vazio.png"
-      },
-      "padrao": "vazio",
-      "falta": [
-        "post-it solto (lote Objetos reagindo)"
-      ]
-    },
-    "tela_parede": {
-      "tipo": "parede",
-      "parede": "direita",
-      "tiles": 2,
-      "posicao": "A5-A6",
-      "altura_base": 46,
-      "ancora": [
-        0,
-        32
-      ],
-      "estados": {
-        "apagada": "parede/tela-parede__apagada.png"
-      },
-      "padrao": "apagada",
-      "falta": [
-        "com o selo FECHADO (lote Objetos reagindo)"
-      ]
-    },
-    "mesa_redonda": {
-      "tipo": "movel",
-      "base": [
-        2,
-        2
-      ],
-      "posicao": "A1/B1",
-      "estados": {
-        "padrao": "moveis/mesa-redonda.png"
-      },
-      "padrao": "padrao",
-      "ancora": [
-        36,
-        74
-      ]
-    },
-    "cadeira_reuniao": {
-      "tipo": "movel",
-      "base": [
-        1,
-        1
-      ],
-      "ancora": [
-        16,
-        48
-      ],
-      "direcoes": {
-        "frente": "moveis/cadeira-reuniao__frente.png",
-        "costas": "moveis/cadeira-reuniao__costas.png"
-      },
-      "espelhar": true,
-      "posicoes_sugeridas": [
-        {
-          "posicao": "A0/B2",
-          "olha_para": "+A",
-          "usar": "frente"
-        },
-        {
-          "posicao": "A1/B0",
-          "olha_para": "+B",
-          "usar": "frente espelhada"
-        },
-        {
-          "posicao": "A3/B1",
-          "olha_para": "-A",
-          "usar": "costas espelhada"
-        },
-        {
-          "posicao": "A2/B3",
-          "olha_para": "-B",
-          "usar": "costas"
-        }
-      ]
-    },
-    "cadeira_contador": {
-      "tipo": "movel",
-      "base": [
-        1,
-        1
-      ],
-      "ancora": [
-        16,
-        54
-      ],
-      "direcoes": {
-        "frente": "moveis/cadeira-contador__frente.png",
-        "costas": "moveis/cadeira-contador__costas.png"
-      },
-      "espelhar": true,
-      "posicao": "A5/B3",
-      "olha_para": "+B",
-      "usar": "frente espelhada",
-      "nota": "o Contador senta de frente para quem olha a tela"
-    },
-    "mesa_contador": {
-      "tipo": "movel",
-      "base": [
-        2,
-        1
-      ],
-      "posicao": "A5/B4",
-      "ancora": [
-        61,
-        90
-      ],
-      "estados": {
-        "padrao": "moveis/mesa-contador.png"
-      },
-      "padrao": "padrao",
-      "camadas": {
-        "monitor": {
-          "ancora": [
-            61,
-            90
-          ],
-          "estados": {
-            "parado": "moveis/mesa-contador__monitor-parado.png"
-          },
-          "falta": [
-            "gráfico subindo, 3 quadros (lote Objetos reagindo)"
-          ]
-        }
-      },
-      "nota": "o monitor fica virado para +A, no canto esquerdo da mesa, para quem olha a tela ver o gráfico"
-    },
-    "bandeja": {
-      "tipo": "objeto",
-      "sobre": "mesa_contador",
-      "ancora": [
-        61,
-        90
-      ],
-      "estados": {
-        "vazia": "moveis/bandeja__vazia.png"
-      },
-      "padrao": "vazia",
-      "falta": [
-        "pilha baixa, média e alta (lote Objetos reagindo)"
-      ]
-    },
-    "balcao": {
-      "tipo": "movel",
-      "base": [
-        3,
-        1
-      ],
-      "posicao": "A3/B6",
-      "estados": {
-        "padrao": "moveis/balcao.png"
-      },
-      "padrao": "padrao",
-      "lugares": {
-        "consultor": "A4/B5",
-        "quem_chega": "A4/B7"
-      },
-      "nota": "a frente de ripas olha para +B, para quem chega",
-      "ancora": [
-        93,
-        95
-      ]
-    },
-    "sineta": {
-      "tipo": "objeto",
-      "sobre": "balcao",
-      "ancora": [
-        93,
-        95
-      ],
-      "estados": {
-        "parada": "moveis/sineta__parada.png"
-      },
-      "padrao": "parada",
-      "falta": [
-        "tocando, 2 quadros (lote Balcão)"
-      ]
-    },
-    "malote": {
-      "tipo": "movel",
-      "base": [
-        1,
-        1
-      ],
-      "posicao": "A0/B7",
-      "estados": {
-        "vazio": "moveis/malote__vazio.png"
-      },
-      "padrao": "vazio",
-      "falta": [
-        "com envelope e com bandeirinha (lote Malote)"
-      ],
-      "nota": "encostado na parede esquerda; a abertura olha para +A",
-      "ancora": [
-        21,
-        68
-      ]
-    },
-    "planta": {
-      "tipo": "movel",
-      "base": [
-        1,
-        1
-      ],
-      "posicao": "A8/B3",
-      "estados": {
-        "viva": "moveis/planta__viva.png"
-      },
-      "padrao": "viva",
-      "falta": [
-        "murcha (lote Objetos reagindo)"
-      ],
-      "ancora": [
-        15,
-        73
-      ]
-    },
-    "manta_flora": {
-      "tipo": "movel",
-      "base": [
-        1,
-        1
-      ],
-      "posicao": "A9/B8",
-      "estados": {
-        "padrao": "moveis/manta-flora.png"
-      },
-      "padrao": "padrao",
-      "no_chao": true,
-      "ancora": [
-        24,
-        30
-      ]
-    },
-    "caminha_lupin": {
-      "tipo": "movel",
-      "base": [
-        1,
-        1
-      ],
-      "posicao": "A10/B8",
-      "estados": {
-        "padrao": "moveis/caminha-lupin.png"
-      },
-      "padrao": "padrao",
-      "no_chao": true,
-      "ancora": [
-        19,
-        34
-      ]
-    }
-  },
-  "personagens": {
-    "guilherme": {
-      "json": "personagens/guilherme.json",
-      "nome": "Guilherme",
-      "papel": null,
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "gabriel": {
-      "json": "personagens/gabriel.json",
-      "nome": "Gabriel",
-      "papel": null,
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "contador": {
-      "json": "personagens/contador.json",
-      "nome": "Saldanha",
-      "papel": "Contador",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "consultor": {
-      "json": "personagens/consultor.json",
-      "nome": "Caio",
-      "papel": "Consultor",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "flora": {
-      "json": "personagens/flora.json",
-      "nome": "Flora",
-      "papel": null,
-      "tela": [
-        45,
-        43
-      ],
-      "ancora": [
-        21,
-        39
-      ]
-    },
-    "lupin": {
-      "json": "personagens/lupin.json",
-      "nome": "Lupin",
-      "papel": null,
-      "tela": [
-        33,
-        30
-      ],
-      "ancora": [
-        14,
-        25
-      ]
-    },
-    "vivi": {
-      "json": "personagens/vivi.json",
-      "nome": "Vivi",
-      "papel": null,
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "nina": {
-      "json": "personagens/nina.json",
-      "nome": "Nina",
-      "papel": null,
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "otto": {
-      "json": "personagens/otto.json",
-      "nome": "Otto",
-      "papel": null,
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "sr-pra-ontem": {
-      "json": "personagens/sr-pra-ontem.json",
-      "nome": "Sr. Pra Ontem",
-      "papel": "Departamento das Urgências",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "iris": {
-      "json": "personagens/iris.json",
-      "nome": "Íris",
-      "papel": "Analista de Cenários Financeiros",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "joana": {
-      "json": "personagens/joana.json",
-      "nome": "Joana",
-      "papel": "Negociadora de Resultados",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "malu": {
-      "json": "personagens/malu.json",
-      "nome": "Malu",
-      "papel": "Experiências, Viagens e Histórias",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    },
-    "duda": {
-      "json": "personagens/duda.json",
-      "nome": "Duda",
-      "papel": "Auditoria e Clareza Financeira",
-      "tela": [
-        40,
-        70
-      ],
-      "ancora": [
-        20,
-        63
-      ]
-    }
+  "caminha_lupin": {
+    "pasta": "moveis",
+    "base": [
+      1,
+      1
+    ],
+    "ancora": [
+      32,
+      34
+    ]
   }
 }

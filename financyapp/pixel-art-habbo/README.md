@@ -1,8 +1,8 @@
-# Pixel art: estilo Habbo e Escritório de Finanças
+# Pixel art: estilo Habbo e FinancyApp
 
-Catorze personagens em cartões no estilo Habbo Hotel, as peças do Escritório
-de Finanças para o jogo (`assets/`) e, dos seis primeiros, uma versão em
-grade com tiles de 16x16 e personagens de 16x32.
+Catorze personagens em cartões no estilo Habbo Hotel, as peças do FinancyApp
+para o jogo (`assets/`) e, dos seis primeiros, uma versão em grade com
+tiles de 16x16 e personagens de 16x32.
 
 | # | Quem | Cenário |
 |---|---|---|
@@ -26,38 +26,41 @@ grade com tiles de 16x16 e personagens de 16x32.
 `out/01-guilherme.png` a `out/14-duda.png`, mais `out/00-todos.png` com
 todos juntos. Cada arte tem 96x120 pixels ampliados 10x (960x1200).
 
-## Escritório de Finanças (`assets/`)
+## FinancyApp (`assets/`)
 
-Peças isoladas para o jogo, seguindo o documento "Escritório de Finanças:
-peças para desenhar" (v1, 18/10/2026): isométrico 2:1, tile de 64x32,
-parede de 100 px, luz da esquerda, PNG transparente em 1x, sem sombra e
-sem etiqueta. Lote entregue até agora: **Sala parada**.
+Peças isoladas para o jogo, seguindo `../docs/FinancyApp_Assets_v2.md`:
+isométrico 2:1, tile de 64x32, luz da esquerda, PNG transparente em 1x,
+sem sombra e sem etiqueta. As chaves do `manifest.json` são os ids de
+modelo da planta (campo `modelo` de `../docs/FinancyApp_Layout_12x10_v1.json`).
+
+O `build.py` apaga e refaz o `assets/` a cada rodada. Por enquanto ele traz
+do lote do corte 1 só os personagens, a manta e a caminha; móveis, objetos,
+parede e piso entram depois.
 
 ```
 assets/
-  piso/          madeira-1.png, madeira-2.png, madeira-3.png
-  parede/        porta-entrada, janela (moldura + 4 céus), quadro-branco,
-                 calendario, mural, tela-parede
-  moveis/        mesa-redonda, cadeira-reuniao (frente, costas), mesa-contador
-                 (+ monitor em camada), bandeja, cadeira-contador (frente,
-                 costas), balcao, sineta, malote, planta, manta-flora,
-                 caminha-lupin
-  personagens/   guilherme, gabriel, contador, consultor, flora, lupin,
-                 vivi, nina, otto, sr-pra-ontem, iris, joana, malu, duda
-                 (folha PNG + JSON com quadros, âncora e fps)
-  manifest.json  tamanho em tiles, âncora, estados e posição de cada peça
-  previa/        a sala montada a partir desses arquivos e a prancha de escala
+  moveis/        manta_flora.png, caminha_lupin.png
+  personagens/   guilherme, saldanha, caio, vivi, flora, lupin
+                 (folha PNG + JSON com tela, âncora e animações)
+  manifest.json  por modelo: pasta, base em tiles e âncora (peças);
+                 folha, tela, âncora e animações (personagens)
 ```
 
-As regras de âncora e de espelhamento estão em `manifest.json`, na chave
-`convencoes`. O que ainda falta de cada peça está na chave `falta`.
-
-- Contador = Saldanha, Consultor = Caio.
-- Cachorros na escala do escritório: Flora sentada com ~37 px (a cabeça na
-  altura do queixo do Guilherme) e Lupin com ~23 px. Os números ficam em
-  `FLORA_K` e `LUPIN_K`, no `office.py`.
-- O monitor da mesa do Contador fica virado para +A, para quem olha a tela
-  ver o gráfico.
+- Personagens: uma animação por linha da folha, quadros da esquerda para a
+  direita. Os humanos têm `parado_frente` e `sentado_frente`; a Flora e o
+  Lupin, `sentado_frente`. A âncora é o meio dos pés; no sentado, é o chão
+  embaixo do quadril, no mesmo ponto da tela do parado.
+- Móveis: âncora no vértice de baixo do losango da base. A imagem é justa
+  na base, então a âncora fica em [32 × tiles em A, pé da imagem].
+- O `build.py` confere as âncoras antes de gravar o manifesto.
+- A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
+  (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
+  dobram para a frente.
+- A escala dos cachorros ainda está em aberto. Os assets usam a da v1
+  (Flora com 37 px e Lupin com 23 px; `FLORA_K` e `LUPIN_K`, no
+  `office.py`). A prancha `previa/escala@2x.png` mostra os seis lado a lado
+  no piso, em pé e sentados, com os cachorros nessa escala e na sugestão da
+  v2 (`ESCALAS_CACHORROS`).
 
 ## Grade 16x16 (`out/grade16/`)
 
@@ -90,10 +93,10 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
 - `scene.py` e `build.py`: quartos isométricos e mobis do estilo Habbo.
 - `sprites16.py`: os sprites 16x32, um desenho em texto por personagem.
 - `scene16.py`: as salas em tiles 16x16, os tilesets e as exportações.
-- `office.py`: o Escritório de Finanças: pintor isométrico, peças,
-  manifest e prévia.
+- `office.py`: as peças do FinancyApp: pintor isométrico, peças, a
+  exportação do `assets/` e a prancha de escala.
 
-Para gerar tudo de novo (o `build.py` já gera o `assets/` também):
+Para gerar tudo de novo (o `build.py` também gera o `assets/` e a prancha):
 
 ```
 pip install pillow

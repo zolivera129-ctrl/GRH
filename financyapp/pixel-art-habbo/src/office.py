@@ -1,30 +1,30 @@
-"""Escritório de Finanças: as peças isoladas do jogo, lote "Sala parada".
+"""FinancyApp: as peças isoladas do jogo, lote do corte 1 (a sala parada).
 
-Segue o documento "Escritório de Finanças: peças para desenhar" (v1):
-isométrico 2:1, tile de 64x32, luz da esquerda, contorno na versão escura
-da própria cor, PNG transparente em 1x, sem sombra e sem etiqueta.
+Segue ../../docs/FinancyApp_Assets_v2.md: isométrico 2:1, tile de 64x32,
+luz da esquerda, contorno na versão escura da própria cor, PNG
+transparente em 1x, sem sombra e sem etiqueta. As chaves do manifesto são
+os ids de modelo da planta (campo `modelo` do layout).
 
 Uso: python3 office.py  (o build.py também chama)
-Gera ../assets/ com as peças, os JSON dos personagens, o manifest.json e
-as prévias (a sala montada a partir desses mesmos arquivos).
+Gera ../assets/ com as peças, os JSON dos personagens e o manifest.json, e
+../previa/escala@2x.png, a prancha para fechar a escala.
 """
 import json
 import math
 import os
+import shutil
 import sys
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, os.path.dirname(__file__))
 from px import Layer, rgb, mul, mix, up  # noqa: E402
-from scene import FONT, text_width  # noqa: E402
 import chars  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'assets')
 TW, TH = 64, 32
 WALL_H = 100
 BASEBOARD = 6
-ROOM_A, ROOM_B = 12, 10
 WHITE = rgb('#FFFFFF')
 # escala dos cachorros no escritório: a cabeça da Flora sentada na altura
 # do queixo do Guilherme (~37 px); o Lupin com ~23 px
@@ -184,11 +184,16 @@ class Iso:
         self.px[(int(x), int(y))] = c
 
     def image(self):
-        """Recorta no que foi desenhado e devolve (imagem, âncora), com a
-        âncora no vértice de baixo do losango da base."""
+        """Recorta no que foi desenhado e no losango da base e devolve
+        (imagem, âncora), com a âncora no vértice de baixo do losango. Numa
+        peça que não passa da base, a âncora fica em [32 × tiles em A, pé
+        da imagem], como pede a v2."""
         xs = [p[0] for p in self.px]
         ys = [p[1] for p in self.px]
         x0, y0, x1, y1 = min(xs), min(ys), max(xs), max(ys)
+        x0 = min(x0, self.scr(0, self.b)[0])
+        x1 = max(x1, self.scr(self.a, 0)[0] - 1)
+        y1 = max(y1, self.scr(self.a, self.b)[1] - 1)
         im = Image.new('RGBA', (x1 - x0 + 1, y1 - y0 + 1), (0, 0, 0, 0))
         for (x, y), c in self.px.items():
             im.putpixel((x - x0, y - y0), (c + (255,)) if len(c) == 3 else c)
@@ -746,23 +751,24 @@ def pad(im, l, t, r, b):
     return out
 
 
-PERSONAGENS = [
-    # id, nome, papel, função que desenha o parado de frente
-    ('guilherme', 'Guilherme', None, lambda: chars.guilherme()),
-    ('gabriel', 'Gabriel', None, lambda: chars.gabriel()),
-    ('contador', 'Saldanha', 'Contador', lambda: chars.saldanha('parado')),
-    ('consultor', 'Caio', 'Consultor', lambda: chars.caio('parado')),
-    ('flora', 'Flora', None, lambda: pad(chars.flora(FLORA_K), 2, 2, 2, 2)),
-    ('lupin', 'Lupin', None, lambda: pad(chars.lupin(LUPIN_K), 2, 2, 2, 2)),
-    ('vivi', 'Vivi', None, lambda: chars.vivi()),
-    ('nina', 'Nina', None, lambda: chars.nina()),
-    ('otto', 'Otto', None, lambda: chars.otto()),
-    ('sr-pra-ontem', 'Sr. Pra Ontem', 'Departamento das Urgências', lambda: chars.pra_ontem()),
-    ('iris', 'Íris', 'Analista de Cenários Financeiros', lambda: chars.iris()),
-    ('joana', 'Joana', 'Negociadora de Resultados', lambda: chars.joana()),
-    ('malu', 'Malu', 'Experiências, Viagens e Histórias', lambda: chars.malu()),
-    ('duda', 'Duda', 'Auditoria e Clareza Financeira', lambda: chars.duda()),
-]
+def dog(im):
+    return pad(im, 2, 2, 2, 2)
+
+
+# id -> {animação: desenho}. A folha tem uma animação por linha, nesta ordem.
+# Os cachorros já são desenhados sentados.
+PERSONAGENS = {
+    'guilherme': {'parado_frente': lambda: chars.guilherme(),
+                  'sentado_frente': lambda: chars.guilherme('sentado')},
+    'saldanha': {'parado_frente': lambda: chars.saldanha('parado'),
+                 'sentado_frente': lambda: chars.saldanha('sentado')},
+    'caio': {'parado_frente': lambda: chars.caio('parado'),
+             'sentado_frente': lambda: chars.caio('sentado')},
+    'vivi': {'parado_frente': lambda: chars.vivi(),
+             'sentado_frente': lambda: chars.vivi('sentado')},
+    'flora': {'sentado_frente': lambda: dog(chars.flora(FLORA_K))},
+    'lupin': {'sentado_frente': lambda: dog(chars.lupin(LUPIN_K))},
+}
 
 
 # ------------------------------------------------------------- exportação
@@ -773,385 +779,150 @@ def save(im, rel):
     return rel
 
 
+def character(cid, anims):
+    """Folha de sprites (uma animação por linha, quadros da esquerda para a
+    direita) e a entrada do manifesto, que também vai no JSON do personagem."""
+    frames = [fn() for fn in anims.values()]
+    w, h = frames[0].size
+    assert all(f.size == (w, h) for f in frames), cid
+    if cid in ('flora', 'lupin'):
+        anchor = paw_anchor(frames[0])
+    else:
+        # meio dos pés: o meio da tela, rente à sola do parado
+        anchor = [w // 2, frames[0].getbbox()[3]]
+    sheet = Image.new('RGBA', (w, h * len(frames)), (0, 0, 0, 0))
+    for i, f in enumerate(frames):
+        sheet.alpha_composite(f, (0, h * i))
+    entry = {'folha': save(sheet, f'personagens/{cid}.png'), 'tela': [w, h], 'ancora': anchor,
+             'animacoes': {name: {'linha': i, 'quadros': 1, 'fps': 0}
+                           for i, name in enumerate(anims)}}
+    with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:
+        json.dump(entry, f, ensure_ascii=False, indent=2)
+    return entry
+
+
+def check(man):
+    """Confere o que o manifesto promete: os arquivos existem e a âncora cai
+    no pé da imagem. Personagens: em todos os quadros (sentado pisa onde o
+    parado pisa). Móveis: no vértice de baixo da base, x = 32 × tiles em A."""
+    for modelo, e in man.items():
+        if 'folha' in e:
+            sheet = Image.open(os.path.join(ROOT, e['folha']))
+            w, h = e['tela']
+            for name, a in e['animacoes'].items():
+                frame = sheet.crop((0, h * a['linha'], w * a['quadros'], h * (a['linha'] + 1)))
+                assert frame.getbbox()[3] == e['ancora'][1], (modelo, name)
+        else:
+            im = Image.open(os.path.join(ROOT, e['pasta'], f'{modelo}.png'))
+            assert e['ancora'] == [32 * e['base'][0], im.height], modelo
+
+
 def build():
-    man = {
-        'versao': 1,
-        'lote': 'sala-parada',
-        'documento': 'Escritório de Finanças: peças para desenhar, v1 (18/10/2026)',
-        'convencoes': {
-            'projecao': 'isométrico 2:1',
-            'tile': [TW, TH],
-            'escala_na_tela': '2x no computador, sem suavizar (vizinho mais próximo)',
-            'luz': 'da esquerda: a face voltada para a esquerda é a mais clara',
-            'eixos': 'A0/B0 é o canto do fundo; A cresce para a direita-baixo ao longo da parede '
-                     'direita, B para a esquerda-baixo ao longo da parede esquerda',
-            'ponto_do_piso': 'o canto (s, t) do piso fica na tela em '
-                             '(cx + 32*(s - t), cy + 16*(s + t)), com (cx, cy) no canto A0/B0',
-            'ancora_movel': 'vértice de baixo do losango da base. Um móvel em Aa/Bb com base [x, y] '
-                            'tem esse vértice no ponto do piso (a + x, b + y). Cole a imagem em '
-                            'ponto - ancora.',
-            'ancora_objeto_sobre_movel': 'objetos que ficam em cima de um móvel (monitor, bandeja, '
-                                         'sineta) vêm no mesmo recorte do móvel: use a mesma âncora '
-                                         'e cole no mesmo ponto.',
-            'ancora_parede': 'ponta esquerda (na tela) da base da peça, na altura altura_base acima '
-                             'do chão. Parede esquerda: a ponta esquerda fica no fim do último '
-                             'tile (peça em B3-B4 começa em t = 5). Parede direita: no começo do '
-                             'primeiro tile (peça em A5-A6 começa em s = 5). A largura da imagem '
-                             'é 32 px por tile.',
-            'ancora_personagem': 'meio dos pés (cachorros: meio das patas). Fica no centro do tile '
-                                 '(a + 0.5, b + 0.5).',
-            'direcoes': {'frente': 'de frente para a direita (olhando para +A)',
-                         'costas': 'de costas, para a direita (olhando para -B)',
-                         'espelhar': 'virar a imagem na horizontal dá +B (de frente) e -A (de '
-                                     'costas). Âncora espelhada: [largura - x, y].'},
-            'arquivos': 'PNG transparente em 1x, sem sombra no chão e sem etiqueta de nome',
-        },
-        'sala': {'tiles': [ROOM_A, ROOM_B]},
-        'piso': {},
-        'parede': {'altura': WALL_H, 'rodape': BASEBOARD, 'cores': PAREDE,
-                   'borda_do_piso': {'altura': 8, 'esquerda': '#B8935F', 'direita': '#9A784C'}},
-        'pecas': {},
-        'personagens': {},
-    }
-
-    # piso
-    man['piso'] = {'tile': [TW, TH], 'ancora': [32, 0],
-                   'nota': 'âncora no vértice de cima do losango; sortear as variações',
-                   'variacoes': [save(wood_tile(v), f'piso/madeira-{v + 1}.png') for v in range(3)]}
-
-    # peças de parede
-    def wall_piece(key, nome, side, tiles, pos, hb, estados, padrao, extra=None):
-        e = {}
-        anchor = None
-        for st, (px, w, h) in estados.items():
-            im, anchor = shear(px, w, h, side, tiles, hb)
-            e[st] = save(im, f'parede/{nome}__{st}.png')
-        man['pecas'][key] = dict(tipo='parede', parede=side, tiles=tiles, posicao=pos,
-                                 altura_base=hb, ancora=anchor, estados=e, padrao=padrao,
-                                 **(extra or {}))
-
-    wall_piece('porta_entrada', 'porta-entrada', 'esquerda', 1, 'B8', 0,
-               {'fechada': door_entrance()}, 'fechada',
-               {'falta': ['aberta (lote Malote)']})
-    fpx, glass, fw, fh = window_frame()
-    fim, fanchor = shear(fpx, fw, fh, 'esquerda', 2, 32)
-    ceus = {}
-    for per in ('manha', 'tarde', 'fim-de-tarde', 'noite'):
-        im, _ = shear(sky(per, glass, fw, fh), fw, fh, 'esquerda', 2, 32)
-        ceus[per] = save(im, f'parede/janela__ceu-{per}.png')
-    man['pecas']['janela'] = dict(
-        tipo='parede', parede='esquerda', tiles=2, posicao='B3-B4', altura_base=32, ancora=fanchor,
-        camadas={'ceu': ceus, 'moldura': save(fim, 'parede/janela__moldura.png')},
-        ordem='céu embaixo, moldura por cima (as duas no mesmo recorte e na mesma âncora)',
-        ceu_por_horario={'fuso': 'America/Sao_Paulo', 'manha': [6, 12], 'tarde': [12, 17],
-                         'fim-de-tarde': [17, 19], 'noite': [19, 6]})
-    wall_piece('quadro_branco', 'quadro-branco', 'esquerda', 2, 'B1-B2', 36,
-               {'limpo': whiteboard()}, 'limpo', {'falta': ['com o report (lote Reunião)']})
-    wall_piece('calendario', 'calendario', 'esquerda', 1, 'B5', 46,
-               {'normal': calendar()}, 'normal', {'falta': ['com dia vermelho (lote Objetos reagindo)']})
-    wall_piece('mural', 'mural', 'esquerda', 1, 'B6', 44,
-               {'vazio': corkboard()}, 'vazio', {'falta': ['post-it solto (lote Objetos reagindo)']})
-    wall_piece('tela_parede', 'tela-parede', 'direita', 2, 'A5-A6', 46,
-               {'apagada': wall_screen()}, 'apagada', {'falta': ['com o selo FECHADO (lote Objetos reagindo)']})
-
-    # móveis
-    def movel(key, base, pos, estados, padrao, extra=None):
-        man['pecas'][key] = dict(tipo='movel', base=base, posicao=pos, estados={}, padrao=padrao,
-                                 **(extra or {}))
-        for st, (im, anchor, fname) in estados.items():
-            man['pecas'][key]['estados'][st] = save(im, f'moveis/{fname}.png')
-            man['pecas'][key]['ancora'] = anchor
-
-    im, a = round_table()
-    movel('mesa_redonda', [2, 2], 'A1/B1', {'padrao': (im, a, 'mesa-redonda')}, 'padrao')
-    for kind, fn, fname, pos in (('cadeira_reuniao', meeting_chair, 'cadeira-reuniao', None),
-                                 ('cadeira_contador', boss_chair, 'cadeira-contador', 'A5/B3')):
-        dirs = {}
-        anchor = None
-        for d in ('frente', 'costas'):
-            im, anchor = fn(d)
-            dirs[d] = save(im, f'moveis/{fname}__{d}.png')
-        man['pecas'][kind] = dict(tipo='movel', base=[1, 1], ancora=anchor, direcoes=dirs, espelhar=True)
-    man['pecas']['cadeira_reuniao']['posicoes_sugeridas'] = [
-        {'posicao': 'A0/B2', 'olha_para': '+A', 'usar': 'frente'},
-        {'posicao': 'A1/B0', 'olha_para': '+B', 'usar': 'frente espelhada'},
-        {'posicao': 'A3/B1', 'olha_para': '-A', 'usar': 'costas espelhada'},
-        {'posicao': 'A2/B3', 'olha_para': '-B', 'usar': 'costas'}]
-    man['pecas']['cadeira_contador'].update(posicao='A5/B3', olha_para='+B', usar='frente espelhada',
-                                            nota='o Contador senta de frente para quem olha a tela')
-
-    (dim, da), (mim, ma), (tim, ta) = boss_desk()
-    man['pecas']['mesa_contador'] = dict(
-        tipo='movel', base=[2, 1], posicao='A5/B4', ancora=da, estados={'padrao': save(dim, 'moveis/mesa-contador.png')},
-        padrao='padrao',
-        camadas={'monitor': {'ancora': ma, 'estados': {'parado': save(mim, 'moveis/mesa-contador__monitor-parado.png')},
-                             'falta': ['gráfico subindo, 3 quadros (lote Objetos reagindo)']}},
-        nota='o monitor fica virado para +A, no canto esquerdo da mesa, para quem olha a tela ver o gráfico')
-    man['pecas']['bandeja'] = dict(tipo='objeto', sobre='mesa_contador', ancora=ta,
-                                   estados={'vazia': save(tim, 'moveis/bandeja__vazia.png')}, padrao='vazia',
-                                   falta=['pilha baixa, média e alta (lote Objetos reagindo)'])
-
-    (cim, ca), (bim, ba) = counter()
-    movel('balcao', [3, 1], 'A3/B6', {'padrao': (cim, ca, 'balcao')}, 'padrao',
-          {'lugares': {'consultor': 'A4/B5', 'quem_chega': 'A4/B7'},
-           'nota': 'a frente de ripas olha para +B, para quem chega'})
-    man['pecas']['sineta'] = dict(tipo='objeto', sobre='balcao', ancora=ba,
-                                  estados={'parada': save(bim, 'moveis/sineta__parada.png')}, padrao='parada',
-                                  falta=['tocando, 2 quadros (lote Balcão)'])
-    im, a = mailbox()
-    movel('malote', [1, 1], 'A0/B7', {'vazio': (im, a, 'malote__vazio')}, 'vazio',
-          {'falta': ['com envelope e com bandeirinha (lote Malote)'],
-           'nota': 'encostado na parede esquerda; a abertura olha para +A'})
-    im, a = plant()
-    movel('planta', [1, 1], 'A8/B3', {'viva': (im, a, 'planta__viva')}, 'viva',
-          {'falta': ['murcha (lote Objetos reagindo)']})
-    im, a = flora_blanket()
-    movel('manta_flora', [1, 1], 'A9/B8', {'padrao': (im, a, 'manta-flora')}, 'padrao', {'no_chao': True})
-    im, a = lupin_bed()
-    movel('caminha_lupin', [1, 1], 'A10/B8', {'padrao': (im, a, 'caminha-lupin')}, 'padrao', {'no_chao': True})
-
-    # personagens
-    for cid, nome, papel, fn in PERSONAGENS:
-        im = fn()
-        dog = cid in ('flora', 'lupin')
-        anchor = paw_anchor(im) if dog else [20, 63]
-        sheet_rel = save(im, f'personagens/{cid}.png')
-        data = {
-            'id': cid, 'nome': nome, 'papel': papel,
-            'folha': os.path.basename(sheet_rel), 'tela': list(im.size), 'ancora': anchor,
-            'layout': 'cada animação numa linha da folha, quadros da esquerda para a direita',
-            'espelhar': True,
-            'animacoes': {'parado_frente': {'linha': 0, 'quadros': 1, 'fps': 1}},
-        }
-        with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        man['personagens'][cid] = {'json': f'personagens/{cid}.json', 'nome': nome, 'papel': papel,
-                                   'tela': list(im.size), 'ancora': anchor}
-
+    """Gera ../assets/ do zero com o que o lote do corte 1 já tem desenhado
+    (personagens, manta e caminha) e o manifest.json, com os nomes e as
+    âncoras do "Como entregar" da v2. As chaves do manifesto são os ids de
+    modelo da planta. Móveis, objetos, parede e piso entram depois."""
+    shutil.rmtree(ROOT, ignore_errors=True)
+    man = {cid: character(cid, anims) for cid, anims in PERSONAGENS.items()}
+    for modelo, fn in (('manta_flora', flora_blanket), ('caminha_lupin', lupin_bed)):
+        im, anchor = fn()
+        save(im, f'moveis/{modelo}.png')
+        man[modelo] = {'pasta': 'moveis', 'base': [1, 1], 'ancora': anchor}
+    check(man)
     with open(os.path.join(ROOT, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(man, f, ensure_ascii=False, indent=2)
-    preview(man)
+    escala(man)
     return man
 
 
 # ----------------------------------------------------------------- prévia
-def load(rel):
-    return Image.open(os.path.join(ROOT, rel)).convert('RGBA')
+PREVIA = os.path.join(os.path.dirname(__file__), '..', 'previa')
+# escalas dos cachorros em teste: (rótulo, k da Flora, k do Lupin)
+ESCALAS_CACHORROS = [('v1, a dos assets', FLORA_K, LUPIN_K), ('sugestão da v2', 0.75, 0.75)]
 
 
-def parse_pos(p):
-    a, b = p.split('/')
-    return int(a[1:]), int(b[1:])
+def chair_block():
+    """Cadeira em bloco, só para a prancha: assento a 14 px e encosto até
+    34 px do lado -A, pelas alturas de referência da v2."""
+    iso = Iso(1, 1, 34)
+    grey = (rgb('#CDD2DA'), rgb('#B3BAC4'), rgb('#9199A6'))
+    iso.box(0.2, 0.8, 0.2, 0.8, 0, 14, *grey)
+    iso.box(0.2, 0.3, 0.2, 0.8, 14, 34, *grey)
+    return iso.image()
 
 
-def nametag(im, name, cx, bottom):
-    tw = text_width(name)
-    h, w = (12 if 'p' in name else 10), tw + 6
-    x0, y0 = cx - w // 2, bottom - h - 3
-    px = im.load()
-    bg = (20, 20, 20, 255)
-    for y in range(y0, y0 + h):
-        for x in range(x0, x0 + w):
-            if not ((x in (x0, x0 + w - 1)) and (y in (y0, y0 + h - 1))):
-                px[x, y] = bg
-    for x in range(x0 + 1, x0 + w - 1):
-        px[x, y0] = (58, 58, 58, 255)
-    for i, half in enumerate((2, 1, 0)):
-        for x in range(cx - half, cx + half + 1):
-            px[x, y0 + h + i] = bg
-    xx = x0 + 3
-    for ch in name:
-        g = FONT[ch]
-        for j, row in enumerate(g):
-            for i, v in enumerate(row):
-                if v == '#':
-                    px[xx + i, y0 + 2 + j] = (255, 255, 255, 255)
-        xx += len(g[0]) + 1
+def escala(man):
+    """Prancha para fechar a escala no olho: os seis do corte 1 lado a lado
+    no piso, uma faixa em pé e outra sentada (na cadeira em bloco), com a
+    Flora e o Lupin nas camas em cada escala em teste. A linha pontilhada é
+    o queixo do Guilherme. Sai em 2x, a escala do jogo."""
+    def frame(cid, anim):
+        e = man[cid]
+        (w, h), row = e['tela'], e['animacoes'][anim]['linha']
+        im = Image.open(os.path.join(ROOT, e['folha'])).convert('RGBA')
+        return im.crop((0, h * row, w, h * (row + 1))), e['ancora']
 
+    def bed(modelo):
+        return Image.open(os.path.join(ROOT, 'moveis', f'{modelo}.png')).convert('RGBA'), man[modelo]['ancora']
 
-def preview(man, show=None):
-    cx, cy = 360, 150
-    W, H = 760, 560
-    im = Image.new('RGBA', (W, H), (11, 17, 38, 255))
-    px = im.load()
-    import random
-    rnd = random.Random(5)
-    for _ in range(90):
-        x, y = rnd.randrange(W), rnd.randrange(H)
-        px[x, y] = rnd.choice([(255, 255, 255, 255), (159, 196, 255, 255), (90, 108, 158, 255)])
+    dogs = []
+    for label, fk, lk in ESCALAS_CACHORROS:
+        f, l = dog(chars.flora(fk)), dog(chars.lupin(lk))
+        dogs.append((label, [('Flora', f, paw_anchor(f), bed('manta_flora')),
+                             ('Lupin', l, paw_anchor(l), bed('caminha_lupin'))]))
+    humans = [('Guilherme', 'guilherme'), ('Saldanha', 'saldanha'), ('Caio', 'caio'), ('Vivi', 'vivi')]
+    # colunas no piso, um tile por coluna e um tile vazio entre os grupos
+    cols = list(range(4)) + [5, 6] + [8, 9]
+    ncol, top, band, foot = 10, 22, 74, 46
+    W = 64 * ncol + 32
+    strip_h = band + foot
+    im = Image.new('RGBA', (W, top + 2 * strip_h), (214, 218, 223, 255))
+    labels = []     # (texto, x, y, alinhamento, tamanho): posição em 1x, o texto entra no 2x
+    chair = chair_block()
+    for k, (title, anim) in enumerate((('Em pé', 'parado_frente'),
+                                       ('Sentados, na cadeira em bloco (assento a 14 px)', 'sentado_frente'))):
+        cy = top + k * strip_h + band          # centro dos tiles da faixa
+        labels.append((title, 8, cy - band - 2, 'l', 20))
+        # piso: os tiles da faixa, recortados num retângulo
+        floor = Image.new('RGBA', im.size, (0, 0, 0, 0))
+        for n in range(-3, 4):
+            for m in range(-1, 2 * ncol + 1):
+                if (m + n) % 2 == 0:
+                    tile = wood_tile((m * 7 + n * 3) % 3)
+                    floor.alpha_composite(tile, (32 * m, cy + 16 * n - 16))
+        im.alpha_composite(floor.crop((0, cy - 34, W, cy + 20)), (0, cy - 34))
+        chin = cy - (63 - 25) + (chars.SIT_DY if anim == 'sentado_frente' else 0)
+        for x in range(0, W, 3):
+            im.putpixel((x, chin), (200, 70, 60, 255))
+        labels.append(('queixo do Guilherme', W - 8, chin - 9, 'r', 14))
+        xs = [32 + 64 * c for c in cols]
+        for (name, cid), x in zip(humans, xs[:4]):
+            if anim == 'sentado_frente':
+                ci, ca = chair
+                im.alpha_composite(ci, (x - ca[0], cy + 16 - ca[1]))
+            sp, a = frame(cid, anim)
+            im.alpha_composite(sp, (x - a[0], cy - a[1]))
+            bb = sp.getbbox()
+            labels += [(name, x, cy + 22, 'c', 15), (f'{bb[3] - bb[1]} px', x, cy + 30, 'c', 14)]
+        for g, (label, pair) in enumerate(dogs):
+            for (name, sp, a, (bi, ba)), x in zip(pair, xs[4 + 2 * g:6 + 2 * g]):
+                im.alpha_composite(bi, (x - ba[0], cy + 16 - ba[1]))
+                im.alpha_composite(sp, (x - a[0], cy - a[1]))
+                bb = sp.getbbox()
+                labels += [(name, x, cy + 22, 'c', 15), (f'{bb[3] - bb[1]} px', x, cy + 30, 'c', 14)]
+            labels.append((label, (xs[4 + 2 * g] + xs[5 + 2 * g]) // 2, cy + 38, 'c', 14))
 
-    def P(s, t):
-        return cx + 32 * (s - t), cy + 16 * (s + t)
-    C = {k: rgb(v) for k, v in PAREDE.items()}
-    # paredes
-    for x in range(cx - 32 * ROOM_B, cx + 32 * ROOM_A):
-        e = wall_edge(x, cx, cy)
-        left = x < cx
-        for y in range(e - WALL_H, e):
-            if y < e - WALL_H + 2:
-                c = C['topo_esquerda' if left else 'topo_direita']
-            elif y >= e - BASEBOARD:
-                c = C['rodape_esquerda' if left else 'rodape_direita']
-                if y == e - BASEBOARD:
-                    c = mul(c, 0.85)
-            else:
-                c = C['esquerda' if left else 'direita']
-            if x == cx:
-                c = mul(c, 0.82)
-            px[x, y] = c + (255,)
-        px[x, e - WALL_H - 1] = mul(C['canto'], 0.7) + (255,)
-    for y in range(wall_edge(cx - 32 * ROOM_B, cx, cy) - WALL_H - 1, wall_edge(cx - 32 * ROOM_B, cx, cy)):
-        px[cx - 32 * ROOM_B, y] = mul(C['canto'], 0.7) + (255,)
-    xr = cx + 32 * ROOM_A - 1
-    for y in range(wall_edge(xr, cx, cy) - WALL_H - 1, wall_edge(xr, cx, cy)):
-        px[xr, y] = mul(C['canto'], 0.6) + (255,)
-    # piso numa camada própria, para achar a borda da frente pelo alfa
-    floor = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-    tiles = [load(r) for r in man['piso']['variacoes']]
-    for a in range(ROOM_A):
-        for b in range(ROOM_B):
-            k = (a * 3 + b * 5 + a * b) % 6
-            t = tiles[0] if k < 4 else tiles[k - 3]
-            x, y = P(a, b)
-            floor.alpha_composite(t, (x - 32, y))
-    fpx = floor.load()
-    bd = man['parede']['borda_do_piso']
-    xfront = P(ROOM_A, ROOM_B)[0]
-    for x in range(cx - 32 * ROOM_B, cx + 32 * ROOM_A):
-        ys = [y for y in range(cy, H) if fpx[x, y][3]]
-        if not ys:
-            continue
-        col = rgb(bd['esquerda'] if x < xfront else bd['direita'])
-        for k in range(1, bd['altura'] + 1):
-            fpx[x, ys[-1] + k] = (mul(col, 0.8) if k == bd['altura'] else col) + (255,)
-    im.alpha_composite(floor)
-
-    # peças de parede
-    for key, pc in man['pecas'].items():
-        if pc['tipo'] != 'parede':
-            continue
-        nums = [int(n[1:]) for n in pc['posicao'].split('-')]
-        if pc['parede'] == 'esquerda':
-            xl = cx - 32 * (max(nums) + 1)
-        else:
-            xl = cx + 32 * min(nums)
-        yl = wall_edge(xl, cx, cy) - pc['altura_base']
-        layers = []
-        if 'camadas' in pc:
-            layers = [pc['camadas']['ceu'][show or 'tarde'], pc['camadas']['moldura']]
-        else:
-            layers = [pc['estados'][pc['padrao']]]
-        for rel in layers:
-            im.alpha_composite(load(rel), (xl - pc['ancora'][0], yl - pc['ancora'][1]))
-
-    # o que fica no chão
-    items = []
-
-    def add_movel(img, anchor, a0, b0, base, flat=False):
-        items.append(dict(img=img, anchor=anchor, pt=P(a0 + base[0], b0 + base[1]),
-                          fp=(a0, a0 + base[0], b0, b0 + base[1]), char=False, flat=flat))
-    for key, pc in man['pecas'].items():
-        if pc['tipo'] != 'movel' or 'posicao' not in pc:
-            continue
-        a0, b0 = parse_pos(pc['posicao'])
-        if 'direcoes' in pc:
-            continue
-        img = load(pc['estados'][pc['padrao']])
-        layer_imgs = [img]
-        if key == 'mesa_contador':
-            layer_imgs.append(load(pc['camadas']['monitor']['estados']['parado']))
-            layer_imgs.append(load(man['pecas']['bandeja']['estados']['vazia']))
-        if key == 'balcao':
-            layer_imgs.append(load(man['pecas']['sineta']['estados']['parada']))
-        comp = layer_imgs[0].copy()
-        for li in layer_imgs[1:]:
-            comp.alpha_composite(li)
-        add_movel(comp, pc['ancora'], a0, b0, pc['base'], pc.get('no_chao', False))
-    chairs = man['pecas']['cadeira_reuniao']
-    seats = list(chairs['posicoes_sugeridas'])
-    boss = man['pecas']['cadeira_contador']
-    seats_all = [(chairs, s) for s in seats] + [(boss, {'posicao': boss['posicao'], 'usar': boss['usar']})]
-    for pc, s in seats_all:
-        d = 'frente' if s['usar'].startswith('frente') else 'costas'
-        img = load(pc['direcoes'][d])
-        anchor = list(pc['ancora'])
-        if 'espelhada' in s['usar']:
-            img = img.transpose(Image.FLIP_LEFT_RIGHT)
-            anchor = [img.width - anchor[0], anchor[1]]
-        a0, b0 = parse_pos(s['posicao'])
-        add_movel(img, anchor, a0, b0, [1, 1])
-
-    stand = {'contador': 'A6/B3', 'consultor': 'A4/B5', 'gabriel': 'A4/B7', 'guilherme': 'A7/B6',
-             'flora': 'A9/B8', 'lupin': 'A10/B8'}
-    for cid, pos in stand.items():
-        meta = man['personagens'][cid]
-        img = load(meta['json'].replace('.json', '.png'))
-        a0, b0 = parse_pos(pos)
-        items.append(dict(img=img, anchor=meta['ancora'], pt=P(a0 + 0.5, b0 + 0.5),
-                          fp=(a0 + 0.49, a0 + 0.51, b0 + 0.49, b0 + 0.51), char=True,
-                          name=meta['nome'], dog=cid in ('flora', 'lupin'), flat=False))
-
-    # ordem de desenho: quem está atrás num eixo vai antes
-    def before(p, q):
-        return p['fp'][1] <= q['fp'][0] + 1e-6 or p['fp'][3] <= q['fp'][2] + 1e-6
-    n = len(items)
-    deps = {i: set() for i in range(n)}
-    for i in range(n):
-        for j in range(n):
-            if i != j and before(items[i], items[j]) and not before(items[j], items[i]):
-                deps[j].add(i)
-    for i in range(n):
-        for j in range(n):
-            if i != j and not before(items[i], items[j]) and not before(items[j], items[i]):
-                if items[i]['flat'] and items[j]['char']:
-                    deps[j].add(i)
-    order, done = [], set()
-    while len(order) < n:
-        ready = [i for i in range(n) if i not in done and deps[i] <= done]
-        if not ready:
-            ready = [min((i for i in range(n) if i not in done), key=lambda i: sum(items[i]['fp']))]
-        i = min(ready, key=lambda i: (items[i]['fp'][1] + items[i]['fp'][3], items[i]['char']))
-        order.append(i)
-        done.add(i)
-
-    tags = []
-    for i in order:
-        it = items[i]
-        x, y = it['pt']
-        if it['char']:
-            rx, ry = (13, 4) if not it['dog'] else ((14, 4) if it['name'] == 'Flora' else (10, 3))
-            for yy in range(int(y) - ry - 1, int(y) + ry):
-                for xx in range(int(x) - rx, int(x) + rx + 1):
-                    if ((xx - x + 0.5) / rx) ** 2 + ((yy - y + 1.5) / ry) ** 2 <= 1:
-                        r, g, b, a = px[xx, yy]
-                        px[xx, yy] = (int(r * 0.74), int(g * 0.74), int(b * 0.74), a)
-        im.alpha_composite(it['img'], (int(x - it['anchor'][0]), int(y - it['anchor'][1])))
-        if it['char']:
-            top = int(y - it['anchor'][1]) + it['img'].getbbox()[1]
-            tags.append((it['name'], int(x), top - 1))
-    for name, x, top in tags:
-        nametag(im, name, x, top)
-    out = os.path.join(ROOT, 'previa')
-    os.makedirs(out, exist_ok=True)
-    im.save(os.path.join(out, 'sala-parada.png'))
-    up(im, 2).save(os.path.join(out, 'sala-parada@2x.png'))
-
-    # escala: os seis lado a lado, com a âncora na mesma linha
-    chars_ = [(man['personagens'][c], load(man['personagens'][c]['json'].replace('.json', '.png')))
-              for c in man['personagens']]
-    sw = sum(img.width for _, img in chars_) + 8 * (len(chars_) + 1)
-    sc = Image.new('RGBA', (sw, 84), (196, 205, 212, 255))
-    base_y = 74
-    x = 8
-    for meta, img in chars_:
-        sc.alpha_composite(img, (x, base_y - meta['ancora'][1]))
-        x += img.width + 8
-    for xx in range(sw):
-        sc.putpixel((xx, base_y), (120, 126, 134, 255))
-    g_chin = base_y - (63 - 25)
-    for xx in range(0, sw, 2):
-        sc.putpixel((xx, g_chin), (217, 69, 59, 255))
-    up(sc, 3).save(os.path.join(out, 'escala@3x.png'))
+    big = up(im, 2)
+    d = ImageDraw.Draw(big)
+    for text, x, y, align, size in labels:
+        try:
+            font = ImageFont.truetype('DejaVuSans.ttf', size - 2)
+        except OSError:       # sem a DejaVu, a fonte embutida (perde os acentos)
+            font = ImageFont.load_default(size=size)
+        shift = {'l': 0, 'c': 0.5, 'r': 1}[align] * d.textlength(text, font=font)
+        d.text((2 * x - shift, 2 * y), text, font=font, fill=(52, 58, 66, 255))
+    os.makedirs(PREVIA, exist_ok=True)
+    big.save(os.path.join(PREVIA, 'escala@2x.png'))
 
 
 if __name__ == '__main__':
