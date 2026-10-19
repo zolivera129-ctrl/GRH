@@ -1,12 +1,13 @@
 {
+  "pasta": "personagens",
   "folha": "personagens/lupin.png",
   "tela": [
-    33,
-    30
+    34,
+    31
   ],
   "ancora": [
     14,
-    25
+    26
   ],
   "animacoes": {
     "sentado_frente": {

@@ -26,9 +26,10 @@ TW, TH = 64, 32
 WALL_H = 100
 BASEBOARD = 6
 WHITE = rgb('#FFFFFF')
-# escala dos cachorros no escritório: a cabeça da Flora sentada na altura
-# do queixo do Guilherme (~37 px); o Lupin com ~23 px
-FLORA_K, LUPIN_K = 0.82, 0.72
+# escala dos cachorros no escritório: a sugestão da v2, escolhida na prancha
+# de escala (Flora sentada com 34 px, Lupin com 24 px). A da v1 era 0.82 e 0.72.
+FLORA_K, LUPIN_K = 0.75, 0.75
+FLORA_K_V1, LUPIN_K_V1 = 0.82, 0.72
 
 PAREDE = {
     'esquerda': '#AEBC9F', 'direita': '#94A386',
@@ -755,20 +756,41 @@ def dog(im):
     return pad(im, 2, 2, 2, 2)
 
 
-# id -> {animação: desenho}. A folha tem uma animação por linha, nesta ordem.
-# Os cachorros já são desenhados sentados.
+def _humano(fn):
+    return {'parado_frente': lambda: fn('parado'), 'sentado_frente': lambda: fn('sentado')}
+
+
+# id -> (nome, {animação: desenho}). A folha tem uma animação por linha, nesta
+# ordem. Os cachorros já são desenhados sentados.
 PERSONAGENS = {
-    'guilherme': {'parado_frente': lambda: chars.guilherme(),
-                  'sentado_frente': lambda: chars.guilherme('sentado')},
-    'saldanha': {'parado_frente': lambda: chars.saldanha('parado'),
-                 'sentado_frente': lambda: chars.saldanha('sentado')},
-    'caio': {'parado_frente': lambda: chars.caio('parado'),
-             'sentado_frente': lambda: chars.caio('sentado')},
-    'vivi': {'parado_frente': lambda: chars.vivi(),
-             'sentado_frente': lambda: chars.vivi('sentado')},
-    'flora': {'sentado_frente': lambda: dog(chars.flora(FLORA_K))},
-    'lupin': {'sentado_frente': lambda: dog(chars.lupin(LUPIN_K))},
+    'guilherme': ('Guilherme', _humano(chars.guilherme)),
+    'saldanha': ('Saldanha', _humano(chars.saldanha)),
+    'caio': ('Caio', _humano(chars.caio)),
+    'vivi': ('Vivi', _humano(chars.vivi)),
+    'flora': ('Flora', {'sentado_frente': lambda: dog(chars.flora(FLORA_K))}),
+    'lupin': ('Lupin', {'sentado_frente': lambda: dog(chars.lupin(LUPIN_K))}),
+    'gabriel': ('Gabriel', _humano(chars.gabriel)),
+    'nina': ('Nina', _humano(chars.nina)),
+    'otto': ('Otto', _humano(chars.otto)),
+    'sr_pra_ontem': ('Sr. Pra Ontem', _humano(chars.pra_ontem)),
+    'iris': ('Íris', _humano(chars.iris)),
+    'joana': ('Joana', _humano(chars.joana)),
+    'malu': ('Malu', _humano(chars.malu)),
+    'duda': ('Duda', _humano(chars.duda)),
 }
+# O que vai para o assets/: o elenco do corte 1, como no "Como entregar" da
+# v2.1. Os outros só aparecem na prancha: o Gabriel entra no corte 2, o Otto
+# só ganha sprite na estreia do Arquivo (GDD §4.1) e os demais são
+# pré-produção, com sprite ainda por aprovar (GDD §4.2).
+CORTE_1 = ('guilherme', 'saldanha', 'caio', 'vivi', 'flora', 'lupin')
+
+
+def anchor_of(cid, im):
+    """Cachorros: o meio das patas. Humanos: o meio dos pés, no meio da tela
+    e rente à sola do parado."""
+    if cid in ('flora', 'lupin'):
+        return paw_anchor(im)
+    return [im.width // 2, im.getbbox()[3]]
 
 
 # ------------------------------------------------------------- exportação
@@ -785,15 +807,11 @@ def character(cid, anims):
     frames = [fn() for fn in anims.values()]
     w, h = frames[0].size
     assert all(f.size == (w, h) for f in frames), cid
-    if cid in ('flora', 'lupin'):
-        anchor = paw_anchor(frames[0])
-    else:
-        # meio dos pés: o meio da tela, rente à sola do parado
-        anchor = [w // 2, frames[0].getbbox()[3]]
     sheet = Image.new('RGBA', (w, h * len(frames)), (0, 0, 0, 0))
     for i, f in enumerate(frames):
         sheet.alpha_composite(f, (0, h * i))
-    entry = {'folha': save(sheet, f'personagens/{cid}.png'), 'tela': [w, h], 'ancora': anchor,
+    entry = {'pasta': 'personagens', 'folha': save(sheet, f'personagens/{cid}.png'),
+             'tela': [w, h], 'ancora': anchor_of(cid, frames[0]),
              'animacoes': {name: {'linha': i, 'quadros': 1, 'fps': 0}
                            for i, name in enumerate(anims)}}
     with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:
@@ -820,10 +838,10 @@ def check(man):
 def build():
     """Gera ../assets/ do zero com o que o lote do corte 1 já tem desenhado
     (personagens, manta e caminha) e o manifest.json, com os nomes e as
-    âncoras do "Como entregar" da v2. As chaves do manifesto são os ids de
+    âncoras do "Como entregar" da v2.1. As chaves do manifesto são os ids de
     modelo da planta. Móveis, objetos, parede e piso entram depois."""
     shutil.rmtree(ROOT, ignore_errors=True)
-    man = {cid: character(cid, anims) for cid, anims in PERSONAGENS.items()}
+    man = {cid: character(cid, PERSONAGENS[cid][1]) for cid in CORTE_1}
     for modelo, fn in (('manta_flora', flora_blanket), ('caminha_lupin', lupin_bed)):
         im, anchor = fn()
         save(im, f'moveis/{modelo}.png')
@@ -837,51 +855,84 @@ def build():
 
 # ----------------------------------------------------------------- prévia
 PREVIA = os.path.join(os.path.dirname(__file__), '..', 'previa')
-# escalas dos cachorros em teste: (rótulo, k da Flora, k do Lupin)
-ESCALAS_CACHORROS = [('v1, a dos assets', FLORA_K, LUPIN_K), ('sugestão da v2', 0.75, 0.75)]
 
 
 def chair_block():
-    """Cadeira em bloco, só para a prancha: assento a 14 px e encosto até
-    34 px do lado -A, pelas alturas de referência da v2."""
+    """Cadeira em bloco no azul da prévia da planta, só para a prancha:
+    assento a 14 px e encosto até 34 px do lado -A, pelas alturas de
+    referência da v2.1."""
     iso = Iso(1, 1, 34)
-    grey = (rgb('#CDD2DA'), rgb('#B3BAC4'), rgb('#9199A6'))
-    iso.box(0.2, 0.8, 0.2, 0.8, 0, 14, *grey)
-    iso.box(0.2, 0.3, 0.2, 0.8, 14, 34, *grey)
+    navy = (rgb('#46568A'), rgb('#36446F'), rgb('#283353'))
+    iso.box(0.2, 0.8, 0.2, 0.8, 0, 14, *navy)
+    iso.box(0.2, 0.3, 0.2, 0.8, 14, 34, *navy)
     return iso.image()
 
 
 def escala(man):
-    """Prancha para fechar a escala no olho: os seis do corte 1 lado a lado
-    no piso, uma faixa em pé e outra sentada (na cadeira em bloco), com a
-    Flora e o Lupin nas camas em cada escala em teste. A linha pontilhada é
-    o queixo do Guilherme. Sai em 2x, a escala do jogo."""
-    def frame(cid, anim):
-        e = man[cid]
-        (w, h), row = e['tela'], e['animacoes'][anim]['linha']
-        im = Image.open(os.path.join(ROOT, e['folha'])).convert('RGBA')
-        return im.crop((0, h * row, w, h * (row + 1))), e['ancora']
+    """Prancha para fechar a escala no olho, com os 14 lado a lado no piso.
+    Uma faixa em pé (os cachorros nas quatro patas) e outra sentada (humanos
+    na cadeira em bloco, cachorros nas camas), na escala dos assets. A
+    terceira compara os cachorros em pé nas escalas da v2 e da v1. A linha
+    pontilhada é o queixo do Guilherme. Sai em 2x, a escala do jogo."""
+    def sprite(cid, anim):
+        # do arquivo, para quem está no assets/; desenhado na hora, para os outros
+        if cid in man:
+            e = man[cid]
+            (w, h), row = e['tela'], e['animacoes'][anim]['linha']
+            im = Image.open(os.path.join(ROOT, e['folha'])).convert('RGBA')
+            return im.crop((0, h * row, w, h * (row + 1))), e['ancora']
+        im = PERSONAGENS[cid][1][anim]()
+        return im, anchor_of(cid, im)
+
+    def standing(cid, k):
+        im = dog((chars.flora if cid == 'flora' else chars.lupin)(k, 'em_pe'))
+        return im, paw_anchor(im)
 
     def bed(modelo):
-        return Image.open(os.path.join(ROOT, 'moveis', f'{modelo}.png')).convert('RGBA'), man[modelo]['ancora']
+        im = Image.open(os.path.join(ROOT, 'moveis', f'{modelo}.png')).convert('RGBA')
+        return im, man[modelo]['ancora']
 
-    dogs = []
-    for label, fk, lk in ESCALAS_CACHORROS:
-        f, l = dog(chars.flora(fk)), dog(chars.lupin(lk))
-        dogs.append((label, [('Flora', f, paw_anchor(f), bed('manta_flora')),
-                             ('Lupin', l, paw_anchor(l), bed('caminha_lupin'))]))
-    humans = [('Guilherme', 'guilherme'), ('Saldanha', 'saldanha'), ('Caio', 'caio'), ('Vivi', 'vivi')]
-    # colunas no piso, um tile por coluna e um tile vazio entre os grupos
-    cols = list(range(4)) + [5, 6] + [8, 9]
-    ncol, top, band, foot = 10, 22, 74, 46
+    chair = chair_block()
+    beds = {'flora': bed('manta_flora'), 'lupin': bed('caminha_lupin')}
+    order = ['guilherme', 'saldanha', 'caio', 'vivi', 'flora', 'lupin', None,
+             'gabriel', 'nina', 'otto', 'sr_pra_ontem', 'iris', 'joana', 'malu', 'duda']
+    # cada faixa: título, se é sentada, colunas (coluna, nome, sprite, peça
+    # embaixo), grupos (primeira e última coluna, rótulo) e a coluna vazia
+    # onde vai o rótulo do queixo
+    strips = []
+    for title, sit in (('Em pé (os cachorros nas quatro patas)', False),
+                       ('Sentados: humanos na cadeira em bloco (assento a 14 px), cachorros nas camas', True)):
+        items = []
+        for c, cid in enumerate(order):
+            if cid is None:
+                continue
+            name = PERSONAGENS[cid][0]
+            if cid in ('flora', 'lupin'):
+                k = FLORA_K if cid == 'flora' else LUPIN_K
+                items.append((c, name, sprite(cid, 'sentado_frente') if sit else standing(cid, k),
+                              beds[cid] if sit else None))
+            else:
+                items.append((c, name, sprite(cid, 'sentado_frente' if sit else 'parado_frente'),
+                              chair if sit else None))
+        strips.append((title, sit, items, [(0, 5, 'corte 1: vão para o assets/'),
+                                           (7, 14, 'fora do corte 1: só na prancha')],
+                       order.index(None)))
+    g = sprite('guilherme', 'parado_frente')
+    strips.append(('Cachorros em pé nas duas escalas, ao lado do Guilherme', False,
+                   [(0, 'Guilherme', g, None),
+                    (2, 'Flora', standing('flora', FLORA_K), None),
+                    (3, 'Lupin', standing('lupin', LUPIN_K), None),
+                    (5, 'Flora', standing('flora', FLORA_K_V1), None),
+                    (6, 'Lupin', standing('lupin', LUPIN_K_V1), None)],
+                   [(2, 3, 'v2, a escolhida'), (5, 6, 'v1')], 8))
+
+    ncol, top, band, foot = len(order), 22, 74, 54
     W = 64 * ncol + 32
     strip_h = band + foot
-    im = Image.new('RGBA', (W, top + 2 * strip_h), (214, 218, 223, 255))
+    im = Image.new('RGBA', (W, top + len(strips) * strip_h), (214, 218, 223, 255))
     labels = []     # (texto, x, y, alinhamento, tamanho): posição em 1x, o texto entra no 2x
-    chair = chair_block()
-    for k, (title, anim) in enumerate((('Em pé', 'parado_frente'),
-                                       ('Sentados, na cadeira em bloco (assento a 14 px)', 'sentado_frente'))):
-        cy = top + k * strip_h + band          # centro dos tiles da faixa
+    for s, (title, sit, items, groups, chin_col) in enumerate(strips):
+        cy = top + s * strip_h + band          # centro dos tiles da faixa
         labels.append((title, 8, cy - band - 2, 'l', 20))
         # piso: os tiles da faixa, recortados num retângulo
         floor = Image.new('RGBA', im.size, (0, 0, 0, 0))
@@ -891,26 +942,20 @@ def escala(man):
                     tile = wood_tile((m * 7 + n * 3) % 3)
                     floor.alpha_composite(tile, (32 * m, cy + 16 * n - 16))
         im.alpha_composite(floor.crop((0, cy - 34, W, cy + 20)), (0, cy - 34))
-        chin = cy - (63 - 25) + (chars.SIT_DY if anim == 'sentado_frente' else 0)
+        chin = cy - (63 - 25) + (chars.SIT_DY if sit else 0)
         for x in range(0, W, 3):
             im.putpixel((x, chin), (200, 70, 60, 255))
-        labels.append(('queixo do Guilherme', W - 8, chin - 9, 'r', 14))
-        xs = [32 + 64 * c for c in cols]
-        for (name, cid), x in zip(humans, xs[:4]):
-            if anim == 'sentado_frente':
-                ci, ca = chair
-                im.alpha_composite(ci, (x - ca[0], cy + 16 - ca[1]))
-            sp, a = frame(cid, anim)
+        labels.append(('queixo do Guilherme', 32 + 64 * chin_col, chin - 9, 'c', 14))
+        for c, name, (sp, a), under in items:
+            x = 32 + 64 * c
+            if under:
+                ui, ua = under
+                im.alpha_composite(ui, (x - ua[0], cy + 16 - ua[1]))
             im.alpha_composite(sp, (x - a[0], cy - a[1]))
             bb = sp.getbbox()
             labels += [(name, x, cy + 22, 'c', 15), (f'{bb[3] - bb[1]} px', x, cy + 30, 'c', 14)]
-        for g, (label, pair) in enumerate(dogs):
-            for (name, sp, a, (bi, ba)), x in zip(pair, xs[4 + 2 * g:6 + 2 * g]):
-                im.alpha_composite(bi, (x - ba[0], cy + 16 - ba[1]))
-                im.alpha_composite(sp, (x - a[0], cy - a[1]))
-                bb = sp.getbbox()
-                labels += [(name, x, cy + 22, 'c', 15), (f'{bb[3] - bb[1]} px', x, cy + 30, 'c', 14)]
-            labels.append((label, (xs[4 + 2 * g] + xs[5 + 2 * g]) // 2, cy + 38, 'c', 14))
+        for c0, c1, text in groups:
+            labels.append((text, 32 + 32 * (c0 + c1), cy + 38, 'c', 14))
 
     big = up(im, 2)
     d = ImageDraw.Draw(big)

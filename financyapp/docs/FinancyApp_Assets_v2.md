@@ -1,10 +1,20 @@
 # FinancyApp — Peças para desenhar
 
-**Versão:** 2 · **Data:** 19/10/2026
+**Versão:** 2.1 · **Data:** 19/10/2026
 **Substitui:** a lista de peças de 18/10 (v1).
 **Segue:** a planta `FinancyApp_Planta_12x10_v1.md` (versão 1.1) e o GDD v2.
 
 O lote do corte 1 está completo. Os lotes seguintes estão resumidos e ganham detalhe quando o corte chegar. Os ids de modelo deste documento são os mesmos do campo `modelo` em `FinancyApp_Layout_12x10_v1.json`.
+
+## O que mudou na versão 2.1
+
+Entraram as cinco notas da implementação do corte 1:
+
+- A âncora do sentado passou a ser o chão embaixo do quadril, e não o meio dos pés.
+- O manifesto ganhou o campo `pasta`, e cada tipo de peça tem pasta fixa.
+- As folhas de sprites têm uma animação por linha, com o campo `linha` no manifesto.
+- A altura atual dos cachorros foi corrigida para a dos assets, 37 e 23 px.
+- Os parados do Saldanha, do Caio e da Vivi já existiam. O lote do corte 1 tem 4 poses novas, e não 7.
 
 ## O que mudou da versão 1
 
@@ -24,7 +34,7 @@ O lote do corte 1 está completo. Os lotes seguintes estão resumidos e ganham d
 - **Contorno:** na versão escura da própria cor, como o px.py já faz.
 - **Arquivo:** PNG transparente em 1×, sem cenário, sem sombra no chão e sem etiqueta de nome. O jogo amplia sem suavizar, desenha a sombra e escreve a etiqueta.
 - **Âncora:**
-  - personagens: o meio dos pés;
+  - personagens: em pé, o meio dos pés; sentado, o chão embaixo do quadril (ver "Escala");
   - móveis: o vértice de baixo do losango da base. Numa imagem justa, ele fica em x = 32 × (tiles ao longo de A) e y = pé da imagem;
   - peças de parede: a posição em tiles na parede e a altura do chão até a base da peça.
 - **Orientação dos móveis:** desenhe cada móvel na orientação que a planta usa. A outra orientação só entra quando a decoração permitir girar (corte 6), e aí é um desenho novo.
@@ -45,8 +55,8 @@ Isso vale para os personagens. A cadeira é a exceção entre os móveis: a plan
 ## Escala
 
 - **Humanos:** tela de 40×70 px, com uns 63 px de altura em pé, como o Guilherme e o Gabriel já estão.
-- **Sentado:** mesma tela e mesma âncora (meio dos pés, no chão). O jogo põe a âncora no centro do tile da cadeira. O quadril fica uns 14 px acima, na altura do assento.
-- **Cachorros:** hoje a Flora tem 45 px e o Lupin 32 px. A sugestão é a Flora sentada com uns 34 px e o Lupin com uns 24 px. Vale montar os quatro lado a lado antes de fechar.
+- **Sentado:** mesma tela e mesmo ponto de âncora do parado, [20, 63]. No sentado, esse ponto é o chão embaixo do quadril, e os pés ficam à frente dele. O jogo põe a âncora no centro do tile da cadeira, e o quadril fica uns 14 px acima, na altura do assento.
+- **Cachorros:** nos assets atuais, a Flora tem 37 px e o Lupin 23 px (nas artes de vitrine são 45 e 32 px). A sugestão é 34 e 24 px. A prancha `pixel-art-habbo/previa/escala@2x.png` mostra as duas escalas ao lado dos humanos, e a escolha sai dela. Até lá, os assets ficam com 37 e 23 px.
 
 ### Alturas de referência
 
@@ -140,9 +150,9 @@ Cada mesa marca no manifesto onde os objetos encaixam (ver "Como entregar").
 | Personagem | O que entregar | Observação |
 |---|---|---|
 | Guilherme | Sentado de frente | O parado de frente já existe. Na mesa ele olha +B, então usa o sentado espelhado |
-| Saldanha | Parado e sentado, de frente | Uns 50 anos, cabelo grisalho curto, barba aparada, óculos de armação fina, polo de tricô azul-marinho, chino cinza, smartwatch e tablet [F01 §7]. Na mesa olha +B, espelhado |
-| Caio | Parado e sentado, de frente | Uns 30 anos, cabelo escuro cacheado, sobrecamisa verde-sálvia aberta, camiseta branca, calça azul-marinho, tênis branco e crachá [F01 §8]. Na mesa olha +B, espelhado |
-| Vivi | Parado e sentado, de frente | Mulher negra, cabelos cacheados, roupas coloridas e salto alto [F01 §9A]. Na recepção olha +A, então usa o sentado sem espelhar |
+| Saldanha | Sentado de frente | O parado de frente já existe (era o Contador). Uns 50 anos, cabelo grisalho curto, barba aparada, óculos de armação fina, polo de tricô azul-marinho, chino cinza, smartwatch e tablet [F01 §7]. Na mesa olha +B, espelhado |
+| Caio | Sentado de frente | O parado de frente já existe (era o Consultor). Uns 30 anos, cabelo escuro cacheado, sobrecamisa verde-sálvia aberta, camiseta branca, calça azul-marinho, tênis branco e crachá [F01 §8]. O sprite atual está com a sobrecamisa verde-oliva; falta trocar para sálvia. Na mesa olha +B, espelhado |
+| Vivi | Sentado de frente | O parado de frente já existe. Mulher negra, cabelos cacheados, roupas coloridas e salto alto [F01 §9A]. Na recepção olha +A, então usa o sentado sem espelhar |
 | Flora e Lupin | Nada novo | Os sentados de frente já existem. Só falta acertar a escala. Na cena padrão eles ficam nas camas |
 
 O Gabriel fica fora do corte 1, porque só entra no escritório com um gatilho real da planilha. O Otto não tem sprite até a estreia do Arquivo.
@@ -151,7 +161,7 @@ O Gabriel fica fora do corte 1, porque só entra no escritório com um gatilho r
 
 - 11 peças de piso e parede, contando as camadas da porta trancada como uma peça só;
 - 13 móveis e objetos, dos quais 2 (a manta e a caminha) são recortes do que já existe;
-- 7 poses novas de personagem: o Guilherme sentado e o parado e o sentado do Saldanha, do Caio e da Vivi.
+- 4 poses novas de personagem: os sentados do Guilherme, do Saldanha, do Caio e da Vivi. Os parados já existiam.
 
 ## Animações de todo humano
 
@@ -178,7 +188,11 @@ Vale para os lotes seguintes. No corte 1 só entram o parado e o sentado de fren
 
 ## Como entregar
 
-O repositório já gera tudo em código. O caminho mais simples é o build.py ganhar uma saída `assets/` com as peças isoladas e um manifesto, ao lado das artes de vitrine que ele já gera. Cada arquivo leva o nome `modelo__estado.png` ou `modelo__direcao.png`.
+O repositório já gera tudo em código. O build.py tem uma saída `assets/` com as peças isoladas e um manifesto, ao lado das artes de vitrine que ele já gera.
+
+- **Nome do arquivo:** `modelo.png` quando a peça tem um estado só, `modelo__estado.png` ou `modelo__direcao.png` quando tem vários.
+- **Pasta:** fixa por tipo de peça. `piso/` para o piso, `parede/` para tudo que fica na parede, `moveis/` para o que ocupa tile, `objetos/` para o que vai sobre uma mesa e `personagens/` para humanos e cachorros. O manifesto repete a pasta de cada peça no campo `pasta`.
+- **Folha de sprites:** cada animação ocupa uma linha da folha, com os quadros da esquerda para a direita. O manifesto diz a linha de cada animação no campo `linha`.
 
 ```
 assets/
@@ -204,12 +218,14 @@ Cada personagem vem numa folha de sprites (um PNG com todos os quadros) e num JS
 ```json
 {
   "cadeira": {
+    "pasta": "moveis",
     "base": [1, 1],
     "ancora": [32, 66],
     "assento_px": 14,
     "direcoes": ["frente-dir", "frente-esq", "costas-dir", "costas-esq"]
   },
   "mesa_trabalho": {
+    "pasta": "moveis",
     "base": [2, 1],
     "ancora": [64, 72],
     "encaixes": {
@@ -220,17 +236,19 @@ Cada personagem vem numa folha de sprites (um PNG com todos os quadros) e num JS
     }
   },
   "malote": {
+    "pasta": "moveis",
     "base": [1, 1],
     "ancora": [32, 62],
     "estados": ["vazio"]
   },
   "saldanha": {
+    "pasta": "personagens",
     "folha": "personagens/saldanha.png",
     "tela": [40, 70],
     "ancora": [20, 63],
     "animacoes": {
-      "parado_frente": { "quadros": 1, "fps": 0 },
-      "sentado_frente": { "quadros": 1, "fps": 0 }
+      "parado_frente": { "linha": 0, "quadros": 1, "fps": 0 },
+      "sentado_frente": { "linha": 1, "quadros": 1, "fps": 0 }
     }
   }
 }
@@ -240,7 +258,7 @@ Os encaixes são medidos a partir da âncora da mesa. O JSON da planta já diz q
 
 ## Em aberto
 
-1. **Escala da Flora e do Lupin.** Fecha no olho, com os quatro lado a lado.
+1. **Escala da Flora e do Lupin.** 37 e 23 px (os assets atuais) ou 34 e 24 px (a sugestão). A escolha sai da prancha `escala@2x.png`.
 2. **Espelhamento dos personagens.** Aceitar os detalhes invertidos ou desenhar quatro direções para quem tem detalhe de um lado só.
 3. **Fenda de correspondência na porta do Arquivo** [PROPOSTA]. Se entrar, já vai no desenho do corte 1.
 4. **Headset na cabeça do Caio.** Depende da ligação de voz (PROD-01).

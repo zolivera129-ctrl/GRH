@@ -1,5 +1,6 @@
 {
   "guilherme": {
+    "pasta": "personagens",
     "folha": "personagens/guilherme.png",
     "tela": [
       40,
@@ -23,6 +24,7 @@
     }
   },
   "saldanha": {
+    "pasta": "personagens",
     "folha": "personagens/saldanha.png",
     "tela": [
       40,
@@ -46,6 +48,7 @@
     }
   },
   "caio": {
+    "pasta": "personagens",
     "folha": "personagens/caio.png",
     "tela": [
       40,
@@ -69,6 +72,7 @@
     }
   },
   "vivi": {
+    "pasta": "personagens",
     "folha": "personagens/vivi.png",
     "tela": [
       40,
@@ -92,14 +96,15 @@
     }
   },
   "flora": {
+    "pasta": "personagens",
     "folha": "personagens/flora.png",
     "tela": [
-      45,
-      43
+      41,
+      40
     ],
     "ancora": [
-      21,
-      39
+      19,
+      36
     ],
     "animacoes": {
       "sentado_frente": {
@@ -110,14 +115,15 @@
     }
   },
   "lupin": {
+    "pasta": "personagens",
     "folha": "personagens/lupin.png",
     "tela": [
-      33,
-      30
+      34,
+      31
     ],
     "ancora": [
       14,
-      25
+      26
     ],
     "animacoes": {
       "sentado_frente": {

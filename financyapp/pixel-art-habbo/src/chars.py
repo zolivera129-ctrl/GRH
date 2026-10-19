@@ -348,8 +348,9 @@ def guilherme(pose='parado'):
     return S.image()
 
 
-def gabriel():
-    S = Sprite(40, 70)
+def gabriel(pose='parado'):
+    """pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(
         sk=rgb('#F1C9A8'), sks=rgb('#D9A684'), skl=rgb('#FADCC4'), skline=rgb('#A06C4C'),
         tee=rgb('#4B4346'), tees=rgb('#3A3336'), teeline=rgb('#221E20'),
@@ -361,7 +362,7 @@ def gabriel():
     beard, beardd, beardl = rgb('#3E2819'), rgb('#26170E'), rgb('#5C3D2A')
     cap, capd, capl = rgb('#202024'), rgb('#0E0E10'), rgb('#3C3C45')
 
-    _arms_body_legs(S, P)
+    _arms_body_legs(S, P, pose)
 
     # estampa TONE DEATH: o encapuzado roxo, os toca-discos e o letreiro azul
     purple, blue, yellow = rgb('#7563D6'), rgb('#7FA9F0'), rgb('#F4C04F')
@@ -667,7 +668,7 @@ def saldanha(pose='tablet'):
 
 
 def caio(pose='tablet'):
-    """Consultor: cabelo cacheado curto, sorrisão, camisa de linho verde-oliva
+    """Consultor: cabelo cacheado curto, sorrisão, sobrecamisa verde-sálvia
     aberta sobre camiseta branca, crachá no cordão, chino marinho e tênis
     branco. pose='tablet': mostra o tablet com o check verde.
     pose='parado': em pé, braços soltos (o parado do jogo).
@@ -675,10 +676,10 @@ def caio(pose='tablet'):
     S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = _white_sneakers(dict(
         sk=rgb('#D9A47E'), sks=rgb('#BE8763'), skl=rgb('#E9BC99'), skline=rgb('#86553A'),
-        tee=rgb('#6D7C56'), tees=rgb('#5A6845'), teeline=rgb('#333C25'),
+        tee=rgb('#8EA488'), tees=rgb('#778D72'), teeline=rgb('#465843'),
         pant=rgb('#27324F'), pants=rgb('#1E2740'), pantline=rgb('#0F1528'),
     ))
-    olive_l, olive_ll = rgb('#82936A'), rgb('#98A980')
+    sage_l, sage_ll = rgb('#A3B79D'), rgb('#B8C9B2')
     hair, haird, hairl = rgb('#2B1D16'), rgb('#160F0B'), rgb('#55392A')
 
     # braço de trás, camisa com a manga dobrada no antebraço
@@ -694,7 +695,7 @@ def caio(pose='tablet'):
     fsl.shade_side('r', 1, P['tees'])
     fsl.outline()
     for x in range(26, 30):
-        fsl.set(x, 39, olive_l)
+        fsl.set(x, 39, sage_l)
     S.add(fsl)
 
     _legs(S, P, pose)
@@ -713,7 +714,7 @@ def caio(pose='tablet'):
     for y in range(29, 47):
         S.set(16, y, P['teeline'])
         S.set(22, y, P['teeline'])
-        S.set(15, y, olive_l)
+        S.set(15, y, sage_l)
     for y in (32, 36, 40, 44):
         S.set(23, y, rgb('#E6E1CC'))
     # bolso no peito
@@ -723,7 +724,7 @@ def caio(pose='tablet'):
         S.set(23, y, P['teeline'])
         S.set(26, y, P['teeline'])
     for x in range(24, 26):
-        S.set(x, 33, olive_l)
+        S.set(x, 33, sage_l)
 
     if pose != 'tablet':
         # braço da frente solto, manga dobrada no antebraço
@@ -734,8 +735,8 @@ def caio(pose='tablet'):
         nsl.shade_side('l', 1, P['tees'])
         nsl.outline()
         for x in range(8, 13):
-            nsl.set(x, 38, olive_ll)
-            nsl.set(x, 39, olive_l)
+            nsl.set(x, 38, sage_ll)
+            nsl.set(x, 39, sage_l)
         S.add(nsl)
         na = Layer(P['sk'], P['skline'])
         na.rows({y: (8, 11) for y in range(41, 47)})
@@ -751,8 +752,8 @@ def caio(pose='tablet'):
         nsl.shade_side('l', 1, P['tees'])
         nsl.outline()
         for x in range(5, 9):
-            nsl.set(x, 36, olive_ll)
-            nsl.set(x, 37, olive_l)
+            nsl.set(x, 36, sage_ll)
+            nsl.set(x, 37, sage_l)
         S.add(nsl)
         na = Layer(P['sk'], P['skline'])
         na.rows({y: (3, 6) for y in range(28, 36)})
@@ -779,7 +780,7 @@ def caio(pose='tablet'):
     for x in range(16, 21):
         S.set(x, 29, wts)
     for x, y in ((14, 27), (15, 27), (15, 28), (16, 28), (22, 27), (21, 27), (21, 28), (22, 28)):
-        S.set(x, y, olive_l)
+        S.set(x, y, sage_l)
     S.set(14, 28, P['teeline'])
     S.set(23, 28, P['teeline'])
     # cordão do crachá
@@ -940,15 +941,6 @@ def _face(S, P, brow, lash=None, smile='teeth', lip=None):
             S.set(x, y, mouth)
 
 
-def _pump(S, x0, y0, w=10):
-    """Scarpin caramelo da Vivi, com o bico para a direita."""
-    sh = Layer(rgb('#C88A57'), rgb('#6E4424'))
-    sh.rows({y0: (x0 + 1, x0 + w - 2), y0 + 1: (x0, x0 + w), y0 + 2: [(x0, x0 + 1), (x0 + 5, x0 + w)]})
-    sh.outline()
-    sh.set(x0 + w - 3, y0 + 1, rgb('#E6B585'))
-    S.add(sh)
-
-
 def vivi(pose='parado'):
     """Vivi: cachos volumosos castanhos com luzes caramelo, argolas e
     colar dourados, blusa laranja canelada de decote quadrado e manga 3/4,
@@ -961,6 +953,7 @@ def vivi(pose='parado'):
     cream = (rgb('#F0E8D9'), rgb('#D6CBB8'), rgb('#A0957F'))
     hair, haird, hairl, hairll = rgb('#3B2417'), rgb('#21130B'), rgb('#7E5130'), rgb('#B07A42')
     gold, goldd = rgb('#E2B648'), rgb('#A87C22')
+    tan = (rgb('#C88A57'), rgb('#6E4424'), rgb('#E6B585'))
 
     # cabelo de trás: o volume de cachos que cai pelas costas
     hb = Layer(hair, haird)
@@ -983,8 +976,7 @@ def vivi(pose='parado'):
 
     # pantalona creme e scarpin
     if pose == 'sentado':
-        # o scarpin é mais baixo que o tênis: desce 1 px para pisar onde pisa em pé
-        _sit_legs(S, cream, 41 + S.dy, lambda S, x0, y0: _pump(S, x0, y0 + 1), wide=True)
+        _sit_legs(S, cream, 41 + S.dy, _sit_pump(*tan), wide=True)
     else:
         for legs in (((19, 26), (19, 27), 57), ((12, 19), (11, 19), 58)):
             (a0, a1), (b0, b1), y1 = legs
@@ -998,8 +990,7 @@ def vivi(pose='parado'):
             S.set(15, y, mix(cream[0], cream[1], 0.6))
         for y in range(46, 57):
             S.set(23, y, mix(cream[0], cream[1], 0.5))
-        _pump(S, 19, 58)
-        _pump(S, 12, 59, w=11)
+        _pumps(S, *tan)
 
     # blusa canelada por dentro da calça
     ribs = lambda x, y, c: mul(c, 0.92) if x % 2 == 0 else None
@@ -1042,11 +1033,12 @@ def vivi(pose='parado'):
     return S.image()
 
 
-def nina():
+def nina(pose='parado'):
     """Nina: coque alto bagunçado com mechas soltas, argolas, blazer verde
     oliva com a manga puxada, regata creme, cinto marrom, calça creme e
-    mocassim marrom."""
-    S = Sprite(40, 70)
+    mocassim marrom.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#E6B791'), sks=rgb('#CB9873'), skl=rgb('#F3CBA8'), skline=rgb('#8E5A3C'),
              pant=rgb('#E6DCC9'), pants=rgb('#CDBFA8'), pantline=rgb('#978A73'),
              shoe=rgb('#7A4A2A'), shoehl=rgb('#A06A40'), shoeline=rgb('#3E2414'),
@@ -1058,7 +1050,7 @@ def nina():
     gold, goldd = rgb('#E2B648'), rgb('#A87C22')
 
     _far_arm_sl(S, P, olive, 39, cuff=olive_l, watch=(rgb('#7A4A2A'), rgb('#E2B648')))
-    _legs_shoes(S, P, top=44)
+    _legs(S, P, pose, top=44)
 
     _torso(S, olive, 47)
     # regata creme, cinto e calça aparecendo na frente aberta do blazer
@@ -1130,11 +1122,12 @@ def strands(base, dark, light):
     return fn
 
 
-def otto():
+def otto(pose='parado'):
     """Otto: calvo no alto, com os lados brancos e fofos; barba branca cheia,
     óculos redondos de tartaruga, camisa branca com a manga dobrada, colete de
-    tricô verde oliva, gravata listrada, calça de lã e sapato de couro."""
-    S = Sprite(40, 70)
+    tricô verde oliva, gravata listrada, calça de lã e sapato de couro.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#D6A27C'), sks=rgb('#BA8562'), skl=rgb('#E6B894'), skline=rgb('#7E5038'),
              pant=rgb('#5E4E42'), pants=rgb('#4A3D33'), pantline=rgb('#2A221C'),
              shoe=rgb('#5C3A22'), shoehl=rgb('#8A5C38'), shoeline=rgb('#2A1A0E'),
@@ -1145,7 +1138,7 @@ def otto():
     grey, greyd, greyl = rgb('#E6E5E2'), rgb('#A8A6A0'), rgb('#FFFFFF')
 
     _far_arm_sl(S, P, shirt, 40, cuff=rgb('#C9CBD0'), watch=(rgb('#5C3A22'), rgb('#E9DFC6')))
-    _legs_shoes(S, P, top=45)
+    _legs(S, P, pose, top=45)
 
     knit = lambda x, y, c: (mul(c, 1.08) if (x + y * 2) % 4 == 0 else
                             (mul(c, 0.94) if (x * 3 + y) % 5 == 0 else None))
@@ -1231,15 +1224,34 @@ def otto():
 GOLD, GOLDD = rgb('#E2B648'), rgb('#A87C22')
 
 
+def _pump(S, x0, y0, c, d, l, w=10):
+    """Um scarpin: bico fino para a direita, salto fino atrás."""
+    sh = Layer(c, d)
+    sh.rows({y0: (x0 + 1, x0 + w - 2), y0 + 1: (x0, x0 + w), y0 + 2: [(x0, x0 + 1), (x0 + 5, x0 + w)]})
+    sh.outline()
+    sh.set(x0 + w - 3, y0 + 1, l)
+    S.add(sh)
+
+
 def _pumps(S, c, d, l):
-    """Scarpin: bico fino para a frente, salto fino atrás."""
-    for rows, hl in (({58: (20, 27), 59: (19, 29), 60: [(19, 20), (24, 29)]}, (26, 59)),
-                     ({59: (13, 21), 60: (12, 23), 61: [(12, 13), (17, 23)]}, (20, 60))):
-        sh = Layer(c, d)
-        sh.rows(rows)
-        sh.outline()
-        sh.set(*hl, l)
-        S.add(sh)
+    _pump(S, 19, 58, c, d, l)
+    _pump(S, 12, 59, c, d, l, w=11)
+
+
+def _sit_pump(c, d, l):
+    """O pé da pose sentada para quem usa scarpin. Ele é mais baixo que o
+    tênis, então desce 1 px para pisar onde pisa em pé."""
+    return lambda S, x0, y0: _pump(S, x0, y0 + 1, c, d, l)
+
+
+def _slacks_pumps(S, pose, col, pump, top=44, flare=True):
+    """Calça social (col = base, sombra, contorno) e scarpin (pump = cor,
+    contorno, brilho), em pé ou sentada."""
+    if pose == 'sentado':
+        _sit_legs(S, col, top + S.dy, _sit_pump(*pump), wide=flare)
+    else:
+        _slacks(S, col, top, flare)
+        _pumps(S, *pump)
 
 
 def _slacks(S, col, top=42, flare=True):
@@ -1319,8 +1331,9 @@ def pra_ontem(pose='parado'):
     têmporas grisalhas, topete espetado de quem está com pressa, óculos
     pretos grossos, bigode e cavanhaque escuros com fios brancos, terno
     grafite, gravata verde e lenço no bolso.
-    pose='telefone': o fone vermelho no ouvido."""
-    S = Sprite(40, 70)
+    pose='telefone': o fone vermelho no ouvido.
+    pose='sentado': o parado, sentado."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#D9A580'), sks=rgb('#BE8962'), skl=rgb('#E8BA96'), skline=rgb('#7E5038'),
              pant=rgb('#3E3E45'), pants=rgb('#303036'), pantline=rgb('#17171B'),
              shoe=rgb('#1E1E22'), shoehl=rgb('#4A4A55'), shoeline=rgb('#0A0A0C'),
@@ -1333,7 +1346,7 @@ def pra_ontem(pose='parado'):
     silver, silverd = rgb('#C2C2C8'), rgb('#8E8E96')
 
     _far_arm_sl(S, P, suit, 41, cuff=white, watch=(rgb('#C9A24A'), rgb('#F7EFD0')))
-    _legs_shoes(S, P, top=46)
+    _legs(S, P, pose, top=46)
     _torso(S, suit, 47)
     _blazer_open(S, suit, suit_l, white, whites, inner_bottom=45, lower=(P['pant'], P['pants']))
     tie, tiel = rgb('#1F5A3A'), rgb('#2E7A50')
@@ -1345,7 +1358,7 @@ def pra_ontem(pose='parado'):
         S.set(x, y, white)
     S.set(23, 41, rgb('#111114'))
 
-    if pose == 'parado':
+    if pose != 'telefone':
         _near_arm_sl(S, P, suit, 41, cuff=white)
 
     _neck_head(S, P)
@@ -1455,11 +1468,12 @@ def pra_ontem(pose='parado'):
     return S.image()
 
 
-def iris():
+def iris(pose='parado'):
     """Íris, analista de cenários financeiros: black power redondo, óculos
     de tartaruga gatinho, blazer verde-escuro, blusa creme, argolas, colar
-    de moeda e relógio dourado."""
-    S = Sprite(40, 70)
+    de moeda e relógio dourado.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#A86A44'), sks=rgb('#8C5536'), skl=rgb('#BE8158'), skline=rgb('#5A3420'))
     blazer = (rgb('#2F4A36'), rgb('#263D2C'), rgb('#13221A'))
     P['teeline'] = blazer[2]
@@ -1484,8 +1498,7 @@ def iris():
     S.add(hb)
 
     _far_arm_sl(S, P, blazer, 40, watch=(GOLD, rgb('#F7EFD0')))
-    _slacks(S, blazer, top=44, flare=False)
-    _pumps(S, rgb('#B07850'), rgb('#5E3A20'), rgb('#D9A47A'))
+    _slacks_pumps(S, pose, blazer, (rgb('#B07850'), rgb('#5E3A20'), rgb('#D9A47A')), flare=False)
     _torso(S, blazer, 47)
     _blazer_open(S, blazer, light, rgb('#F3ECDF'), rgb('#DED4C2'), inner_bottom=43,
                  lower=(blazer[0], blazer[1]))
@@ -1528,12 +1541,13 @@ def iris():
     return S.image()
 
 
-def joana():
+def joana(pose='parado'):
     """Joana, negociadora de resultados: careca e estilosa, com brilho na
     cabeça, argolas grandes e piercings dourados na orelha, delineado e
     batom vinho; blazer bege com botões dourados, blusa creme, colar e
-    relógio dourado."""
-    S = Sprite(40, 70)
+    relógio dourado.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#8A5232'), sks=rgb('#6E3E24'), skl=rgb('#A0623E'), skline=rgb('#3E2010'))
     blazer = (rgb('#D9C2A0'), rgb('#C2A983'), rgb('#8A7350'))
     P['teeline'] = blazer[2]
@@ -1541,8 +1555,7 @@ def joana():
 
 
     _far_arm_sl(S, P, blazer, 40, watch=(GOLD, rgb('#F7EFD0')))
-    _slacks(S, blazer, top=44)
-    _pumps(S, rgb('#C08A5C'), rgb('#6E4424'), rgb('#E3B489'))
+    _slacks_pumps(S, pose, blazer, (rgb('#C08A5C'), rgb('#6E4424'), rgb('#E3B489')))
     _torso(S, blazer, 47)
     _blazer_open(S, blazer, light, rgb('#F6F0E4'), rgb('#E3DACA'), inner_bottom=43,
                  lower=(blazer[0], blazer[1]), buttons=((23, 41), (23, 44)))
@@ -1587,11 +1600,12 @@ def joana():
     return S.image()
 
 
-def malu():
+def malu(pose='parado'):
     """Malu, de experiências, viagens e histórias: cabelo longo, liso e
     preto-azulado, óculos de sol na cabeça, camisa de linho creme aberta
-    sobre regata branca, colares e pulseiras dourados, jeans claro e tênis."""
-    S = Sprite(40, 70)
+    sobre regata branca, colares e pulseiras dourados, jeans claro e tênis.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = _white_sneakers(dict(sk=rgb('#E0A982'), sks=rgb('#C68C66'), skl=rgb('#EDBE9A'), skline=rgb('#8A5638'),
                              pant=rgb('#A9C4E0'), pants=rgb('#8AA8C8'), pantline=rgb('#56769A')))
     linen = (rgb('#EFE6D6'), rgb('#D8CDBA'), rgb('#A69C8A'))
@@ -1622,7 +1636,7 @@ def malu():
     _far_arm_sl(S, P, linen, 39, cuff=rgb('#F7F1E6'))
     for x in range(27, 31):
         S.set(x, 44, GOLD)
-    _legs_shoes(S, P, top=44)
+    _legs(S, P, pose, top=44)
     _torso(S, linen, 46)
     _blazer_open(S, linen, rgb('#F7F1E6'), rgb('#FBFBF8'), rgb('#E6E6E0'), inner_bottom=43,
                  lower=(P['pant'], P['pants']))
@@ -1667,11 +1681,12 @@ def malu():
     return S.image()
 
 
-def duda():
+def duda(pose='parado'):
     """Duda, de auditoria e clareza financeira: coque alto com dois cachos
     caindo na testa, blazer verde-oliva com botões dourados, blusa creme
-    canelada, argolas grandes, colar de gráfico e relógio dourado."""
-    S = Sprite(40, 70)
+    canelada, argolas grandes, colar de gráfico e relógio dourado.
+    pose='parado' ou 'sentado'."""
+    S = Sprite(40, 70, SIT_DY if pose == 'sentado' else 0)
     P = dict(sk=rgb('#8E5536'), sks=rgb('#723F24'), skl=rgb('#A66A44'), skline=rgb('#40200E'))
     blazer = (rgb('#4E5634'), rgb('#3E452A'), rgb('#22271A'))
     P['teeline'] = blazer[2]
@@ -1680,8 +1695,7 @@ def duda():
 
 
     _far_arm_sl(S, P, blazer, 40, watch=(GOLD, rgb('#F7EFD0')))
-    _slacks(S, blazer, top=44, flare=False)
-    _pumps(S, rgb('#8A5A3A'), rgb('#3E2414'), rgb('#B07A52'))
+    _slacks_pumps(S, pose, blazer, (rgb('#8A5A3A'), rgb('#3E2414'), rgb('#B07A52')), flare=False)
     _torso(S, blazer, 47)
     _blazer_open(S, blazer, light, rgb('#F3ECDF'), rgb('#DED4C2'), inner_bottom=43,
                  lower=(blazer[0], blazer[1]), buttons=((23, 40), (23, 43)))
@@ -1779,13 +1793,25 @@ def _tufts(layer, seed, c, every=4):
                 break
 
 
-def flora(k=1.0):
-    """Labrador preta, sentada, pelo brilhante e coleira vermelha."""
+def flora(k=1.0, pose='sentado'):
+    """Labrador preta, pelo brilhante e coleira vermelha.
+    pose='sentado' ou 'em_pe' (nas quatro patas, de lado para a direita)."""
     L = lambda base, line=None: _SLayer(k, base, line)
-    S = _SSprite(k, 48, 46)
     fur, furd, furl, furll = rgb('#2A2A31'), rgb('#141418'), rgb('#434552'), rgb('#666A7D')
     line = rgb('#09090B')
+    if pose == 'em_pe':
+        S = _SSprite(k, 56, 47)
+        _flora_standing(S, L, fur, furd, furl, furll, line)
+        # a cabeça vai para a frente, no alto do pescoço
+        S.dx, S.dy = round(6 * k), round(1 * k)
+    else:
+        S = _SSprite(k, 48, 46)
+        _flora_sitting(S, L, fur, furd, furl, furll, line)
+    _flora_head(S, L, fur, furd, furl, furll, line)
+    return S.image()
 
+
+def _flora_sitting(S, L, fur, furd, furl, furll, line):
     # rabo no chão
     tl = L(fur, line)
     tl.rows({38: (4, 9), 39: (3, 11), 40: (3, 12), 41: (5, 12)})
@@ -1817,16 +1843,7 @@ def flora(k=1.0):
     S.add(hp)
 
     for x0, y1 in ((25, 43), (30, 44)):
-        lg = L(fur, line)
-        lg.rect(x0, 30, x0 + 4, y1 - 2)
-        lg.rows({y1 - 1: (x0, x0 + 5), y1: (x0, x0 + 5)})
-        lg.shade_side('l', 1, furd)
-        lg.outline()
-        lg.set(x0 + 2, 31, furl)
-        lg.set(x0 + 2, 32, furl)
-        lg.set(x0 + 2, y1, furd)
-        lg.set(x0 + 4, y1, furd)
-        S.add(lg)
+        _flora_leg(S, L, x0, 30, y1, fur, furd, furl, line)
 
     ch = L(fur, line)
     ch.rows({18: (26, 33), 19: (25, 34), 20: (24, 35), 21: (24, 35), 22: (24, 35),
@@ -1837,6 +1854,61 @@ def flora(k=1.0):
         ch.set(x, y, furl)
     S.add(ch)
 
+
+def _flora_leg(S, L, x0, top, y1, fur, furd, furl, line):
+    lg = L(fur, line)
+    lg.rect(x0, top, x0 + 4, y1 - 2)
+    lg.rows({y1 - 1: (x0, x0 + 5), y1: (x0, x0 + 5)})
+    lg.shade_side('l', 1, furd)
+    lg.outline()
+    lg.set(x0 + 2, top + 1, furl)
+    lg.set(x0 + 2, top + 2, furl)
+    lg.set(x0 + 2, y1, furd)
+    lg.set(x0 + 4, y1, furd)
+    S.add(lg)
+
+
+def _flora_standing(S, L, fur, furd, furl, furll, line):
+    """Corpo da Flora em pé: tronco na horizontal, peito fundo na frente,
+    pescoço subindo para a cabeça, rabo de lontra (grosso na base) e as
+    quatro patas, as de longe 5 px à direita e 1 px acima das de perto."""
+    tl = L(fur, line)
+    tl.rows({17: (1, 3), 18: (1, 4), 19: (2, 6), 20: (3, 8), 21: (4, 10), 22: (6, 12),
+             23: (7, 12), 24: (8, 11)})
+    tl.outline()
+    for x, y in ((3, 19), (4, 20), (5, 21)):
+        tl.set(x, y, furl)
+    S.add(tl)
+    for x0, top in ((14, 32), (33, 33)):
+        _flora_leg(S, L, x0, top, 44, fur, furd, furl, line)
+    bd = L(fur, line)
+    bd.rows({y: (30, 40) for y in range(14, 22)})          # pescoço
+    bd.rows({22: (14, 40), 23: (10, 39), 24: (8, 38)})
+    bd.rows({y: (7, 38) for y in range(25, 33)})
+    bd.rows({33: (8, 38), 34: (10, 38), 35: (13, 37), 36: (17, 35)})
+    bd.outline()
+    for x in range(12, 31):
+        bd.set(x, 24, furl)
+    for x in range(15, 28):
+        bd.set(x, 23, furll if x % 5 == 0 else furl)
+    for x in range(12, 36):
+        bd.set(x, 35 if x < 16 else 34, furd)
+    for x, y in ((31, 15), (31, 16), (31, 17), (32, 18), (33, 26), (34, 27), (34, 28), (35, 29)):
+        bd.set(x, y, furl)
+    S.add(bd)
+    # coxa de trás do lado de perto
+    hp = L(fur, line)
+    hp.rows({27: (9, 15), 28: (8, 16), 29: (7, 17), 30: (7, 17), 31: (7, 17), 32: (7, 17),
+             33: (8, 16), 34: (8, 15)})
+    hp.outline()
+    for x, y in ((10, 28), (11, 28), (12, 28), (9, 29)):
+        hp.set(x, y, furl)
+    S.add(hp)
+    for x0, top in ((9, 34), (28, 35)):
+        _flora_leg(S, L, x0, top, 45, fur, furd, furl, line)
+
+
+def _flora_head(S, L, fur, furd, furl, furll, line):
     # coleira vermelha com plaquinha dourada
     col = L(rgb('#D7352E'), rgb('#8E1C18'))
     col.rows({19: (23, 35), 20: (23, 35)})
@@ -1911,18 +1983,69 @@ def flora(k=1.0):
     for x, y in ((19, 4), (20, 4), (21, 4), (22, 5), (18, 5)):
         ear.set(x, y, furl)
     S.add(ear)
+
+
+def lupin(k=1.0, pose='sentado'):
+    """Vira-lata pequeno: preto, pelo duro, barba e bochechas caramelo,
+    sobrancelhas de velhinho e orelhas com a pontinha dobrada.
+    pose='sentado' ou 'em_pe' (nas quatro patas, de lado para a direita)."""
+    L = lambda base, line=None: _SLayer(k, base, line)
+    fur, furd, furl = rgb('#25242A'), rgb('#121115'), rgb('#403E4A')
+    line = rgb('#070708')
+    if pose == 'em_pe':
+        S = _SSprite(k, 44, 34)
+        _lupin_standing(S, L, fur, furd, furl, line)
+        S.dx, S.dy = round(6 * k), round(2 * k)
+    else:
+        S = _SSprite(k, 38, 34)
+        _lupin_sitting(S, L, fur, furd, furl, line)
+    _lupin_head(S, L, fur, furd, furl, line)
     return S.image()
 
 
-def lupin(k=1.0):
-    """Vira-lata pequeno: preto, pelo duro, barba e bochechas caramelo,
-    sobrancelhas de velhinho e orelhas com a pontinha dobrada."""
-    L = lambda base, line=None: _SLayer(k, base, line)
-    S = _SSprite(k, 38, 34)
-    fur, furd, furl = rgb('#25242A'), rgb('#121115'), rgb('#403E4A')
-    tan, tand, tanl = rgb('#7C4B2A'), rgb('#55321B'), rgb('#A66C40')
-    line = rgb('#070708')
+def _lupin_leg(S, L, x0, top, y1, fur, furl, line):
+    lg = L(fur, line)
+    lg.rect(x0, top, x0 + 2, y1 - 2)
+    lg.rows({y1 - 1: (x0, x0 + 3), y1: (x0, x0 + 3)})
+    lg.outline()
+    lg.set(x0 + 1, top + 2, furl)
+    S.add(lg)
 
+
+def _lupin_standing(S, L, fur, furd, furl, line):
+    """Corpo do Lupin em pé: tronco curto e peludo, rabo espetado para cima
+    e as quatro patinhas, as de longe 3 px à direita e 1 px acima."""
+    tl = L(fur, line)
+    tl.rows({10: (5, 6), 11: (4, 7), 12: (4, 7), 13: (5, 8), 14: (6, 9), 15: (7, 10),
+             16: (8, 11), 17: (9, 12)})
+    _tufts(tl, 1, line, 3)
+    tl.outline()
+    S.add(tl)
+    for x0 in (11, 25):
+        _lupin_leg(S, L, x0, 24, 31, fur, furl, line)
+    bd = L(fur, line)
+    bd.rows({y: (25, 33) for y in range(14, 18)})          # pescoço
+    bd.rows({17: (11, 33), 18: (8, 32), 19: (7, 31)})
+    bd.rows({y: (6, 31) for y in range(20, 25)})
+    bd.rows({25: (7, 30), 26: (9, 29), 27: (12, 28)})
+    bd.shade_side('l', 1, furd)
+    bd.outline()
+    _tufts(bd, 2, line)
+    for x in range(10, 24):
+        bd.set(x, 19 if x > 11 else 20, furl)
+    for x in range(10, 28):
+        bd.set(x, 26, furd)
+    S.add(bd)
+    hp = L(fur, line)
+    hp.rows({21: (8, 12), 22: (7, 13), 23: (7, 13), 24: (7, 13), 25: (8, 12)})
+    hp.outline()
+    hp.set(9, 22, furl)
+    S.add(hp)
+    for x0 in (8, 22):
+        _lupin_leg(S, L, x0, 25, 32, fur, furl, line)
+
+
+def _lupin_sitting(S, L, fur, furd, furl, line):
     tl = L(fur, line)
     tl.rows({17: (5, 6), 18: (4, 7), 19: (4, 7), 20: (5, 8), 21: (5, 9), 22: (6, 10)})
     _tufts(tl, 1, line, 3)
@@ -1948,12 +2071,7 @@ def lupin(k=1.0):
     S.add(hp)
 
     for x0, y1 in ((17, 30), (21, 31)):
-        lg = L(fur, line)
-        lg.rect(x0, 22, x0 + 2, y1 - 2)
-        lg.rows({y1 - 1: (x0, x0 + 3), y1: (x0, x0 + 3)})
-        lg.outline()
-        lg.set(x0 + 1, 24, furl)
-        S.add(lg)
+        _lupin_leg(S, L, x0, 22, y1, fur, furl, line)
 
     ch = L(fur, line)
     ch.rows({15: (19, 25), 16: (18, 26), 17: (18, 26), 18: (18, 26), 19: (18, 26),
@@ -1964,6 +2082,8 @@ def lupin(k=1.0):
         ch.set(x, y, furl)
     S.add(ch)
 
+
+def _lupin_head(S, L, fur, furd, furl, line):
     # cabeça quadradinha de terrier
     hd = L(fur, line)
     hd.rows({3: (16, 23), 4: (14, 25), 5: (13, 26), 6: (13, 27), 7: (13, 28),
@@ -2030,4 +2150,3 @@ def lupin(k=1.0):
     far.set(24, 1, furl)
     far.set(26, 2, furd)
     S.add(far)
-    return S.image()
