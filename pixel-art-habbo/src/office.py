@@ -757,6 +757,11 @@ PERSONAGENS = [
     ('vivi', 'Vivi', None, lambda: chars.vivi()),
     ('nina', 'Nina', None, lambda: chars.nina()),
     ('otto', 'Otto', None, lambda: chars.otto()),
+    ('sr-pra-ontem', 'Sr. Pra Ontem', 'Departamento das Urgências', lambda: chars.pra_ontem()),
+    ('iris', 'Íris', 'Analista de Cenários Financeiros', lambda: chars.iris()),
+    ('joana', 'Joana', 'Negociadora de Resultados', lambda: chars.joana()),
+    ('malu', 'Malu', 'Experiências, Viagens e Histórias', lambda: chars.malu()),
+    ('duda', 'Duda', 'Auditoria e Clareza Financeira', lambda: chars.duda()),
 ]
 
 

@@ -541,6 +541,71 @@
         20,
         63
       ]
+    },
+    "sr-pra-ontem": {
+      "json": "personagens/sr-pra-ontem.json",
+      "nome": "Sr. Pra Ontem",
+      "papel": "Departamento das Urgências",
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
+    },
+    "iris": {
+      "json": "personagens/iris.json",
+      "nome": "Íris",
+      "papel": "Analista de Cenários Financeiros",
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
+    },
+    "joana": {
+      "json": "personagens/joana.json",
+      "nome": "Joana",
+      "papel": "Negociadora de Resultados",
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
+    },
+    "malu": {
+      "json": "personagens/malu.json",
+      "nome": "Malu",
+      "papel": "Experiências, Viagens e Histórias",
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
+    },
+    "duda": {
+      "json": "personagens/duda.json",
+      "nome": "Duda",
+      "papel": "Auditoria e Clareza Financeira",
+      "tela": [
+        40,
+        70
+      ],
+      "ancora": [
+        20,
+        63
+      ]
     }
   }
 }

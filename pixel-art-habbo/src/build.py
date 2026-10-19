@@ -1052,14 +1052,430 @@ def scene_otto():
     return finish(S, os.path.join(OUT, '09-otto.png'))
 
 
+# ------------------------------------- Sr. Pra Ontem, Íris, Joana, Malu, Duda
+def wall_sign(S, text, side, x0, vtop, w, h, bg, fg, glow=None, edge=None):
+    """Placa na parede com letreiro: a caixa inclina com a parede e cada
+    letra sobe inteira, para continuar legível."""
+    box = Sprite(w, h)
+    L = Layer(bg, edge or mul(bg, 0.6))
+    L.rect(0, 0, w - 1, h - 1)
+    L.outline()
+    box.add(L)
+    on_wall(S, box.image(), side, x0, vtop)
+    gx = x0 + (w - text_width(text, MINI)) // 2
+    for ch in text:
+        g = MINI[ch]
+        gw = len(g[0])
+        top = floor_edge(gx + gw // 2) - vtop + (h - 5) // 2
+        pts = [(gx + i, top + j) for j, row in enumerate(g) for i, v in enumerate(row) if v == '#']
+        if glow:
+            for (x, y) in pts:
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    if (x + dx, y + dy) not in pts:
+                        S.set(x + dx, y + dy, glow)
+        for p in pts:
+            S.set(*p, fg)
+        gx += gw + 1
+
+
+def wall_clock():
+    def col(dx, dy, d):
+        if d > 6.0:
+            return rgb('#2A2A30')
+        return rgb('#F7F5EE') if d < 5.2 else rgb('#C9A24A')
+    sp = ring(15, 7, 7, 0, 7.0, col)
+    for k in range(4):
+        sp.set(7, 7 - k, rgb('#1C1C20'))
+    for k in range(3):
+        sp.set(7 + k, 7, rgb('#D7302A'))
+    for ang in range(12):
+        a = ang * math.pi / 6
+        sp.set(round(7 + 4.6 * math.cos(a)), round(7 + 4.6 * math.sin(a)), rgb('#55555E'))
+    return sp.image()
+
+
+def dusk_window():
+    """Janela de fim de tarde: céu laranja e roxo, prédios com luz acesa."""
+    sp = frame(26, 22, rgb('#3A2A1E'), rgb('#E07A86'))
+    for y in range(2, 20):
+        f = (y - 2) / 17
+        c = mix(rgb('#5C4C9C'), rgb('#E07A86'), f / 0.5) if f < 0.5 else mix(rgb('#E07A86'), rgb('#F7BC6A'), (f - 0.5) / 0.5)
+        for x in range(2, 24):
+            sp.set(x, y, c)
+    for i, (x0, x1, top) in enumerate(((2, 6, 11), (6, 9, 7), (9, 13, 13), (13, 16, 9), (16, 20, 12), (20, 24, 8))):
+        for x in range(x0, x1):
+            for y in range(top, 20):
+                lit = (y - top) % 3 == 1 and (x - x0) % 2 == 1 and (x * 3 + y + i) % 3 == 0
+                sp.set(x, y, rgb('#F6C97A') if lit else (rgb('#3D305C') if i % 2 else rgb('#4D3E6E')))
+    for y in range(2, 20):
+        sp.set(13, y, rgb('#3A2A1E'))
+    return sp.image()
+
+
+def world_map(polaroids=False):
+    sp = frame(30, 20, rgb('#8A6238'), rgb('#CFE3EC'))
+    land = rgb('#9DB585') if not polaroids else rgb('#D9C9A0')
+    for x0, y0, x1, y1 in ((4, 4, 9, 9), (6, 9, 9, 15), (13, 3, 18, 7), (14, 8, 17, 14), (19, 3, 26, 8), (23, 11, 26, 14)):
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                if (x + y) % 7:
+                    sp.set(x, y, land)
+    if polaroids:
+        for px_, py_, c in ((3, 3, '#4D8FCB'), (11, 10, '#3F8A3A'), (20, 4, '#E2A040'), (22, 11, '#2F8FC0')):
+            for y in range(py_, py_ + 5):
+                for x in range(px_, px_ + 4):
+                    edge = x in (px_, px_ + 3) or y in (py_, py_ + 4)
+                    sp.set(x, y, WHITE if edge or y == py_ + 3 else rgb(c))
+            sp.set(px_ + 1, py_ - 1, rgb('#D9453B'))
+        for x, y in ((8, 8), (16, 6), (24, 9), (13, 13)):
+            sp.set(x, y, rgb('#D9453B'))
+    else:
+        for x, y in ((7, 6), (16, 5), (22, 5), (24, 12)):
+            sp.set(x, y, rgb('#2C7A4A'))
+    return sp.image()
+
+
+def rio_window():
+    sp = frame(26, 22, rgb('#F2F0EA'), rgb('#9ED0F0'))
+    for y in range(2, 20):
+        for x in range(2, 24):
+            sp.set(x, y, mix(rgb('#8FC8EE'), rgb('#D3EDF8'), (y - 2) / 10) if y < 13 else rgb('#2F8FC0'))
+    for x, top in ((15, 6), (16, 4), (17, 3), (18, 3), (19, 4), (20, 6), (21, 8), (22, 10), (23, 11),
+                   (9, 10), (10, 9), (11, 9), (12, 10), (13, 11)):
+        for y in range(top, 14):
+            sp.set(x, y, rgb('#4E8A3A') if x < 18 else rgb('#3A6E2C'))
+    for x in range(2, 9):
+        for y in range(11, 14):
+            sp.set(x, y, rgb('#F2EBDD') if (x + y) % 2 else rgb('#D9CDB8'))
+    for x in range(2, 24):
+        sp.set(x, 14, rgb('#57AEDA'))
+    for y in range(2, 20):
+        sp.set(12, y, rgb('#F2F0EA'))
+    return sp.image()
+
+
+def target_frame():
+    sp = frame(17, 17, rgb('#C9A24A'), rgb('#FAF7F0'))
+
+    def col(dx, dy, d):
+        return (rgb('#D9453B') if int(d) % 2 == 0 else WHITE) if d > 1.2 else rgb('#D9453B')
+    t = ring(11, 5, 5, 0, 5.2, col)
+    for (x, y), c in t.px.items():
+        sp.set(x + 3, y + 3, c)
+    for k in range(5):
+        sp.set(13 - k, 4 + k, rgb('#2A2A30'))
+    sp.set(13, 3, rgb('#2C7A4A'))
+    sp.set(14, 4, rgb('#2C7A4A'))
+    return sp.image()
+
+
+def pie_report():
+    sp = frame(17, 21, rgb('#2A3A30'), rgb('#FAFAF7'))
+    for x in range(3, 13):
+        sp.set(x, 3, rgb('#7E848D'))
+    for y in range(5, 12):
+        for x in range(4, 13):
+            d = math.hypot(x - 8, y - 8.3)
+            if d <= 3.5:
+                a = math.atan2(y - 8.3, x - 8)
+                sp.set(x, y, rgb('#2C5A40') if a < 0.9 else (rgb('#6E9A7A') if a < 2.4 else rgb('#B9D3BF')))
+    for i, h in enumerate((2, 3, 4, 3, 5)):
+        for y in range(18 - h, 18):
+            sp.set(4 + i * 2, y, rgb('#2C5A40'))
+    return sp.image()
+
+
+def office_desk(S, x, y, a=4, b=8, h=14, wood=('#6A4428', '#5A3820', '#40281A')):
+    shadow(S, x - 6, y - 5, 18, 6)
+    iso_box(S, x, y, a, b, h, rgb(wood[0]), rgb(wood[1]), rgb(wood[2]))
+    return x, y - h
+
+
+def laptop(S, x, y):
+    for i in range(10):
+        S.set(x + i, y - i // 2, rgb('#B9BCC2'))
+        S.set(x + i, y - i // 2 + 1, rgb('#8A8D94'))
+    for i in range(10):
+        for k in range(2, 9):
+            S.set(x + i, y - i // 2 - k, rgb('#C9CBD0') if i not in (0, 9) and k not in (2, 8) else rgb('#7A7D84'))
+    S.set(x + 5, y - 7, rgb('#2C7A4A'))
+    S.set(x + 4, y - 6, rgb('#2C7A4A'))
+
+
+def mug(S, x, y):
+    for dx in range(3):
+        for dy in range(4):
+            S.set(x + dx, y - dy, WHITE if dx < 2 else rgb('#DADAD6'))
+    S.set(x + 3, y - 2, WHITE)
+    S.set(x + 3, y - 1, rgb('#DADAD6'))
+    S.set(x + 1, y - 2, rgb('#2C7A4A'))
+
+
+def hourglass(S, x, y):
+    for dx in range(-2, 3):
+        S.set(x + dx, y, rgb('#C9A24A'))
+        S.set(x + dx, y - 7, rgb('#C9A24A'))
+    for k, w in ((1, 1), (2, 1), (3, 0), (4, 0), (5, 1), (6, 1)):
+        for dx in range(-w, w + 1):
+            sand = (k >= 5) or (k == 1 and dx == 0)
+            S.set(x + dx, y - k, rgb('#E2B648') if sand else rgb('#DCE8EE'))
+
+
+def paper_stack(S, x, y, n, tabs):
+    """Pilha de papéis (bloquinho isométrico) com etiquetas coloridas no lado."""
+    iso_block(S, x, y, 3, n, rgb('#FAF8F2'), rgb('#E6E2D8'), rgb('#CFCAC0'), line=rgb('#9A958A'))
+    for k in range(1, n, 2):
+        c = rgb(tabs[(k // 2) % len(tabs)])
+        S.set(x - 6, y - 3 - k, c)
+        S.set(x - 7, y - 3 - k, c)
+        S.set(x - 4, y - 2 - k, c)
+
+
+def red_phone(S, x, y):
+    for dx in range(-3, 4):
+        S.set(x + dx, y, rgb('#8E1A16'))
+    for dy, w in ((1, 3), (2, 3), (3, 2)):
+        for dx in range(-w, w + 1):
+            S.set(x + dx, y - dy, rgb('#D7302A') if dx < 1 else rgb('#B2221D'))
+    for dx, dy in ((-1, 2), (0, 2), (1, 2), (0, 3)):
+        S.set(x + dx, y - dy, rgb('#F2F0EA'))
+    for dx in range(-3, 4):
+        S.set(x + dx, y - 4, rgb('#D7302A'))
+    S.set(x - 3, y - 5, rgb('#8E1A16'))
+    S.set(x + 3, y - 5, rgb('#8E1A16'))
+
+
+def alarm_clock(S, x, y):
+    for yy in range(y - 5, y + 1):
+        for xx in range(x - 3, x + 4):
+            d = math.hypot(xx - x, yy - (y - 2.5))
+            if d <= 3.2:
+                S.set(xx, yy, rgb('#F7F5EE') if d < 2.2 else rgb('#1C1C20'))
+    S.set(x, y - 3, rgb('#1C1C20'))
+    S.set(x + 1, y - 2, rgb('#D7302A'))
+    for dx in (-3, 3):
+        S.set(x + dx, y - 6, rgb('#1C1C20'))
+        S.set(x + dx + (1 if dx < 0 else -1), y - 6, rgb('#1C1C20'))
+
+
+def floor_globe(S, x, y):
+    shadow(S, x, y - 1, 6, 2)
+    for k in range(6):
+        S.set(x, y - k, rgb('#8A6238'))
+    for dx in range(-3, 4):
+        S.set(x + dx, y, rgb('#6E4A2A'))
+    for yy in range(y - 16, y - 5):
+        for xx in range(x - 5, x + 6):
+            d = math.hypot(xx - x, yy - (y - 11))
+            if d <= 5:
+                S.set(xx, yy, rgb('#E9DDB8') if (xx * 2 + yy) % 5 else rgb('#4D8FCB'))
+            elif d <= 5.9 and xx >= x:
+                S.set(xx, yy, rgb('#C9A24A'))
+
+
+def straw_hat(S, x, y):
+    for dx in range(-7, 8):
+        for dy in range(-1, 2):
+            if (dx / 7.5) ** 2 + (dy / 1.8) ** 2 <= 1:
+                S.set(x + dx, y + dy, rgb('#E2C88E') if dy < 1 else rgb('#C9AA6E'))
+    for dx in range(-4, 5):
+        for dy in range(-4, 0):
+            if (dx / 4.2) ** 2 + ((dy + 2) / 2.5) ** 2 <= 1:
+                S.set(x + dx, y + dy, rgb('#EAD39C'))
+    for dx in range(-4, 5):
+        S.set(x + dx, y - 1, rgb('#1C1C20'))
+
+
+def scene_pra_ontem():
+    S = Sprite(W, H)
+    stars(S, 101, rgb('#0B1126'))
+
+    def walnut(base):
+        def f(u, v):
+            if v in (34, 35):
+                return mix(base, rgb('#FFD27A'), 0.35)
+            if u % 12 == 0:
+                return mul(base, 0.82)
+            return base if v > 3 else mul(base, 0.8)
+        return f
+
+    def floor(A, B):
+        plank = (B // 12) % 2
+        base = rgb('#6E482C') if plank else rgb('#7A5234')
+        if B % 12 in (0, 1):
+            return rgb('#4E301A')
+        return base
+
+    room(S, walnut(rgb('#6A4A32')), walnut(rgb('#58402A')), floor)
+    on_wall(S, wall_clock(), 'l', 16, 50)
+    wall_sign(S, 'URGENTE', 'r', 58, 46, 30, 10, rgb('#D7302A'), WHITE, edge=rgb('#7E1612'))
+    potted_palm(S, 82, 94)
+    tx_, ty_ = office_desk(S, 30, 108, 5, 10, 15)
+    paper_stack(S, tx_ - 11, ty_ - 4, 10, ('#D9453B', '#F4C04F', '#D9453B'))
+    paper_stack(S, tx_ - 3, ty_ - 1, 6, ('#F4C04F', '#3DB64B'))
+    red_phone(S, tx_ + 4, ty_ - 6)
+    alarm_clock(S, tx_ - 17, ty_ - 9)
+    hourglass(S, tx_ + 9, ty_ - 9)
+    top = place(S, chars.pra_ontem('telefone'), CX + 3)
+    nametag(S, 'Sr. Pra Ontem', CX + 3, top - 1)
+    return finish(S, os.path.join(OUT, '10-sr-pra-ontem.png'))
+
+
+def scene_iris():
+    S = Sprite(W, H)
+    stars(S, 102, rgb('#0B1126'))
+
+    def wood(u, v):
+        return rgb('#5E4230') if u % 10 else rgb('#4A3424')
+
+    def light(u, v):
+        return rgb('#3A2E26') if v > 3 else rgb('#2E241E')
+
+    def floor(A, B):
+        if 50 <= A <= 150 and 40 <= B <= 140:
+            if A in (50, 51, 149, 150) or B in (40, 41, 139, 140):
+                return rgb('#1E3A2A')
+            return rgb('#2C5A40') if (A // 6 + B // 6) % 2 else rgb('#285236')
+        plank = (B // 12) % 2
+        if B % 12 in (0, 1):
+            return rgb('#3E2A1A')
+        return rgb('#6A482E') if plank else rgb('#5E402A')
+
+    room(S, wood, light, floor)
+    on_wall(S, chart_frame(), 'l', 12, 46)
+    on_wall(S, dusk_window(), 'r', 60, 48)
+    floor_globe(S, 80, 100)
+    tx_, ty_ = office_desk(S, 30, 108, 5, 10, 15)
+    laptop(S, tx_ - 10, ty_ - 6)
+    paper_stack(S, tx_ - 16, ty_ - 7, 3, ('#2C7A4A',))
+    hourglass(S, tx_ + 4, ty_ - 6)
+    for dx in range(-1, 3):
+        for dy in range(0, 3):
+            S.set(tx_ - 2 + dx, ty_ - 2 - dy, rgb('#2A2A30') if (dx + dy) % 2 else rgb('#5A5A66'))
+    top = place(S, chars.iris(), CX + 2)
+    nametag(S, 'Íris', CX + 2, top - 1)
+    return finish(S, os.path.join(OUT, '11-iris.png'))
+
+
+def scene_joana():
+    S = Sprite(W, H)
+    stars(S, 103, rgb('#0B1126'))
+
+    def beige(u, v):
+        return rgb('#EADCC4') if (u * 3 + v) % 23 else rgb('#E2D3B9')
+
+    def walnut(u, v):
+        if v in (40, 41):
+            return rgb('#E8C27A')
+        return rgb('#6A4A32') if u % 10 else rgb('#58402A')
+
+    def oak(A, B):
+        plank = (B // 12) % 3
+        base = (rgb('#C9A16E'), rgb('#BF9764'), rgb('#C59C69'))[plank]
+        if B % 12 in (0, 1):
+            return rgb('#9A7448')
+        return base
+
+    room(S, beige, walnut, oak)
+    on_wall(S, target_frame(), 'l', 16, 46)
+    on_wall(S, bookshelf_wall(), 'r', 62, 48)
+    big_leaf_plant(S, 80, 98)
+    tx_, ty_ = office_desk(S, 30, 108, 5, 10, 15)
+    laptop(S, tx_ - 9, ty_ - 6)
+    mug(S, tx_ - 15, ty_ - 6)
+    for i, c in enumerate(('#2C5A40', '#F2EBDD', '#2C5A40', '#E9E2D4')):
+        for dx in range(-3, 4):
+            S.set(tx_ + 3 + dx, ty_ - 3 - i * 2, rgb(c))
+            S.set(tx_ + 3 + dx, ty_ - 2 - i * 2, mul(rgb(c), 0.7))
+    top = place(S, chars.joana(), CX + 2)
+    nametag(S, 'Joana', CX + 2, top - 1)
+    return finish(S, os.path.join(OUT, '12-joana.png'))
+
+
+def scene_malu():
+    S = Sprite(W, H)
+    stars(S, 104, rgb('#0B1126'))
+
+    def cream(u, v):
+        return rgb('#F3EBDD') if (u + v * 2) % 19 else rgb('#EBE1D0')
+
+    def white(u, v):
+        return rgb('#E6DDCC') if v > 3 else rgb('#D8CDB8')
+
+    def oak(A, B):
+        if 40 <= A <= 140 and 50 <= B <= 150:
+            if (A // 8 + B // 8) % 2:
+                return rgb('#D9C4A0')
+            return rgb('#CDB590')
+        plank = (B // 12) % 2
+        if B % 12 in (0, 1):
+            return rgb('#B9965F')
+        return rgb('#E1C695') if plank else rgb('#D8BC88')
+
+    room(S, cream, white, oak)
+    on_wall(S, world_map(polaroids=True), 'l', 8, 46)
+    on_wall(S, rio_window(), 'r', 62, 50)
+    suitcase(S, 74, 106)
+    straw_hat(S, 77, 96)
+    tx_, ty_ = office_desk(S, 30, 108, 5, 10, 15, wood=('#C9A16E', '#B88E5A', '#9A7448'))
+    laptop(S, tx_ - 10, ty_ - 6)
+    for dx in range(3):
+        for dy in range(4):
+            S.set(tx_ + 1 + dx, ty_ - 3 - dy, rgb('#1E2A5A'))
+    S.set(tx_ + 2, ty_ - 5, rgb('#E2B648'))
+    for dx in range(-2, 3):
+        for dy in range(0, 3):
+            S.set(tx_ - 15 + dx, ty_ - 9 - dy, rgb('#2A2A30') if dy > 0 else rgb('#C9CBD0'))
+    S.set(tx_ - 12, ty_ - 10, rgb('#4A4A55'))
+    top = place(S, chars.malu(), CX + 2)
+    nametag(S, 'Malu', CX + 2, top - 1)
+    return finish(S, os.path.join(OUT, '13-malu.png'))
+
+
+def scene_duda():
+    S = Sprite(W, H)
+    stars(S, 105, rgb('#0B1126'))
+
+    def charcoal(base):
+        def f(u, v):
+            if v in (30, 31):
+                return mix(base, rgb('#FFD27A'), 0.3)
+            return base if (u + v) % 21 else mul(base, 0.95)
+        return f
+
+    def floor(A, B):
+        plank = (B // 12) % 2
+        if B % 12 in (0, 1):
+            return rgb('#3E2A1A')
+        return rgb('#6A482E') if plank else rgb('#5E402A')
+
+    room(S, charcoal(rgb('#33403A')), charcoal(rgb('#2A352F')), floor)
+    wall_sign(S, 'DUDA', 'l', 12, 48, 30, 12, rgb('#1E2622'), rgb('#E9C35B'), glow=rgb('#5A4A22'),
+              edge=rgb('#0E1410'))
+    on_wall(S, pie_report(), 'r', 64, 48)
+    big_leaf_plant(S, 82, 98)
+    tx_, ty_ = office_desk(S, 30, 108, 5, 10, 15)
+    laptop(S, tx_ - 10, ty_ - 6)
+    paper_stack(S, tx_ + 2, ty_ - 4, 4, ('#2C5A40',))
+    for dx, dy in ((0, 0), (1, -1), (2, -1), (3, 0), (3, 1), (2, 2), (1, 2), (0, 1)):
+        S.set(tx_ - 16 + dx, ty_ - 9 + dy, rgb('#C9A24A'))
+    S.set(tx_ - 12, ty_ - 6, rgb('#3A2A1E'))
+    S.set(tx_ - 11, ty_ - 5, rgb('#3A2A1E'))
+    hourglass(S, tx_ + 7, ty_ - 9)
+    top = place(S, chars.duda(), CX + 2)
+    nametag(S, 'Duda', CX + 2, top - 1)
+    return finish(S, os.path.join(OUT, '14-duda.png'))
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
     ims = [scene_guilherme(), scene_gabriel(), scene_flora(), scene_lupin(),
-           scene_saldanha(), scene_caio(), scene_vivi(), scene_nina(), scene_otto()]
+           scene_saldanha(), scene_caio(), scene_vivi(), scene_nina(), scene_otto(),
+           scene_pra_ontem(), scene_iris(), scene_joana(), scene_malu(), scene_duda()]
     # prancha com os seis em grade 3x2
     from PIL import Image
     from px import up
-    gap, cols = 4, 3
+    gap, cols = 4, 5
     rows_ = (len(ims) + cols - 1) // cols
     sheet = Image.new('RGBA', (W * cols + gap * (cols + 1), H * rows_ + gap * (rows_ + 1)),
                       (11, 17, 38, 255))

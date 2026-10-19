@@ -1,6 +1,6 @@
 # Pixel art: estilo Habbo e Escritório de Finanças
 
-Nove personagens em cartões no estilo Habbo Hotel, as peças do Escritório
+Catorze personagens em cartões no estilo Habbo Hotel, as peças do Escritório
 de Finanças para o jogo (`assets/`) e, dos seis primeiros, uma versão em
 grade com tiles de 16x16 e personagens de 16x32.
 
@@ -15,10 +15,15 @@ grade com tiles de 16x16 e personagens de 16x32.
 | 07 | Vivi: cachos volumosos com luzes caramelo, argolas e colar dourados, blusa laranja canelada, pantalona creme, scarpin | agência de viagens: quadro do Pão de Açúcar, prateleira com a torre Eiffel e o globo, balcão de ripas com câmera antiga, mala |
 | 08 | Nina: coque bagunçado, argolas, blazer verde-oliva com a manga puxada, regata creme, cinto marrom, calça creme | estúdio de arquitetura: moodboard, estante com livros, mesa com planta impressa, amostras e maquete, ficus |
 | 09 | Otto: grisalho ondulado, barba branca, óculos redondos de tartaruga, camisa branca, colete de tricô oliva, gravata listrada | arquivo da memória: parede de madeira, gravura antiga, retratos sépia, fichário de gavetinhas, mesa com luminária verde e chá |
+| 10 | Sr. Pra Ontem (Departamento das Urgências): grisalho, óculos pretos, barba grisalha, terno grafite, gravata verde, fone vermelho no ouvido | relógio de parede, placa URGENTE, mesa com pilhas de papel etiquetadas, telefone vermelho, despertador e ampulheta |
+| 11 | Íris (Analista de Cenários Financeiros): coque alto de cachos, óculos gatinho de tartaruga, blazer verde-escuro | quadro de gráfico, janela de fim de tarde, mesa com notebook, papéis e ampulheta, globo de chão |
+| 12 | Joana (Negociadora de Resultados): tranças longas com luzes e coque, blazer bege com botões dourados | quadro de alvo, estante de livros, mesa com notebook, caneca e livros, planta |
+| 13 | Malu (Experiências, Viagens e Histórias): cabelo longo ondulado com luzes, óculos de sol na cabeça, camisa de linho creme, jeans | mapa-múndi com polaroides, janela para o Pão de Açúcar, mesa com notebook, passaporte e câmera, mala com chapéu de palha |
+| 14 | Duda (Auditoria e Clareza Financeira): tranças com o alto preso, blazer verde-oliva com botões dourados | letreiro DUDA, quadro com o relatório (pizza e barras), mesa com notebook, papéis, lupa e ampulheta |
 
 ## Estilo Habbo (`out/`)
 
-`out/01-guilherme.png` a `out/09-otto.png`, mais `out/00-todos.png` com
+`out/01-guilherme.png` a `out/14-duda.png`, mais `out/00-todos.png` com
 todos juntos. Cada arte tem 96x120 pixels ampliados 10x (960x1200).
 
 ## Escritório de Finanças (`assets/`)
@@ -38,7 +43,8 @@ assets/
                  costas), balcao, sineta, malote, planta, manta-flora,
                  caminha-lupin
   personagens/   guilherme, gabriel, contador, consultor, flora, lupin,
-                 vivi, nina, otto (folha PNG + JSON com quadros, âncora e fps)
+                 vivi, nina, otto, sr-pra-ontem, iris, joana, malu, duda
+                 (folha PNG + JSON com quadros, âncora e fps)
   manifest.json  tamanho em tiles, âncora, estados e posição de cada peça
   previa/        a sala montada a partir desses arquivos e a prancha de escala
 ```
