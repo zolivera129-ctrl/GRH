@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 from px import Sprite, Layer, rgb, mul, mix  # noqa: E402
 from scene import (W, H, CX, YC, room, stars, on_wall, paste, shadow, nametag,  # noqa: E402
-                   finish, iso_block, draw_text, MINI, text_width, floor_edge)
+                   finish, iso_block, iso_box, draw_text, MINI, text_width, floor_edge)
 import chars  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(__file__), '..', 'out')
@@ -326,6 +326,164 @@ def framed(art, w, h, wood, inner):
     return im
 
 
+def window_city():
+    sp = frame(24, 22, rgb('#DADAD6'), rgb('#BFD9EA'))
+    for y in range(2, 20):
+        for x in range(2, 22):
+            sp.set(x, y, mix(rgb('#D3E9F5'), rgb('#9CC6E2'), (y - 2) / 18))
+    for x0, x1, top, col in ((2, 5, 9, '#8EA3B5'), (6, 9, 6, '#A9B8C6'), (10, 13, 11, '#7F95A8'),
+                             (14, 17, 7, '#B4C2CF'), (18, 21, 10, '#91A5B7')):
+        for x in range(x0, x1 + 1):
+            for y in range(top, 20):
+                c = rgb(col)
+                if y > top and (y - top) % 2 == 0 and x not in (x0, x1) and (x - x0) % 2:
+                    c = mix(c, rgb('#FFFFFF'), 0.45)
+                sp.set(x, y, c)
+    for y in range(2, 20):
+        sp.set(11, y, rgb('#DADAD6'))
+        sp.set(12, y, rgb('#B9B9B4'))
+    for x in range(2, 22):
+        sp.set(x, 11, rgb('#DADAD6'))
+    return sp.image()
+
+
+def chart_frame():
+    """Quadro com gráfico de barras subindo (o contador gosta)."""
+    sp = frame(19, 16, rgb('#3A3A40'), rgb('#FAFAF7'))
+    for x in range(3, 11):
+        sp.set(x, 3, rgb('#B9BCC2'))
+    for x in range(3, 8):
+        sp.set(x, 4, rgb('#D5D7DB'))
+    for i, h in enumerate((2, 4, 3, 6, 8)):
+        x0 = 3 + i * 3
+        for x in (x0, x0 + 1):
+            for y in range(13 - h, 13):
+                sp.set(x, y, rgb('#3DB64B') if x == x0 else rgb('#2C9440'))
+    for x in range(2, 17):
+        sp.set(x, 13, rgb('#8A8D94'))
+    for x, y in ((13, 6), (14, 5), (15, 4), (15, 5), (14, 4)):
+        sp.set(x, y, rgb('#E2453C'))
+    return sp.image()
+
+
+def check_badge():
+    """Placa verde com check branco (quadrado de canto arredondado: inclinado
+    na parede continua lendo como placa)."""
+    green, dark, light = rgb('#3DB64B'), rgb('#25803A'), rgb('#6ACF72')
+    sp = Sprite(16, 16)
+    L = Layer(green, dark)
+    L.rect(0, 0, 15, 15)
+    for p in ((0, 0), (15, 0), (0, 15), (15, 15)):
+        L.px.pop(p)
+    L.outline()
+    for x in range(2, 14):
+        L.set(x, 1, light)
+    sp.add(L)
+    for x, y in ((3, 8), (4, 9), (5, 10), (6, 11), (7, 10), (8, 9), (9, 8), (10, 7),
+                 (11, 6), (12, 5)):
+        for k in (0, 1):
+            sp.set(x, y + k, rgb('#FFFFFF'))
+    return sp.image()
+
+
+def leaf(S, x0, y0, dx, dy, width, c, cd, cl):
+    n = max(abs(dx), abs(dy))
+    for t in range(n + 1):
+        f = t / n
+        x = x0 + round(dx * f)
+        y = y0 + round(dy * f)
+        w = round(width * (4 * f * (1 - f))) if f > 0.25 else 0
+        for k in range(-w, w + 1):
+            S.set(x + k, y, cd if k == w else (cl if k == -w else c))
+        S.set(x, y, cd)
+
+
+def big_leaf_plant(S, x, y):
+    """Planta de folhas largas num vaso redondo cimento."""
+    shadow(S, x, y - 1, 9, 3)
+    pot, potd, potl = rgb('#D6D3CC'), rgb('#A8A49C'), rgb('#ECEAE5')
+    for yy in range(y - 10, y + 1):
+        for xx in range(x - 7, x + 8):
+            if abs(xx - x) <= 7 - max(0, yy - (y - 3)):
+                S.set(xx, yy, pot if xx < x + 3 else potd)
+    for xx in range(x - 7, x + 8):
+        S.set(xx, y - 10, potl)
+        S.set(xx, y - 11, potd)
+    g, gd, gl = rgb('#3F8A3A'), rgb('#25602A'), rgb('#6DB55A')
+    for dx, dy, w in ((-12, -14, 3), (-6, -22, 3), (2, -26, 3), (9, -20, 3), (13, -11, 2), (-3, -16, 2)):
+        leaf(S, x + (1 if dx > 0 else -1), y - 11, dx, dy, w, g, gd, gl)
+
+
+def desk(S, x, y):
+    shadow(S, x + 4, y - 4, 14, 5)
+    top = iso_box(S, x, y, 7, 3, 10, rgb('#DDBE8E'), rgb('#C79F6C'), rgb('#AE8858'))
+    # caderno e porta-canetas em cima
+    for yy in range(y - 24, y - 8):
+        for xx in range(x - 8, x + 16):
+            st = top(xx, yy)
+            if st and 1.0 <= st[0] <= 4.0 and 0.6 <= st[1] <= 2.4:
+                edge = st[0] < 1.4 or st[1] < 0.9
+                S.set(xx, yy, rgb('#1F2633') if not edge else rgb('#3A4560'))
+    px_, py_ = x + 11, y - 18
+    for k in range(5):
+        S.set(px_, py_ - k, rgb('#1C1C20'))
+        S.set(px_ + 1, py_ - k, rgb('#2E2E34'))
+    for dx, h, c in ((0, 3, '#D04040'), (1, 4, '#3070D0'), (1, 2, '#F0C040')):
+        for k in range(h):
+            S.set(px_ + dx, py_ - 5 - k, rgb(c))
+    # gaveta
+    for i in range(0, 6):
+        S.set(x - 5 + i, y - 6 + (5 - i) // 2 - 2, rgb('#9C7849'))
+
+
+def ficus(S, x, y):
+    shadow(S, x, y - 1, 8, 3)
+    pot, potd = rgb('#8F9396'), rgb('#6C7073')
+    for yy in range(y - 9, y + 1):
+        for xx in range(x - 6, x + 7):
+            if abs(xx - x) <= 6 - max(0, yy - (y - 3)):
+                S.set(xx, yy, pot if xx < x + 2 else potd)
+    for xx in range(x - 6, x + 7):
+        S.set(xx, y - 9, rgb('#B4B8BA'))
+    for k in range(30):
+        S.set(x + (1 if k % 9 < 4 else 0), y - 10 - k, rgb('#7A5A3A'))
+    g, gd, gl = rgb('#3E8C3C'), rgb('#265F28'), rgb('#74C05E')
+    import random
+    rnd = random.Random(7)
+    for _ in range(320):
+        cx_ = x + rnd.randint(-12, 12)
+        cy_ = y - 31 + rnd.randint(-13, 11)
+        if ((cx_ - x) / 12) ** 2 + ((cy_ - (y - 30)) / 15) ** 2 <= 1:
+            c = rnd.choice([g, g, gd, gl])
+            S.set(cx_, cy_, c)
+            S.set(cx_ + 1, cy_, c)
+            S.set(cx_, cy_ + 1, gd)
+
+
+def counter(S, x, y):
+    """Balcão de recepção: frente de madeira clara, tampo branco e a campainha."""
+    shadow(S, x + 8, y - 5, 20, 6)
+    oak, oakd = rgb('#D9B786'), rgb('#C29E6C')
+    top = iso_box(S, x, y, 10, 4, 13, rgb('#F4F4F2'), oak, oakd)
+    # rodapé branco
+    for xi in range(x - 8, x + 21):
+        yb = y - (abs(xi - x)) // 2
+        S.set(xi, yb - 1, rgb('#E8E8E6'))
+    # veio da madeira
+    for xi in range(x - 7, x + 20, 3):
+        yb = y - abs(xi - x) // 2
+        for k in range(3, 12, 2):
+            S.set(xi, yb - k, mul(oak if xi < x else oakd, 0.94))
+    # campainha dourada
+    bx, by = x + 9, y - 18
+    for dx in range(-3, 4):
+        S.set(bx + dx, by, rgb('#2A2A2E'))
+    for dx, dy in ((-2, -1), (-1, -1), (0, -1), (1, -1), (2, -1), (-1, -2), (0, -2), (1, -2)):
+        S.set(bx + dx, by + dy, rgb('#E2B648'))
+    S.set(bx - 1, by - 2, rgb('#FFF0B0'))
+    S.set(bx, by - 3, rgb('#B88A28'))
+
+
 # ---------------------------------------------------------------- cenas
 def scene_guilherme():
     S = Sprite(W, H)
@@ -463,15 +621,74 @@ def scene_lupin():
     return finish(S, os.path.join(OUT, '04-lupin.png'))
 
 
+def scene_saldanha():
+    S = Sprite(W, H)
+    stars(S, 55, rgb('#0B1126'))
+
+    def wall(base):
+        def f(u, v):
+            return base if (u * 3 + v * 7) % 23 else mul(base, 0.97)
+        return f
+
+    def stone(A, B):
+        # piso de porcelanato e o tapete cinza debaixo dele
+        if 50 <= A <= 140 and 50 <= B <= 140:
+            if A in (50, 51, 139, 140) or B in (50, 51, 139, 140):
+                return rgb('#7E7F80')
+            return rgb('#9C9D9B') if (A * 13 + B * 7) % 29 == 0 else rgb('#A9AAA8')
+        if A % 64 in (0, 1) or B % 64 in (0, 1):
+            return rgb('#A39E95')
+        return rgb('#C9C4BB') if (A // 64 + B // 64) % 2 else rgb('#C1BCB3')
+
+    room(S, wall(rgb('#F2F0EA')), wall(rgb('#8D9C7D')), stone)
+    on_wall(S, window_city(), 'l', 8, 46)
+    on_wall(S, chart_frame(), 'r', 60, 43)
+    big_leaf_plant(S, 15, 98)
+    desk(S, 66, 92)
+    top = place(S, chars.saldanha(), CX - 1)
+    nametag(S, 'Saldanha', CX - 1, top - 1)
+    return finish(S, os.path.join(OUT, '05-saldanha.png'))
+
+
+def scene_caio():
+    S = Sprite(W, H)
+    stars(S, 66, rgb('#0B1126'))
+
+    def white(u, v):
+        return rgb('#F3F3F1') if v > 3 else rgb('#E2E2E0')
+
+    def slats(u, v):
+        if u % 3 == 0:
+            return rgb('#9C7646')
+        return rgb('#D7B585') if (u // 3) % 2 else rgb('#CBA877')
+
+    def tiles(A, B):
+        if A % 32 in (0, 1) or B % 32 in (0, 1):
+            return rgb('#A7A9AB')
+        k = (A // 32 * 3 + B // 32) % 4
+        return (rgb('#CACCCD'), rgb('#C2C4C5'), rgb('#C6C8C9'), rgb('#BEC0C1'))[k]
+
+    room(S, white, slats, tiles)
+    on_wall(S, check_badge(), 'l', 16, 44)
+    ficus(S, 15, 100)
+    counter(S, 66, 100)
+    top = place(S, chars.caio(), CX - 2)
+    nametag(S, 'Caio', CX - 1, top - 1)
+    return finish(S, os.path.join(OUT, '06-caio.png'))
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
-    ims = [scene_guilherme(), scene_gabriel(), scene_flora(), scene_lupin()]
-    # prancha com os quatro lado a lado
+    ims = [scene_guilherme(), scene_gabriel(), scene_flora(), scene_lupin(),
+           scene_saldanha(), scene_caio()]
+    # prancha com os seis em grade 3x2
     from PIL import Image
     from px import up
-    gap = 4
-    sheet = Image.new('RGBA', (W * 4 + gap * 5, H + gap * 2), (11, 17, 38, 255))
+    gap, cols = 4, 3
+    rows_ = (len(ims) + cols - 1) // cols
+    sheet = Image.new('RGBA', (W * cols + gap * (cols + 1), H * rows_ + gap * (rows_ + 1)),
+                      (11, 17, 38, 255))
     for i, im in enumerate(ims):
-        sheet.alpha_composite(im, (gap + i * (W + gap), gap))
+        sheet.alpha_composite(im, (gap + (i % cols) * (W + gap), gap + (i // cols) * (H + gap)))
     up(sheet, 6).save(os.path.join(OUT, '00-todos.png'))
     print('ok')

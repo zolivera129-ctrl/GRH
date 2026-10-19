@@ -17,6 +17,9 @@ SCALE = 10
 FONT = {  # fonte pequena no espírito da Volter do Habbo
     'G': [".##.", "#..#", "#...", "#.##", "#..#", ".###"],
     'F': ["####", "#...", "###.", "#...", "#...", "#..."],
+    'S': [".###", "#...", ".##.", "...#", "...#", "###."],
+    'C': [".###", "#...", "#...", "#...", "#...", ".###"],
+    'd': ["...#", "...#", ".###", "#..#", "#..#", ".###"],
     'L': ["#...", "#...", "#...", "#...", "#...", "####"],
     'a': ["....", "....", ".###", "#..#", "#..#", ".###"],
     'b': ["#...", "#...", "###.", "#..#", "#..#", "###."],
@@ -196,3 +199,42 @@ def iso_block(S, x, y, h, height, top, left, right, line=None):
         S.set(x + 2 * h, y - h - k, line)
         S.set(x, y - k, mul(right, 0.85))
     return cy
+
+
+def iso_box(S, x, y, a, b, height, top, left, right, line=None):
+    """Caixa isométrica com base a x b (a ao longo da parede da direita,
+    b ao longo da parede da esquerda). (x, y) é o canto da frente, no chão.
+    Devolve uma função que, para um pixel da tampa, dá (s, t): a posição
+    nela em unidades de 0..a e 0..b (fora da tampa devolve None)."""
+    line = line or mul(right, 0.55)
+    for xi in range(x - 2 * b, x + 2 * a + 1):
+        if xi <= x:
+            yb = y - (x - xi) // 2
+            c = left
+        else:
+            yb = y - (xi - x) // 2
+            c = right
+        for k in range(height + 1):
+            S.set(xi, yb - k, c)
+        S.set(xi, yb, line)
+    ty = y - height
+
+    def on_top(xi, yi):
+        dx, dy = xi - x, yi - ty
+        s4, t4 = dx - 2 * dy, -dx - 2 * dy
+        if 0 <= s4 <= 4 * a and 0 <= t4 <= 4 * b:
+            return s4 / 4, t4 / 4
+        return None
+    for yi in range(ty - a - b - 1, ty + 1):
+        for xi in range(x - 2 * b, x + 2 * a + 1):
+            if on_top(xi, yi):
+                S.set(xi, yi, top)
+    hi = mix(top, rgb('#FFFFFF'), 0.35)
+    for xi in range(x - 2 * b, x + 2 * a + 1):
+        yy = ty - abs(xi - x) // 2
+        S.set(xi, yy, hi)
+    for k in range(height + 1):
+        S.set(x - 2 * b, y - b - k, line)
+        S.set(x + 2 * a, y - a - k, line)
+        S.set(x, y - k, mix(left, right, 0.5))
+    return on_top

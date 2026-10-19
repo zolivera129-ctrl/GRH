@@ -1,4 +1,4 @@
-"""Os quatro personagens, desenhados pixel a pixel em vista 3/4 (olhando
+"""Os personagens, desenhados pixel a pixel em vista 3/4 (olhando
 para a direita, como os avatares do Habbo na direção 2)."""
 from px import Layer, Sprite, rgb, mul, mix
 
@@ -18,33 +18,15 @@ def curls(base, dark, light):
 
 
 # ---------------------------------------------------------------- humanos
-def _arms_body_legs(S, P):
-    """Corpo-base compartilhado pelos dois humanos (camiseta larga, braços
-    caindo ao lado do corpo, calça e tênis). P traz a paleta."""
-    # braço de trás (o da direita da tela), atrás do corpo
-    fa = Layer(P['sk'], P['skline'])
-    fa.rows({y: (27, 30) for y in range(37, 46)})
-    fa.rows({46: (27, 30), 47: (27, 30), 48: (28, 30)})
-    fa.shade_side('r', 1, P['sks'])
-    fa.outline()
-    S.add(fa)
-
-    fsl = Layer(P['tee'], P['teeline'])
-    fsl.rows({29: (25, 28), 30: (25, 29), 31: (25, 30)})
-    fsl.rows({y: (25, 31) for y in range(32, 38)})
-    fsl.rows({38: (26, 31)})
-    fsl.shade_side('r', 2, P['tees'])
-    fsl.outline()
-    S.add(fsl)
-
+def _legs_shoes(S, P, top=46):
     # pernas
     fl = Layer(P['pant'], P['pantline'])
-    fl.rect(19, 46, 26, 58)
+    fl.rect(19, top, 26, 58)
     fl.shade_side('r', 2, P['pants'])
     fl.outline()
     S.add(fl)
     nl = Layer(P['pant'], P['pantline'])
-    nl.rect(12, 46, 19, 59)
+    nl.rect(12, top, 19, 59)
     nl.shade_side('r', 1, P['pants'])
     nl.outline()
     S.add(nl)
@@ -73,6 +55,28 @@ def _arms_body_legs(S, P):
         else:
             S.set(x0 + 6, y0 + 1, P['shoehl'])
             S.set(x0 + 7, y0 + 1, P['shoehl'])
+
+
+def _arms_body_legs(S, P):
+    """Corpo-base compartilhado pelos dois humanos (camiseta larga, braços
+    caindo ao lado do corpo, calça e tênis). P traz a paleta."""
+    # braço de trás (o da direita da tela), atrás do corpo
+    fa = Layer(P['sk'], P['skline'])
+    fa.rows({y: (27, 30) for y in range(37, 46)})
+    fa.rows({46: (27, 30), 47: (27, 30), 48: (28, 30)})
+    fa.shade_side('r', 1, P['sks'])
+    fa.outline()
+    S.add(fa)
+
+    fsl = Layer(P['tee'], P['teeline'])
+    fsl.rows({29: (25, 28), 30: (25, 29), 31: (25, 30)})
+    fsl.rows({y: (25, 31) for y in range(32, 38)})
+    fsl.rows({38: (26, 31)})
+    fsl.shade_side('r', 2, P['tees'])
+    fsl.outline()
+    S.add(fsl)
+
+    _legs_shoes(S, P)
 
     # tronco (camiseta larga)
     bd = Layer(P['tee'], P['teeline'])
@@ -387,6 +391,322 @@ def gabriel():
     # cabelo curto aparecendo na nuca
     for x, y in ((10, 12), (11, 12), (10, 13), (11, 13), (12, 12), (10, 14)):
         S.set(x, y, beardd)
+    return S.image()
+
+
+def _white_sneakers(P):
+    P.update(shoe=rgb('#F4F4F2'), shoehl=rgb('#FFFFFF'), shoeline=rgb('#A6A8AE'),
+             sole=rgb('#E2E2E0'), soleline=rgb('#9A9CA2'))
+    return P
+
+
+def saldanha():
+    """Contador: grisalho, óculos, barba curta branca, polo marinho para
+    dentro da calça, cinto marrom, chino cinza-claro e tênis branco.
+    Segura o tablet com as duas mãos, conferindo os números."""
+    S = Sprite(40, 70)
+    P = _white_sneakers(dict(
+        sk=rgb('#D3A07B'), sks=rgb('#B8835F'), skl=rgb('#E4B794'), skline=rgb('#83533A'),
+        tee=rgb('#1F2B47'), tees=rgb('#18223A'), teeline=rgb('#0A0F1E'),
+        pant=rgb('#B5B8BD'), pants=rgb('#9A9DA3'), pantline=rgb('#62666D'),
+    ))
+    P['shoeline'] = rgb('#878A92')
+    navy_l = rgb('#34446D')
+
+    # manga de trás (polo justa)
+    fsl = Layer(P['tee'], P['teeline'])
+    fsl.rows({29: (25, 28), 30: (25, 29)})
+    fsl.rows({y: (25, 30) for y in range(31, 36)})
+    fsl.shade_side('r', 1, P['tees'])
+    fsl.outline()
+    S.add(fsl)
+
+    _legs_shoes(S, P, top=44)
+
+    # polo por dentro da calça
+    bd = Layer(P['tee'], P['teeline'])
+    bd.rows({27: (14, 24), 28: (12, 26)})
+    bd.rows({y: (11, 27) for y in range(29, 45)})
+    bd.shade_side('r', 2, P['tees'])
+    bd.outline()
+    for x in range(13, 19):
+        bd.set(x, 29, navy_l)
+    for x in range(14, 25, 3):
+        bd.set(x, 43, P['tees'])
+    S.add(bd)
+    # cinto marrom com fivela prateada
+    for x in range(11, 28):
+        S.set(x, 44, rgb('#8A5533'))
+        S.set(x, 45, rgb('#5E3820'))
+    for x, y in ((18, 44), (19, 44), (20, 44), (18, 45), (20, 45)):
+        S.set(x, y, rgb('#D4D6DA'))
+    S.set(19, 45, rgb('#6B6E74'))
+    for x in (13, 24):
+        S.set(x, 44, rgb('#A5A8AD'))
+
+    # tablet (costas prateadas), inclinado na frente do peito
+    tb = Layer(rgb('#C3C7CF'), rgb('#555A64'))
+    for x in range(17, 31):
+        top = 38 - (x - 17) // 2
+        for y in range(top, top + 8):
+            tb.set(x, y)
+    tb.outline()
+    for x in range(18, 30):
+        top = 38 - (x - 17) // 2
+        tb.set(x, top, rgb('#8FD0F4'))       # brilho da tela virada para ele
+        tb.set(x, top + 1, rgb('#E8EAEE'))
+        tb.set(x, top + 6, rgb('#A3A8B2'))
+    tb.set(26, 37, rgb('#8A8F99'))
+    S.add(tb)
+
+    # mão de trás segurando a borda do tablet, com relógio no pulso
+    fh = Layer(P['sk'], P['skline'])
+    fh.rows({33: (28, 30), 34: (27, 30), 35: (27, 30), 36: (28, 30)})
+    fh.outline()
+    S.add(fh)
+    for x in (29, 30, 31):
+        S.set(x, 37, rgb('#141416'))
+    S.set(30, 37, rgb('#3E4A5E'))
+
+    # braço da frente dobrado, a mão tocando a tela
+    nsl = Layer(P['tee'], P['teeline'])
+    nsl.rows({29: (9, 13), 30: (8, 14)})
+    nsl.rows({y: (7, 14) for y in range(31, 35)})
+    nsl.rows({35: (7, 13)})
+    nsl.shade_side('l', 1, P['tees'])
+    nsl.outline()
+    for x in range(8, 13):
+        nsl.set(x, 34, navy_l)
+    S.add(nsl)
+    na = Layer(P['sk'], P['skline'])
+    na.rows({36: (8, 11), 37: (8, 11), 38: (8, 13), 39: (8, 19), 40: (9, 20),
+             41: (11, 20), 42: (17, 19)})
+    na.shade_side('l', 1, P['sks'])
+    na.outline()
+    na.set(21, 38, P['sk'])
+    S.add(na)
+    S.set(21, 38, P['skline'])
+
+    _neck_head(S, P)
+    # gola da polo e a carcela com botões
+    for x in range(15, 22):
+        S.set(x, 29, P['tee'])
+    for x, y in ((14, 27), (15, 27), (15, 28), (16, 28), (16, 29), (17, 29),
+                 (22, 27), (21, 27), (21, 28), (20, 28), (20, 29), (19, 29)):
+        S.set(x, y, navy_l)
+    for x, y in ((14, 28), (15, 29), (22, 28), (21, 29)):
+        S.set(x, y, P['teeline'])
+    S.set(18, 29, P['sks'])
+    for y in (30, 31, 32, 33):
+        S.set(18, y, P['teeline'])
+    S.set(19, 31, rgb('#4A5A86'))
+    S.set(19, 33, rgb('#4A5A86'))
+    _ear(S, P)
+
+    # rosto: óculos retangulares, barba curta branca, olhar no tablet
+    eye, gl = rgb('#2A1C14'), rgb('#1C1C20')
+    for x, y in ((19, 17), (24, 17)):
+        S.set(x, y, eye)
+    for x, y in ((18, 17), (23, 17)):
+        S.set(x, y, mix(P['sk'], eye, 0.35))
+    for x in range(17, 22):
+        S.set(x, 14, gl)
+        S.set(x, 18, gl)
+    for x in range(23, 27):
+        S.set(x, 14, gl)
+        S.set(x, 18, gl)
+    for y in range(14, 19):
+        for x in (17, 21, 23, 26):
+            S.set(x, y, gl)
+    S.set(22, 15, gl)
+    for x in range(14, 17):
+        S.set(x, 15, gl)
+    grey, greyd, greyl = rgb('#8E8E93'), rgb('#5E5E65'), rgb('#C9C9CD')
+    for x in (18, 19, 20, 24, 25):
+        S.set(x, 12, greyd)
+    S.set(28, 18, P['sk'])
+    S.set(27, 19, P['sks'])
+    S.set(26, 19, P['sks'])
+    # barba: bigode mais escuro, cavanhaque branco e sombra no maxilar
+    for x, y in ((15, 21), (16, 22), (17, 23), (18, 24), (16, 20), (17, 22), (19, 25)):
+        S.set(x, y, mix(P['sks'], greyl, 0.5))
+    for x in range(22, 27):
+        S.set(x, 20, rgb('#7C7975'))
+    for x in range(23, 26):
+        S.set(x, 21, rgb('#6A3C2C'))
+    for x, y in ((21, 21), (22, 21), (26, 21), (21, 22), (22, 22), (23, 22), (24, 22),
+                 (25, 22), (26, 22), (20, 23), (21, 23), (22, 23), (23, 23), (24, 23),
+                 (25, 23), (21, 24), (22, 24), (23, 24), (24, 24), (22, 25), (23, 25)):
+        S.set(x, y, greyl if (x + y) % 3 else rgb('#A6A39F'))
+
+    # cabelo grisalho curto, penteado para trás
+    hr = Layer(grey, greyd)
+    hr.rows({6: (15, 23), 7: (13, 25), 8: (11, 26), 9: (10, 27), 10: (10, 26),
+             11: (10, 21), 12: (10, 17), 13: (10, 14), 14: (10, 13)})
+    hr.rows({15: (10, 11), 16: (10, 11), 17: (10, 11), 18: (10, 11)}, mix(grey, greyl, 0.4))
+
+    def strands(x, y, c):
+        if y <= 8:
+            return greyd if (x + y * 2) % 5 == 0 else (rgb('#76767C') if (x + y) % 3 else None)
+        if (x * 2 + y) % 7 == 0:
+            return greyl
+        if (x + y * 3) % 6 == 0:
+            return greyd
+        return None
+    hr.recolor(strands)
+    hr.outline()
+    for x, y in ((15, 13), (16, 13), (12, 15), (13, 15)):
+        hr.px.pop((x, y), None)
+    S.add(hr)
+    return S.image()
+
+
+def caio():
+    """Consultor: cabelo cacheado curto, sorrisão, camisa de linho verde-oliva
+    aberta sobre camiseta branca, crachá no cordão, chino marinho e tênis
+    branco. Mostra o tablet com o check verde."""
+    S = Sprite(40, 70)
+    P = _white_sneakers(dict(
+        sk=rgb('#D9A47E'), sks=rgb('#BE8763'), skl=rgb('#E9BC99'), skline=rgb('#86553A'),
+        tee=rgb('#6D7C56'), tees=rgb('#5A6845'), teeline=rgb('#333C25'),
+        pant=rgb('#27324F'), pants=rgb('#1E2740'), pantline=rgb('#0F1528'),
+    ))
+    olive_l, olive_ll = rgb('#82936A'), rgb('#98A980')
+    hair, haird, hairl = rgb('#2B1D16'), rgb('#160F0B'), rgb('#55392A')
+
+    # braço de trás, camisa com a manga dobrada no antebraço
+    fa = Layer(P['sk'], P['skline'])
+    fa.rows({y: (27, 30) for y in range(40, 46)})
+    fa.rows({46: (27, 30), 47: (27, 30), 48: (28, 30)})
+    fa.shade_side('r', 1, P['sks'])
+    fa.outline()
+    S.add(fa)
+    fsl = Layer(P['tee'], P['teeline'])
+    fsl.rows({29: (25, 28), 30: (25, 29)})
+    fsl.rows({y: (25, 30) for y in range(31, 41)})
+    fsl.shade_side('r', 1, P['tees'])
+    fsl.outline()
+    for x in range(26, 30):
+        fsl.set(x, 39, olive_l)
+    S.add(fsl)
+
+    _legs_shoes(S, P)
+
+    # camisa aberta por cima da camiseta branca
+    bd = Layer(P['tee'], P['teeline'])
+    bd.rows({27: (14, 24), 28: (12, 26)})
+    bd.rows({y: (11, 27) for y in range(29, 48)})
+    bd.shade_side('r', 2, P['tees'])
+    bd.outline()
+    S.add(bd)
+    wt, wts = rgb('#F6F6F2'), rgb('#DADBE0')
+    for y in range(28, 47):
+        for x in range(17, 22):
+            S.set(x, y, wts if x == 21 else wt)
+    for y in range(29, 47):
+        S.set(16, y, P['teeline'])
+        S.set(22, y, P['teeline'])
+        S.set(15, y, olive_l)
+    for y in (32, 36, 40, 44):
+        S.set(23, y, rgb('#E6E1CC'))
+    # bolso no peito
+    for x in range(23, 27):
+        S.set(x, 32, P['teeline'])
+    for y in range(32, 36):
+        S.set(23, y, P['teeline'])
+        S.set(26, y, P['teeline'])
+    for x in range(24, 26):
+        S.set(x, 33, olive_l)
+
+    # braço da frente erguido segurando o tablet
+    nsl = Layer(P['tee'], P['teeline'])
+    nsl.rows({29: (9, 13), 30: (8, 14), 31: (7, 14), 32: (6, 13), 33: (5, 12),
+              34: (4, 11), 35: (4, 10), 36: (4, 9), 37: (4, 8), 38: (5, 8)})
+    nsl.shade_side('l', 1, P['tees'])
+    nsl.outline()
+    for x in range(5, 9):
+        nsl.set(x, 36, olive_ll)
+        nsl.set(x, 37, olive_l)
+    S.add(nsl)
+    na = Layer(P['sk'], P['skline'])
+    na.rows({y: (3, 6) for y in range(28, 36)})
+    na.shade_side('l', 1, P['sks'])
+    na.outline()
+    S.add(na)
+    # tablet com a tela virada para quem olha
+    tb = Layer(rgb('#1C1C21'), rgb('#08080A'))
+    tb.rect(0, 14, 10, 28)
+    tb.outline()
+    tb.rect(1, 15, 9, 27, rgb('#F5F7F8'))
+    S.add(tb)
+    green, greend = rgb('#3DB64B'), rgb('#26863A')
+    for x, y in ((2, 21), (3, 22), (4, 23), (5, 22), (6, 21), (7, 20), (8, 19)):
+        S.set(x, y, green)
+        S.set(x, y + 1, greend)
+    hand = Layer(P['sk'], P['skline'])
+    hand.rows({25: (2, 6), 26: (1, 7), 27: (1, 7), 28: (2, 7), 29: (3, 6)})
+    hand.outline()
+    S.add(hand)
+
+    _neck_head(S, P)
+    # gola da camiseta e gola da camisa
+    for x in range(16, 21):
+        S.set(x, 29, wts)
+    for x, y in ((14, 27), (15, 27), (15, 28), (16, 28), (22, 27), (21, 27), (21, 28), (22, 28)):
+        S.set(x, y, olive_l)
+    S.set(14, 28, P['teeline'])
+    S.set(23, 28, P['teeline'])
+    # cordão do crachá
+    navy = rgb('#1D2A4C')
+    for x, y in ((16, 30), (16, 31), (17, 32), (17, 33), (18, 34), (18, 35),
+                 (21, 30), (21, 31), (20, 32), (20, 33), (19, 34), (19, 35)):
+        S.set(x, y, navy)
+    cr = Layer(rgb('#F7F7F5'), rgb('#9EA1A8'))
+    cr.rect(17, 37, 21, 42)
+    cr.outline()
+    S.add(cr)
+    S.set(18, 36, rgb('#B9BCC2'))
+    S.set(19, 36, rgb('#B9BCC2'))
+    for x in (18, 19, 20):
+        S.set(x, 39, rgb('#C7CAD0'))
+    _ear(S, P)
+
+    # rosto: sorrisão, barba por fazer
+    eye = rgb('#1C120C')
+    for x, y in ((19, 16), (19, 17), (24, 16), (24, 17)):
+        S.set(x, y, eye)
+    for x, y in ((18, 16), (23, 16)):
+        S.set(x, y, rgb('#FFFFFF'))
+    for x in (18, 19, 20, 24, 25):
+        S.set(x, 13, haird)
+    S.set(17, 14, haird)
+    S.set(28, 18, P['sk'])
+    S.set(27, 19, P['sks'])
+    S.set(26, 19, P['sks'])
+    stub = mix(P['sks'], haird, 0.28)
+    for x, y in ((15, 21), (16, 22), (17, 23), (18, 24), (19, 24), (20, 25), (21, 25),
+                 (22, 24), (25, 24), (26, 23), (20, 20), (21, 20), (26, 20)):
+        S.set(x, y, stub)
+    mouth = rgb('#5E2A1E')
+    S.set(20, 21, mouth)
+    S.set(27, 21, mouth)
+    for x in range(21, 27):
+        S.set(x, 21, rgb('#FFFFFF'))
+    for x in range(21, 27):
+        S.set(x, 22, mouth if x in (21, 26) else rgb('#B4584A'))
+    S.set(20, 19, P['skl'])
+    S.set(26, 18, P['skl'])
+
+    # cachos curtos
+    hr = Layer(hair, haird)
+    hr.rows({4: [(14, 16), (18, 21), (23, 25)], 5: (12, 26), 6: (11, 27), 7: (10, 28),
+             8: (10, 28), 9: (10, 28), 10: [(10, 14), (16, 27)],
+             11: [(10, 12), (18, 19), (22, 24)], 12: (10, 12), 13: (10, 12), 14: (10, 11)})
+    hr.recolor(curls(hair, haird, hairl))
+    hr.outline()
+    for p in ((15, 10), (26, 10), (13, 11)):
+        hr.px.pop(p, None)
+    S.add(hr)
     return S.image()
 
 
