@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FinancyApp: sala parada</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <header>
+    <h1>FinancyApp</h1>
+    <p>Corte 1: a sala parada, com todo mundo no lugar e sem dados.</p>
+  </header>
+  <main>
+    <div class="palco">
+      <canvas id="sala" role="img"
+        aria-label="O escritório 12 por 10 visto em isométrico: a reunião ao fundo, o Saldanha na parede direita, o Caio no meio, o Guilherme no fundo à direita com a Flora e o Lupin nas camas, e a Vivi no balcão da recepção, junto da porta de entrada."></canvas>
+    </div>
+    <aside>
+      <h2>Validação da planta</h2>
+      <p id="veredito"></p>
+      <ol id="regras"></ol>
+      <ul id="resumo"></ul>
+      <label><input type="checkbox" id="mostrar-planta"> Mostrar a planta no piso: acesso em azul, circulação obrigatória em laranja</label>
+      <p id="erro" class="falha" hidden></p>
+    </aside>
+  </main>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+:root {
+  --fundo: #181e34;
+  --painel: #222a46;
+  --texto: #e8ebf4;
+  --suave: #a9b1c9;
+  --ok: #7fd18b;
+  --falha: #ff8a7a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 15px/1.5 system-ui, sans-serif;
+}
+
+header { padding: 16px 24px 0; }
+h1 { margin: 0; font-size: 22px; }
+header p { margin: 4px 0 0; color: var(--suave); }
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 16px 24px 24px;
+  align-items: flex-start;
+}
+
+.palco {
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* a arte é feita em 1x e ampliada 2x sem suavizar */
+#sala {
+  display: block;
+  image-rendering: pixelated;
+}
+
+aside {
+  flex: 1 1 280px;
+  max-width: 420px;
+  background: var(--painel);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+h2 { margin: 0 0 8px; font-size: 17px; }
+ol, ul { padding-left: 20px; }
+#regras { list-style: none; padding-left: 0; }
+#regras li { margin-bottom: 6px; }
+#regras ul { color: var(--suave); }
+#resumo { color: var(--suave); }
+.ok { color: var(--ok); }
+.falha { color: var(--falha); }
+label { display: block; margin-top: 12px; cursor: pointer; }

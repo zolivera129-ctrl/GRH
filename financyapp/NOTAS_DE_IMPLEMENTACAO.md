@@ -47,7 +47,14 @@ Pontos em que o código mostrou que os documentos não fecham. Cada um diz o que
 - **Onde:** `FinancyApp_Assets_v2.md` (v2.2), "Móveis e objetos", cadeira; "Lotes seguintes", corte 4.
 - **Sugestão:** nas direções de costas, entregar o encosto como camada separada (`cadeira__costas-dir-encosto.png`), ou definir que o jogo desenha a pessoa antes da cadeira nessas direções.
 
-### 7. Campos e âncoras que o documento não define
+### 7. A1/B8 também é circulação obrigatória
+
+- **O que foi:** a função de validação calcula a circulação obrigatória testando, tile a tile, o que quebra alguma regra se for ocupado. Saíram 11 tiles: os 10 da planta e mais A1/B8. O ponto de uso do malote em A1/B7 está cercado pelo malote (A0/B7), pelo balcão (A2/B7) e pela cadeira da Vivi (A1/B6). O único caminho até ele é A1/B8. Se A1/B8 for decorado, a regra 3 quebra.
+- **Onde:** `FinancyApp_Planta_12x10_v1.md`, seções "Grade" (A1/B8 aparece como `·`, livre para decorar) e "Validação" (circulação obrigatória e resultado); `FinancyApp_Layout_12x10_v1.json`, `circulacao_obrigatoria`.
+- **Como ficou:** o jogo usa o cálculo, então não deixa decorar A1/B8. Os números do layout padrão passam a ser 11 de circulação obrigatória e 62 livres para decorar, em vez de 10 e 63. O teste da validação aceita a lista da planta mais A1/B8.
+- **Sugestão:** pôr A1/B8 na circulação obrigatória da planta e do JSON (marcado `+` na grade) e corrigir o resultado para 11 e 62.
+
+### 8. Campos e âncoras que o documento não define
 
 O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar:
 

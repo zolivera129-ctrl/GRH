@@ -30,7 +30,9 @@ Leia só o que a tarefa pede. Os documentos são longos.
 - **Corte atual: 1, a sala parada.** O diorama 12×10 com todo mundo no lugar, sem dados.
 - Não adiante nada de outro corte.
 - Cada sessão termina com algo que dá para ver rodando.
-- Stack ainda não definida. Não adicione framework ou biblioteca nova sem perguntar.
+- **Stack da tela:** página estática com Canvas 2D e JavaScript puro em módulos, sem framework e sem etapa de build, em `jogo/`. Testes com `node:test`.
+- **Servidor** (planilha, regras, carteira, IA e login): ainda não definido. A recomendação é Python com SQLite, a decidir quando o jogo chegar aos dados.
+- Não adicione framework ou biblioteca nova sem perguntar.
 
 ## Regras que valem sempre
 
@@ -44,9 +46,16 @@ Leia só o que a tarefa pede. Os documentos são longos.
 - **Coordenadas:** cada tile é A/B. A0/B0 é o canto do fundo. A cresce ao longo da parede direita; B cresce ao longo da parede esquerda.
 - **Projeção:** isométrico 2:1, tile de 64×32. A arte é feita em 1× e ampliada 2× sem suavizar (`image-rendering: pixelated`).
 - **Ligação planta ↔ arte:** o campo `modelo` do JSON da planta é a chave do mesmo modelo no `manifest.json` dos assets. O campo `objetos` diz o que vai em cima de cada mesa.
-- **Validação da planta:** as seis regras da seção "Validação" da planta viram uma função do motor. Ela roda ao carregar o layout e, mais tarde, a cada vez que um móvel for movido.
+- **Validação da planta:** as seis regras da seção "Validação" da planta são a função `validar` de `jogo/src/validacao.js`. Ela roda ao carregar o layout e, mais tarde, vai rodar a cada vez que um móvel for movido.
 - **Espelhamento:** personagens são espelhados; móveis não.
 - **Arte que ainda não existe:** use blocos como placeholder, no estilo da prévia, com as mesmas âncoras.
+
+## Jogo
+
+A tela fica em `jogo/` e lê direto o `manifest.json` dos assets e o layout em `docs/`.
+
+- Para abrir: na pasta `financyapp`, rode `python3 -m http.server 8000` e acesse `http://localhost:8000/jogo/`.
+- Para testar: na pasta `jogo`, rode `npm test`.
 
 ## Arte
 
