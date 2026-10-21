@@ -54,7 +54,8 @@ Leia só o que a tarefa pede. Os documentos são longos.
 
 A tela fica em `jogo/` e lê direto o `manifest.json` dos assets e o layout em `docs/`.
 
-- Para abrir: na pasta `financyapp`, rode `python3 -m http.server 8000` e acesse `http://localhost:8000/jogo/`.
+- **Para eu ver:** a página publicada como Artifact, em https://claude.ai/artifact/2hJS2UonQfxSzwoYQDLCZg (privada, só eu abro). Ao fim de cada sessão que mudar o jogo, atualize esse mesmo link: rode `python3 jogo/empacotar.py` e publique `jogo/pacote/index.html` nessa URL, com os arquivos do pacote.
+- Para abrir no computador: na pasta `financyapp`, rode `python3 -m http.server 8000` e acesse `http://localhost:8000/jogo/`.
 - Para testar: na pasta `jogo`, rode `npm test`.
 
 ## Arte

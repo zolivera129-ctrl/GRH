@@ -19,6 +19,21 @@ python3 -m http.server 8000
 
 e acesse `http://localhost:8000/jogo/`.
 
+## Publicar
+
+A página também fica publicada como Artifact no claude.ai, para abrir sem
+instalar nada. O Artifact serve só os arquivos publicados junto com a
+página, então o `empacotar.py` monta em `pacote/` (fora do git) a página, o
+estilo, os scripts, os assets e o layout, com os caminhos dos dados trocados
+para dentro do pacote:
+
+```
+python3 empacotar.py
+```
+
+Depois, publique `pacote/index.html` com os arquivos do pacote, sempre na
+mesma URL (está no CLAUDE.md).
+
 ## Testar
 
 Na pasta `jogo`, com o Node 22 ou mais novo (sem instalar nada):
@@ -39,8 +54,10 @@ npm test
   acesso (azul) e a circulação obrigatória (laranja).
 - `src/validacao.js`: as seis regras da seção "Validação" da planta, numa
   função pura (`validar`), e o cálculo da circulação obrigatória.
-- `src/main.js`: liga tudo e mostra o resultado da validação ao lado da
-  sala.
+- `src/main.js`: liga tudo, amplia a sala 2× (ou 1× numa tela estreita) e
+  mostra o resultado da validação ao lado. Os caminhos dos dados vêm dos
+  atributos `data-assets` e `data-layout` do HTML.
+- `empacotar.py`: monta o pacote para publicar como Artifact.
 - `testes/validacao.test.js`: o layout padrão passa, e layouts quebrados
   de propósito falham na regra certa.
 

@@ -1,10 +1,5 @@
 // Carrega o manifesto dos assets, o layout da planta e todas as imagens.
 
-export const CAMINHOS = {
-  assets: '../pixel-art-habbo/assets/',
-  layout: '../docs/FinancyApp_Layout_12x10_v1.json',
-};
-
 async function carregarJSON(url) {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`não carregou ${url} (${r.status})`);
@@ -32,20 +27,24 @@ export function arquivos(modelo, e) {
   return nomes.map((n) => `${e.pasta}/${n}.png`);
 }
 
-/** Devolve { manifesto, layout, imagens }, com imagens indexadas pelo caminho dentro do assets/. */
-export async function carregarTudo() {
+/**
+ * caminhos = { assets, layout }: a pasta dos assets (com a barra no fim) e o
+ * JSON do layout. Devolve { manifesto, layout, imagens }, com as imagens
+ * indexadas pelo caminho dentro do assets/.
+ */
+export async function carregarTudo(caminhos) {
   const [manifesto, layout] = await Promise.all([
-    carregarJSON(`${CAMINHOS.assets}manifest.json`),
-    carregarJSON(CAMINHOS.layout),
+    carregarJSON(`${caminhos.assets}manifest.json`),
+    carregarJSON(caminhos.layout),
   ]);
-  const caminhos = new Set();
+  const pngs = new Set();
   for (const [modelo, e] of Object.entries(manifesto)) {
-    if (e.folha) caminhos.add(e.folha);
-    else if (e.pasta) for (const f of arquivos(modelo, e)) caminhos.add(f);
+    if (e.folha) pngs.add(e.folha);
+    else if (e.pasta) for (const f of arquivos(modelo, e)) pngs.add(f);
   }
   const imagens = new Map();
-  await Promise.all([...caminhos].map(async (c) => {
-    imagens.set(c, await carregarImagem(CAMINHOS.assets + c));
+  await Promise.all([...pngs].map(async (c) => {
+    imagens.set(c, await carregarImagem(caminhos.assets + c));
   }));
   return { manifesto, layout, imagens };
 }

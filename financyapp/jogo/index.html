@@ -2,8 +2,12 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FinancyApp: sala parada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Escritório FinancyApp</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap">
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
@@ -11,7 +15,7 @@
     <h1>FinancyApp</h1>
     <p>Corte 1: a sala parada, com todo mundo no lugar e sem dados.</p>
   </header>
-  <main>
+  <main id="jogo" data-assets="../pixel-art-habbo/assets/" data-layout="../docs/FinancyApp_Layout_12x10_v1.json">
     <div class="palco">
       <canvas id="sala" role="img"
         aria-label="O escritório 12 por 10 visto em isométrico: a reunião ao fundo, o Saldanha na parede direita, o Caio no meio, o Guilherme no fundo à direita com a Flora e o Lupin nas camas, e a Vivi no balcão da recepção, junto da porta de entrada."></canvas>
@@ -21,7 +25,7 @@
       <p id="veredito"></p>
       <ol id="regras"></ol>
       <ul id="resumo"></ul>
-      <label><input type="checkbox" id="mostrar-planta"> Mostrar a planta no piso: acesso em azul, circulação obrigatória em laranja</label>
+      <label for="mostrar-planta"><input type="checkbox" id="mostrar-planta"> Mostrar a planta no piso: acesso em azul, circulação obrigatória em laranja</label>
       <p id="erro" class="falha" hidden></p>
     </aside>
   </main>

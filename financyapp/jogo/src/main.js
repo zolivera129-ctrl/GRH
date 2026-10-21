@@ -5,7 +5,9 @@ import { carregarTudo } from './carregar.js';
 import { desenharSala, tamanhoDaSala } from './sala.js';
 import { validar, resumo } from './validacao.js';
 
-const ESCALA = 2;   // a arte é feita em 1x e ampliada 2x sem suavizar
+// a arte é feita em 1x e ampliada 2x sem suavizar; numa tela estreita,
+// como a do celular, fica em 1x
+const ESCALA = 2;
 
 function item(texto, classe) {
   const li = document.createElement('li');
@@ -40,11 +42,20 @@ function mostrarValidacao(layout) {
   );
 }
 
+function ajustarEscala(canvas) {
+  // mede a largura da página, e não a do palco, que cresce com a sala
+  const cabe = document.getElementById('jogo').clientWidth >= canvas.width * ESCALA;
+  const escala = cabe ? ESCALA : 1;
+  canvas.style.width = `${canvas.width * escala}px`;
+  canvas.style.height = `${canvas.height * escala}px`;
+}
+
 async function iniciar() {
   const canvas = document.getElementById('sala');
+  const { assets, layout } = document.getElementById('jogo').dataset;
   let dados;
   try {
-    dados = await carregarTudo();
+    dados = await carregarTudo({ assets, layout });
   } catch (erro) {
     const aviso = document.getElementById('erro');
     aviso.hidden = false;
@@ -55,8 +66,8 @@ async function iniciar() {
   const { largura, altura } = tamanhoDaSala(dados.layout, dados.manifesto);
   canvas.width = largura;
   canvas.height = altura;
-  canvas.style.width = `${largura * ESCALA}px`;
-  canvas.style.height = `${altura * ESCALA}px`;
+  ajustarEscala(canvas);
+  window.addEventListener('resize', () => ajustarEscala(canvas));
   const ctx = canvas.getContext('2d');
   const planta = document.getElementById('mostrar-planta');
   const desenhar = () => desenharSala(ctx, dados, { planta: planta.checked });

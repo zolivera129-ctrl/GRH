@@ -1,36 +1,48 @@
+/* Layout: a sala ocupa o palco, e o painel da validação fica ao lado, ou
+   embaixo quando a tela é estreita. Visual escuro de propósito: é a noite
+   atrás do escritório, como no Habbo. */
 :root {
-  --fundo: #181e34;
+  --noite: #181e34;        /* o fundo da página e da sala */
   --painel: #222a46;
   --texto: #e8ebf4;
   --suave: #a9b1c9;
   --ok: #7fd18b;
   --falha: #ff8a7a;
+  --foco: #f4c04f;         /* o latão das plaquinhas */
+  --fonte-titulo: 'Pixelify Sans', ui-monospace, monospace;
+  --fonte-texto: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: var(--fundo);
+  background: var(--noite);
   color: var(--texto);
-  font: 15px/1.5 system-ui, sans-serif;
+  font: 15px/1.5 var(--fonte-texto);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-header { padding: 16px 24px 0; }
-h1 { margin: 0; font-size: 22px; }
+header { padding-block: 16px 0; }
+h1, h2 { font-family: var(--fonte-titulo); font-weight: 700; text-wrap: balance; }
+h1 { margin: 0; font-size: 26px; letter-spacing: 0.02em; }
 header p { margin: 4px 0 0; color: var(--suave); }
 
 main {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-  padding: 16px 24px 24px;
+  padding-block: 16px 24px;
   align-items: flex-start;
 }
 
 .palco {
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 100%;
-  overflow: auto;
+  overflow-x: auto;
 }
 
 /* a arte é feita em 1x e ampliada 2x sem suavizar */
@@ -42,17 +54,19 @@ main {
 aside {
   flex: 1 1 280px;
   max-width: 420px;
+  min-width: 0;
   background: var(--painel);
   border-radius: 8px;
   padding: 16px 20px;
 }
 
-h2 { margin: 0 0 8px; font-size: 17px; }
+h2 { margin: 0 0 8px; font-size: 18px; }
 ol, ul { padding-left: 20px; }
 #regras { list-style: none; padding-left: 0; }
 #regras li { margin-bottom: 6px; }
 #regras ul { color: var(--suave); }
-#resumo { color: var(--suave); }
+#resumo { color: var(--suave); font-variant-numeric: tabular-nums; }
 .ok { color: var(--ok); }
 .falha { color: var(--falha); }
 label { display: block; margin-top: 12px; cursor: pointer; }
+input:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
