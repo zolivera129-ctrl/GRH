@@ -168,3 +168,15 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.
 - **Na v2.1:** a âncora do sentado é o chão embaixo do quadril; o manifesto tem o campo `pasta`, fixa por tipo; as folhas têm uma animação por linha, com o campo `linha`; a altura dos cachorros foi corrigida; o lote do corte 1 tem 4 poses novas, não 7.
+
+## 17. Leitura da planilha real (Google Sheets)
+
+- **O que foi:** o jogo passou a ler a planilha "Escritório de Finanças" pelo conector Google Sheets do claude.ai (`jogo/src/fonte_planilha.js`, contas em `jogo/src/planilha.js`). Só funciona com o jogo aberto no claude.ai; na primeira leitura o claude.ai pede permissão. Só leitura: nada é escrito na planilha.
+- **Privacidade:** nenhum valor real fica no código, no pacote publicado ou no repositório. Os testes usam uma planilha falsa. Os valores existem só na tela, no momento da leitura, e o instantâneo para comparar leituras fica no navegador (perfil `guilherme`, separado do perfil sintético `guilherme-teste`).
+- **Decisões que tomei e precisam da sua confirmação:**
+  1. A primeira leitura vira um único lote histórico (C1S2), sem cenas de fatura ou pagamento para o que já estava lá.
+  2. A planilha não guarda quando o "Pago" foi marcado: a data do evento é a da leitura.
+  3. Despesa sem categoria: as opções da C2S3 são a categoria de outra linha com o mesmo histórico e, depois, a mais usada no mês. Isso é **PROPOSTA** minha; a resposta escolhida no jogo não volta para a planilha.
+  4. A conferência da fatura compara o débito "CARTÃO NUBANK"/"CARTÃO DIGIO" da conta com a parte do Guilherme (as linhas dele mais metade das "2 X"). Linha sem responsável fica fora da divisão.
+  5. Mês só fica "completo" no relatório se a fatura conferir e não houver conta sem "Pago".
+- **Falta na spec / na planilha:** não há tetos de categoria na Config, então a C3S3 (80%/100% do teto) nunca dispara com dados reais. **Sugestão:** um bloco "Tetos" na Config (categoria, valor), quando a regra sair de PENDENTE.

@@ -198,6 +198,7 @@ export function planejarEvento(perfil, ev, ctx = {}) {
       return [invocacao('C2S3', chaves.categoria(id, t.id), PRIORIDADE.MICROCENA,
         { ...base, motivo: 'gasto ambíguo de verdade' })];
     }
+    case 'account_updated':
     case 'payment_confirmed': {
       if (ctx.primeiraVisita && !ctx.houveAcao && !concluida(perfil, chaves.primeiraAcao(id))) {
         return [invocacao('C1S4', chaves.primeiraAcao(id), PRIORIDADE.AMBIENTE,

@@ -101,6 +101,11 @@ export function criarPainelDeTeste(api) {
   }
 
   const lote = (tipo) => () => api.emitir(api.dados.lote(tipo, api.relogio().data));
+  const statusPlanilha = h('p', { class: 'status-planilha', 'aria-live': 'polite' });
+  const lerBtn = botao('Ler a planilha agora', () => api.relerPlanilha(), { class: 'primario' });
+  const fonteSel = h('select', { id: 't-fonte', onchange: (e) => { opcoes.fonte = e.target.value; salvarOpcoes(); location.reload(); } },
+    h('option', { value: 'planilha', text: 'Planilha do escritório (Google Sheets)', selected: opcoes.fonte === 'planilha' }),
+    h('option', { value: 'sintetica', text: 'Dados sintéticos de teste', selected: opcoes.fonte !== 'planilha' }));
 
   const secao = (titulo, aberta, ...filhos) => h('details', { open: aberta }, h('summary', { text: titulo }), ...filhos);
   const campo = (rotulo, input) => h('label', { class: 'campo' }, h('span', { text: rotulo }), input);
@@ -120,7 +125,12 @@ export function criarPainelDeTeste(api) {
 
   raiz.replaceChildren(
     h('h2', { text: 'Bancada de teste' }),
-    h('p', { class: 'aviso-sintetico', text: 'Dados sintéticos: o módulo financeiro ainda não existe. Os eventos daqui fazem o papel dele.' }),
+    h('p', { class: 'aviso-sintetico', text: api.naPlanilha
+      ? 'Lendo a planilha real pelo conector Google Sheets, só leitura. Cada fonte tem o seu perfil salvo.'
+      : 'Dados sintéticos: os eventos daqui fazem o papel da planilha. O perfil de teste é separado do real.' }),
+    campo('Fonte dos dados', fonteSel),
+    api.naPlanilha ? secao('Planilha', true, statusPlanilha, h('div', { class: 'botoes' }, lerBtn),
+      h('p', { class: 'mini', text: 'Marque Pago, mude o cartão ou a Config na planilha e leia de novo: o que mudou vira cena. A planilha não guarda quando o Pago foi marcado, então a data é a da leitura.' })) : null,
     secao('Visita e data', true,
       h('div', { class: 'linha' }, campo('Data (São Paulo)', dataInput), campo('Hora', horaSel)),
       h('div', { class: 'botoes' },
@@ -133,7 +143,7 @@ export function criarPainelDeTeste(api) {
     secao('Casos de aceite', true,
       h('div', { class: 'casos' }, ...CASOS.map((c) => botao(c.nome, () => rodarCaso(c)))),
       casoInfo, proximoBtn),
-    secao('Eventos de domínio', true,
+    api.naPlanilha ? null : secao('Eventos de domínio', true,
       h('p', { class: 'mini', text: 'Com a visita aberta, a cena entra na fila; com o app fechado, o evento espera a próxima visita.' }),
       h('div', { class: 'botoes' },
         botao('Lote do cartão: confere', lote('conciliado')),
@@ -146,7 +156,7 @@ export function criarPainelDeTeste(api) {
         botao('Categoria sem teto', () => api.emitir(api.dados.teto(80, false, api.relogio().data)))),
       h('p', { class: 'mini', text: 'A consulta ao Caio e o resumo da semana são da pessoa: clique na mesa do Caio ou no quadro.' })),
     secao('Perfil e regras', false,
-      campo('Base de dados', baseSel),
+      api.naPlanilha ? null : campo('Base de dados', baseSel),
       campo('Primeiro acesso no dia 6', dia6Sel),
       h('p', { class: 'mini', text: 'A regra do dia 6 está pendente com o autor. As duas leituras aqui são só para testar.' }),
       campo('Velocidade de andar (nota 15.4)', h('span', { class: 'linha' }, vel, velRot)),
@@ -189,6 +199,20 @@ export function criarPainelDeTeste(api) {
       ['Resumo no quadro', p.resumo_disponivel ? `disponível desde ${dataBR(p.resumo_disponivel)}` : '—'],
       ['Visita', s?.aberta ? (s.atual ? `em cena: ${s.atual.cena}` : 'aberta, livre') : 'encerrada'],
     ];
+    if (api.naPlanilha) {
+      const f = api.fonte;
+      const rot = { conciliado: 'confere', divergente: 'não bate', sem_fontes: 'incompleta' };
+      statusPlanilha.textContent = {
+        nao_lida: 'Ainda não lida.',
+        lendo: 'Lendo a planilha…',
+        erro: f.erro?.texto ?? 'A leitura falhou.',
+        lida: `Lida às ${f.lidaEm?.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. `
+          + f.abas.map((a) => `${a.aba}: fatura ${rot[a.conferencia]}${a.leitorConfere === false ? ' (o cálculo do jogo difere do total da planilha)' : ''}`).join('; ')
+          + (f.config?.reserva != null ? `. Reserva na Config: R$ ${f.config.reserva.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}.` : '. Reserva vazia na Config.'),
+      }[f.estado];
+      statusPlanilha.className = `status-planilha ${f.estado}`;
+      lerBtn.disabled = f.estado === 'lendo';
+    }
     estado.replaceChildren(...linhas.flatMap(([k, v]) => [h('dt', { text: k }), h('dd', { text: v })]));
   }
 

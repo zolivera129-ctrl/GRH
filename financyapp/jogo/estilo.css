@@ -332,3 +332,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 @media (prefers-reduced-motion: reduce) {
   .balao .seguir { animation: none; }
 }
+
+.status-planilha { margin: 0 0 8px; font-size: 13px; }
+.status-planilha.erro { color: var(--falha); }
+.status-planilha.lida { color: var(--ok); }

@@ -5,8 +5,9 @@
 //   dado validado -> evento -> diretor (elegibilidade, prioridade, unicidade)
 //     -> fila -> executor no mapa 2D -> registro de visto/pendente/concluído
 //
-// Os dados ainda são sintéticos (painel de teste): o módulo financeiro de
-// verdade entra no lugar de dados.js gerando os mesmos eventos.
+// Os dados vêm da planilha (fonte_planilha.js, pelo conector Google Sheets)
+// ou do gerador sintético da bancada (dados.js); os dois geram os mesmos
+// eventos de domínio.
 
 import { carregarTudo } from './carregar.js';
 import { criarSala, tamanhoDaSala } from './sala.js';
@@ -18,6 +19,7 @@ import { criarUI } from './ui.js';
 import { CENAS, ROTEIRO_URL } from './roteiro.js';
 import * as paineis from './paineis.js';
 import { criarDados } from './dados.js';
+import { criarFontePlanilha } from './fonte_planilha.js';
 import { hojeEmSaoPaulo, horaEmSaoPaulo, partes, competenciaDaReuniao, mesmaSemana } from './calendario.js';
 import { armazemDoNavegador, carregarPerfil, salvarPerfil, apagarPerfil, carimbo } from './estado.js';
 import {
@@ -105,7 +107,7 @@ async function iniciar() {
   };
   const opcoes = {
     data: null, hora: null, base: 'dois_meses', privado: false, regraDia6: null,
-    velocidade: 1.0, marcarProvisorias: true, reduzido: false, planta: false, ...lerOpcoes(),
+    fonte: 'planilha', velocidade: 1.0, marcarProvisorias: true, reduzido: false, planta: false, ...lerOpcoes(),
   };
   const salvarOpcoes = () => { try { armazem.setItem('financyapp:teste', JSON.stringify(opcoes)); } catch { /* segue */ } };
   const reduzidoDoSistema = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -113,9 +115,16 @@ async function iniciar() {
   config.reduzido = opcoes.reduzido || reduzidoDoSistema;
   const relogio = () => ({ data: opcoes.data ?? hojeEmSaoPaulo(), hora: opcoes.hora ?? horaEmSaoPaulo() });
 
-  const dados = criarDados();
-  dados.base = opcoes.base;
+  // a fonte dos dados: a planilha real (padrão) ou o gerador sintético da bancada
+  const sinteticos = criarDados();
+  sinteticos.base = opcoes.base;
+  sinteticos.privado = opcoes.privado;
+  const naPlanilha = opcoes.fonte === 'planilha';
+  const dados = naPlanilha ? criarFontePlanilha() : sinteticos;
   dados.privado = opcoes.privado;
+  const perfilId = naPlanilha ? 'guilherme' : 'guilherme-teste';
+  // o conector só existe dentro do claude.ai; fora dele, use() devolve null
+  const mcpPronto = naPlanilha ? Promise.resolve(window.claude?.use?.('mcp') ?? null).catch(() => null) : Promise.resolve(null);
 
   // ---- o elenco
   const elenco = new Map();
@@ -154,7 +163,7 @@ async function iniciar() {
   }
 
   // ---- estado do jogo
-  let perfil = carregarPerfil(armazem);
+  let perfil = carregarPerfil(armazem, perfilId);
   const salvar = () => salvarPerfil(armazem, perfil);
   let sessao = null;
   const objetosCena = {};
@@ -176,7 +185,7 @@ async function iniciar() {
       if (nome === 'card') await paineis.card(jogo.ui, ctx);
       if (nome === 'consulta') {
         ctx.consulta = await paineis.consulta(jogo.ui);
-        if (ctx.consulta) emitirSilencioso(dados.consulta(ctx.consulta, relogio().data), ctx);
+        if (ctx.consulta) emitirSilencioso(sinteticos.consulta(ctx.consulta, relogio().data), ctx);
       }
     },
     aoResultado: (inv, ctx, cmd) => aplicarResultado(inv, ctx, cmd),
@@ -408,12 +417,32 @@ async function iniciar() {
   }
 
   // ---- visitas
-  function abrirVisitaAgora() {
+  async function lerPlanilha() {
+    if (!naPlanilha) return false;
+    painel?.atualizar();
+    const ok = await dados.ler(await mcpPronto, relogio().data);
+    painel?.registrar(ok ? `◆ planilha lida: ${dados.abas.map((a) => `${a.aba} (${a.conferencia})`).join(', ')}`
+      : `◆ planilha não lida: ${dados.erro?.texto}`);
+    painel?.atualizar();
+    return ok;
+  }
+
+  /** Lê de novo no meio da visita: o que mudou vira evento, cena a cena. */
+  async function relerPlanilha() {
+    if (!await lerPlanilha()) return;
+    const evs = dados.eventosDeAbertura(perfil, relogio().data);
+    salvar();
+    if (!evs.length) painel?.registrar('  nada mudou desde a última leitura');
+    for (const ev of evs) emitir(ev);
+  }
+
+  async function abrirVisitaAgora() {
     const { data: hoje } = relogio();
     executor.cancelar();
     ui.limpar();
     document.getElementById('encerrada').hidden = true;
-    const r = abrirVisita(perfil, hoje, { regraDia6: opcoes.regraDia6, lerDados: (p) => dados.eventosDeAbertura(p) });
+    if (naPlanilha) await lerPlanilha();
+    const r = abrirVisita(perfil, hoje, { regraDia6: opcoes.regraDia6, lerDados: (p) => dados.eventosDeAbertura(p, hoje) });
     perfil = r.perfil;
     salvar();
     posicionarElenco({ guilhermeNaPorta: r.fila.some((i) => i.cena === 'C1S1') });
@@ -446,8 +475,8 @@ async function iniciar() {
   function zerarPerfil() {
     if (sessao) sessao.aberta = false;
     executor.cancelar();
-    apagarPerfil(armazem);
-    perfil = carregarPerfil(armazem);
+    apagarPerfil(armazem, perfilId);
+    perfil = carregarPerfil(armazem, perfilId);
     painel?.registrar('━━ perfil zerado');
   }
 
@@ -562,7 +591,7 @@ async function iniciar() {
   // ---- painel de teste
   const painel = criarPainelDeTeste({
     raiz: document.getElementById('teste'), opcoes, salvarOpcoes, persistente, roteiro,
-    relogio, dados,
+    relogio, dados: sinteticos, fonte: dados, naPlanilha, relerPlanilha,
     perfil: () => perfil,
     sessao: () => sessao,
     abrirVisita: abrirVisitaAgora,
@@ -572,7 +601,8 @@ async function iniciar() {
     aplicar: () => {
       config.velocidade = opcoes.velocidade;
       config.reduzido = opcoes.reduzido || reduzidoDoSistema;
-      dados.base = opcoes.base;
+      sinteticos.base = opcoes.base;
+      sinteticos.privado = opcoes.privado;
       dados.privado = opcoes.privado;
     },
   });

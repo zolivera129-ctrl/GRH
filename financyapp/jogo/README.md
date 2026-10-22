@@ -74,7 +74,10 @@ npm test
 - `testes/`: validação da planta, animações, ciclo mensal e diretor
   (`ciclo.test.js`) e o roteiro (`roteiro.test.js`).
 
-O desenho da sala segue a mesma montagem da prévia `sala-parada.png` que o
-`build.py` gera. Desde o primeiro ciclo narrativo a sala é desenhada quadro a
-quadro, com a vida à mesa, os cachorros dormindo e os estados dos objetos, então
-ela já não sai igual à prévia parada.
+O desenho segue a mesma montagem da prévia `sala-parada.png` que o
+`build.py` gera. Na conferência, o canvas saiu igual à prévia; só 192
+pixels semitransparentes diferem, em 1 unidade de cor.
+
+## Fonte dos dados
+
+Por padrão o jogo lê a planilha real pelo conector Google Sheets do claude.ai (só leitura, só funciona aberto no claude.ai). Na bancada, "Fonte dos dados" troca para os dados sintéticos de teste; cada fonte tem o seu perfil salvo. "Ler a planilha agora" relê no meio da visita: o que mudou (fatura nova, Pago marcado, linha nova na conta) vira evento.
