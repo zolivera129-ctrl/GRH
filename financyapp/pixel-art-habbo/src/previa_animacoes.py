@@ -108,6 +108,32 @@ def especiais_dados(todos, man):
     }
 
 
+def caes_dados():
+    """Os cachorros (fase 6): os quadros novos e o em pé, na mesma tela,
+    com a âncora do em pé, e as camas, como o assets/ tem."""
+    import caes
+    import office
+    A = os.path.join(AQUI, '..', 'assets')
+    man = json.load(open(os.path.join(A, 'manifest.json')))
+    out = {}
+    for cid in caes.ANIMACOES:
+        q = caes.quadros(cid)
+        em_pe = caes.quadros_em_pe(cid, [{}])[0]
+        fn, k = caes.DESENHO[cid]
+        sentado = office.dog(fn(k))
+        cama = man[caes.CAMA[cid]]
+        out[cid] = {
+            'nome': office.PERSONAGENS[cid][0],
+            'anims': {n: [png64(f) for f in fs] for n, fs in q.items()},
+            'em_pe': png64(em_pe), 'ancora': office.paw_anchor(em_pe),
+            'sentado': png64(sentado), 'ancora_sentado': office.paw_anchor(sentado),
+            'tempo': {n: list(v) for n, v in caes.ANIMACOES[cid].items()},
+            'cama': {'img': png64(Image.open(os.path.join(A, 'moveis', caes.CAMA[cid] + '.png')).convert('RGBA')),
+                     'ancora': cama['ancora']},
+        }
+    return out
+
+
 def pagina(todos):
     dados = {cid: {k: [png64(f) for f in v] for k, v in a.items()} for cid, a in todos.items()}
     lista, de_quem = estacoes(list(todos))
@@ -126,6 +152,7 @@ def pagina(todos):
     modelo = open(os.path.join(AQUI, 'previa_animacoes.html'), encoding='utf-8').read()
     return (modelo.replace('__DADOS__', json.dumps(dados))
             .replace('__ESPECIAIS__', json.dumps(especiais_dados(todos, man), ensure_ascii=False))
+            .replace('__CAES__', json.dumps(caes_dados(), ensure_ascii=False))
             .replace('__MESA__', json.dumps(mesa))
             .replace('__CADEIRA__', json.dumps(cadeira_))
             .replace('__NOMES__', json.dumps(nomes, ensure_ascii=False))

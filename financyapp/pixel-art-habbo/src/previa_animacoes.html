@@ -132,7 +132,7 @@ ul.decidir li::marker { color: var(--foco); }
 <div class="pagina">
   <header>
     <h1>Caminhada do elenco</h1>
-    <p>Fases 2 a 5 do manual de animações para os 12: costas, caminhada, a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar), levantar e sentar na cadeira e as ações especiais, em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
+    <p>Fases 2 a 5 do manual de animações para os 12: costas, caminhada, a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar), levantar e sentar na cadeira e as ações especiais, em 40 × 70 px, saídas dos sprites originais, e a fase 6, dos cachorros. Os espelhados são o mesmo desenho virado, como no jogo.</p>
     <div class="elenco" id="elenco" aria-label="Personagem"></div>
   </header>
 
@@ -196,6 +196,13 @@ ul.decidir li::marker { color: var(--foco); }
     <div class="tira" id="tiras-especiais"></div>
   </section>
 
+  <section class="sec" aria-labelledby="t-caes">
+    <h2 id="t-caes">Flora e Lupin</h2>
+    <p>Fase 6 do manual: andando, dormindo na cama e inquietos. Andar e inquieto saem do desenho em pé de cada um, remontado; deitado é pose nova, com o corpo e a cabeça do em pé, as patas da frente esticadas e os olhos fechados. O outro sentido é o espelho.</p>
+    <div class="cenas" id="cenas-caes"></div>
+    <div class="tira" id="tiras-caes"></div>
+  </section>
+
   <section class="sec" aria-labelledby="t-lugar">
     <h2 id="t-lugar">No lugar</h2>
     <div class="grade" id="lugar"></div>
@@ -216,6 +223,8 @@ ul.decidir li::marker { color: var(--foco); }
   <section class="sec" aria-labelledby="t-decidir">
     <h2 id="t-decidir">Para conferir</h2>
     <ul class="decidir">
+      <li><strong>Cachorros deitados são pose nova.</strong> Não havia desenho dos dois deitados. Fiz como esfinge, de lado: o tronco e a coxa do em pé baixados até o chão, as patas da frente esticadas, a cabeça de sempre com o queixo nas patas e os olhos fechados. Na Flora, a coleira aparece por baixo da orelha. Ficam na tela e na âncora do em pé, e o jogo põe no centro do tile da cama, espelhados como o sentado da sala.</li>
+      <li><strong>Trote em diagonal.</strong> No andar dos cachorros as patas vão em pares cruzados (a da frente de perto com a de trás de longe), como na caminhada dos humanos: 2 px no contato e o corpo subindo 1 px na passagem. O rabo da Flora balança 1 px; no Lupin, a cabeça vai 1 px à frente e a orelha dobrada fica para trás.</li>
       <li><strong>O gesto é da mão da direita da tela.</strong> O manual põe as mãos do gesto em x 32 a 38, à direita, que é para onde o personagem olha. No nosso desenho de frente esse é o braço de trás (o da frente fica à esquerda, perto da câmera). Estender o da frente até lá faria o braço cruzar o peito, então quem entrega, aponta e leva a mão à testa é o braço da direita. Os pontos do manual valem; os nomes dos braços, não. A Vivi usa as duas mãos.</li>
       <li><strong>Gabriel deixa o envelope de costas.</strong> A abertura do malote olha para +A e os pontos de uso da planta ficam em +A e +B dele, então o Gabriel chega de costas para a câmera. Fiz a entrega de frente, que o manual pede, e uma variante de costas, que é a da cena. O manifesto diz onde fica a abertura no malote (<code>abertura</code>); o jogo põe o Gabriel onde a mão do Q2 encosta nela.</li>
       <li><strong>Caio mostra o tablet do desenho original.</strong> O manual estima a tela à direita, em (26, 28)–(36, 42), mas manda conferir a imagem original: nela o tablet fica erguido ao lado do rosto. Usei a pose original com a tela em branco; a área útil ficou em (1, 18)–(9, 27), com o centro do selo em (5, 22), e está no manifesto.</li>
@@ -252,6 +261,7 @@ const ANCORA = __ANCORA__;
 const MESA = __MESA__;
 const CADEIRA = __CADEIRA__;
 const ESP = __ESPECIAIS__;
+const CAES = __CAES__;
 
 const carregar = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = src; });
 
@@ -351,7 +361,22 @@ async function carregarEsp() {
     quadro: await carregar(ESP.quadro.img),
     estSaldanha: { ...await camadas(ESP.est_saldanha), semMonitor: await carregar(ESP.est_saldanha.sem_monitor) },
     estCaio: await camadas(ESP.est_caio),
+    caes: Object.fromEntries(await Promise.all(Object.entries(CAES).map(async ([cid, c]) => [cid, {
+      anims: Object.fromEntries(await Promise.all(Object.entries(c.anims).map(async ([k, v]) => [k, await Promise.all(v.map(carregar))]))),
+      emPe: await carregar(c.em_pe), sentado: await carregar(c.sentado), cama: await carregar(c.cama.img),
+    }]))),
   };
+}
+
+// cola com uma âncora qualquer (a dos cachorros não é a dos humanos);
+// espelhado como o jogo: a imagem virada, com a âncora virada junto
+function colarA(ctx, img, x, y, espelhar, a) {
+  if (!espelhar) { ctx.drawImage(img, x - a[0], y - a[1]); return; }
+  ctx.save();
+  ctx.translate(x, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(img, -a[0], y - a[1]);
+  ctx.restore();
 }
 
 // um quadro do personagem com um adereço colado (âncora do adereço no
@@ -820,6 +845,119 @@ Promise.all([
     el.append(h, q);
   })();
 
+  // ---------------------------------------------------- cachorros
+  const cenasCaes = document.getElementById('cenas-caes');
+  function novaCenaC(titulo, sub, w, h, rotulo) {
+    const c = novaCena(titulo, sub, w, h, rotulo);
+    cenasCaes.append(c.el);
+    return c;
+  }
+  const DOG = esp.caes;
+  const quadroDe = (cid, nome, t) => {
+    const [fps] = CAES[cid].tempo[nome];
+    const qs = DOG[cid].anims[nome];
+    return qs[Math.floor(t * fps) % qs.length];
+  };
+  // as quatro direções: o desenho olha para a direita (+A e -B); +B e -A são o espelho
+  const VOLTA_CAO = [
+    { da: 1, db: 0, esp: false }, { da: 0, db: 1, esp: true }, { da: -1, db: 0, esp: true }, { da: 0, db: -1, esp: false },
+  ];
+  function naVoltaCao(d) {
+    const lado = Math.floor(d / 2) % 4, k = d % 2;
+    const cantos = [[0.5, 0.5], [2.5, 0.5], [2.5, 2.5], [0.5, 2.5]];
+    const [a0, b0] = cantos[lado], dir = VOLTA_CAO[lado];
+    return { a: a0 + dir.da * k, b: b0 + dir.db * k, esp: dir.esp };
+  }
+  const cAndar = novaCenaC('Andando', 'Flora: 4 quadros · 8 FPS · Lupin: 4 quadros · 9 FPS · loop · dando a volta no piso',
+    208, 132, 'Flora e Lupin dando a volta num pedaço de piso');
+  function desenharAndar(t) {
+    const { ctx } = cAndar;
+    limpar(cAndar, '#181e34');
+    const X0 = 104, Y0 = 28;
+    piso(ctx, pisoImg, X0, Y0, 3, false);
+    const quem = [['flora', 0], ['lupin', 4]].map(([cid, atraso]) => {
+      const pos = naVoltaCao((t * 0.8 + atraso) % 8);
+      const [x, y] = tela(X0, Y0, pos.a, pos.b);
+      return { cid, pos, x: Math.round(x), y: Math.round(y) };
+    }).sort((p, q) => (p.pos.a + p.pos.b) - (q.pos.a + q.pos.b));
+    for (const { cid, pos, x, y } of quem) colarA(ctx, quadroDe(cid, 'andando', t), x, y, pos.esp, CAES[cid].ancora);
+  }
+
+  // nas camas, como na planta: a manta e a caminha lado a lado em B, e os
+  // dois espelhados, olhando +B, como na sala parada
+  estado.dormindo = true;
+  const cCamas = novaCenaC('Dormindo na cama', 'dormindo_na_cama · 2 quadros · 1 FPS · loop · as costas sobem 1 px no Q2',
+    160, 96, 'Flora e Lupin dormindo nas camas');
+  const barraCama = document.createElement('div');
+  barraCama.className = 'controles';
+  const rotCama = document.createElement('label');
+  rotCama.innerHTML = '<input type="checkbox" checked> Dormindo';
+  rotCama.querySelector('input').addEventListener('change', (e) => { estado.dormindo = e.target.checked; });
+  barraCama.append(rotCama);
+  cCamas.el.insertBefore(barraCama, cCamas.el.lastChild);
+  function desenharCamas(t) {
+    const { ctx } = cCamas;
+    limpar(cCamas, '#181e34');
+    const X0 = 96, Y0 = 18;
+    for (let b = 0; b < 2; b++) {
+      const [x, y] = tela(X0, Y0, 1, b + 1);
+      ctx.drawImage(pisoImg[(b * 3) % 3], x - 32, y - 32);
+    }
+    ['flora', 'lupin'].forEach((cid, b) => {
+      const c = CAES[cid];
+      const [bx, by] = tela(X0, Y0, 1, b + 1);
+      ctx.drawImage(DOG[cid].cama, bx - c.cama.ancora[0], by - c.cama.ancora[1]);
+      const [cx, cy] = tela(X0, Y0, 0.5, b + 0.5);
+      if (estado.dormindo) colarA(ctx, quadroDe(cid, 'dormindo_na_cama', t), cx, cy, true, c.ancora);
+      else colarA(ctx, DOG[cid].sentado, cx, cy, true, c.ancora_sentado);
+    });
+  }
+
+  const cInq = novaCenaC('Inquietos', 'inquieto · 2 quadros · Flora 3 FPS · Lupin 4 FPS · loop',
+    160, 92, 'Flora e Lupin inquietos');
+  function desenharInq(t) {
+    const { ctx } = cInq;
+    limpar(cInq);
+    [['flora', 46], ['lupin', 116]].forEach(([cid, x]) => {
+      piso(ctx, pisoImg, x, 44, 1, false);
+      colarA(ctx, quadroDe(cid, 'inquieto', t), x, 60, false, CAES[cid].ancora);
+    });
+  }
+
+  function desenharCaes(t) {
+    desenharAndar(t);
+    desenharCamas(t);
+    desenharInq(t);
+  }
+
+  (function tirasCaes() {
+    const el = document.getElementById('tiras-caes');
+    for (const [cid, c] of Object.entries(CAES)) {
+      for (const [nome, [fps]] of Object.entries(c.tempo)) {
+        const h = document.createElement('h3');
+        const n = c.anims[nome].length;
+        h.textContent = `${c.nome} · ${nome} · ${n} quadros · ${fps} FPS · loop`;
+        const q = document.createElement('div');
+        q.className = 'quadros';
+        c.anims[nome].forEach((src, i) => {
+          const f = document.createElement('div');
+          f.className = 'quadro objeto';
+          const im = document.createElement('img');
+          im.className = 'px';
+          im.src = src;
+          im.alt = `${c.nome}, ${nome}, quadro ${i + 1}`;
+          const [w, hh] = cid === 'flora' ? [47, 41] : [38, 31];
+          im.width = w * 3; im.height = hh * 3;
+          const s = document.createElement('span');
+          s.textContent = `Q${i + 1}`;
+          f.append(im, s);
+          q.append(f);
+        });
+        el.append(h, q);
+      }
+    }
+  })();
+
   function escolher(cid) {
     estado.quem = cid;
     for (const [k, b] of Object.entries(botoes)) b.setAttribute('aria-pressed', String(k === cid));
@@ -871,6 +1009,7 @@ Promise.all([
     desenharMesa();
     desenharCadeira();
     desenharCenas(estado.t);
+    desenharCaes(estado.t);
     const f = Math.floor(estado.t * estado.fps) % 4;
     sctx.fillStyle = '#181e34';
     sctx.fillRect(0, 0, sala.width, sala.height);

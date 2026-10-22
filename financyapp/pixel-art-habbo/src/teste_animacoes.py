@@ -1,5 +1,6 @@
 """Testes do manual de animações (§9.2) que valem para o que já existe,
-para os 12 humanos, e os das ações especiais (itens 9 a 11).
+para os 12 humanos, os das ações especiais (itens 9 a 11) e os dos
+cachorros (item 12).
 
     python3 src/teste_animacoes.py
 """
@@ -413,6 +414,108 @@ class Especiais(unittest.TestCase):
                     continue
                 for k, (im, (dx, dy)) in enumerate(zip(self.t[cid][nome], marcas)):
                     self.assertEqual(im.getpixel((19 + dx, 17 + n + dy)), pupila, (cid, nome, k))
+
+
+
+# ------------------------------------------------------------ fase 6
+class Caes(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import caes
+        cls.caes = caes
+        cls.t = {cid: caes.quadros(cid) for cid in caes.ANIMACOES}
+        cls.em_pe = {cid: caes.quadros_em_pe(cid, [{}])[0] for cid in caes.ANIMACOES}
+
+    def test_resumo_8_2(self):
+        # 13. quadros, FPS e loop como no resumo 8.2
+        esperado = {('flora', 'andando'): (4, 8), ('flora', 'dormindo_na_cama'): (2, 1), ('flora', 'inquieto'): (2, 3),
+                    ('lupin', 'andando'): (4, 9), ('lupin', 'dormindo_na_cama'): (2, 1), ('lupin', 'inquieto'): (2, 4)}
+        for (cid, nome), (n, fps) in esperado.items():
+            self.assertEqual(len(self.t[cid][nome]), n, (cid, nome))
+            self.assertEqual(self.caes.ANIMACOES[cid][nome], (fps, True), (cid, nome))
+
+    def test_em_pe_e_o_desenho_original(self):
+        # gravado e remontado sem mexer, é o em pé do assets/, pixel a pixel
+        import office
+        for cid, (fn, k) in self.caes.DESENHO.items():
+            self.assertEqual(self.em_pe[cid].tobytes(), office.dog(fn(k, 'em_pe')).tobytes(), cid)
+
+    def test_mesma_tela_e_mesmo_chao(self):
+        # 2. todos na tela do em pé, pisando na linha dele
+        for cid, a in self.t.items():
+            ref = self.em_pe[cid]
+            for nome, qs in a.items():
+                for k, im in enumerate(qs):
+                    self.assertEqual(im.size, ref.size, (cid, nome, k))
+                    self.assertEqual(im.getbbox()[3], ref.getbbox()[3], (cid, nome, k))
+                    alfas = set(im.getchannel('A').getdata())
+                    self.assertLessEqual(alfas, {0, 255}, (cid, nome, k))
+
+    def test_tamanho_relativo(self):
+        # 12. a Flora continua maior que o Lupin, em pé, andando e deitada
+        for nome in ('andando', 'dormindo_na_cama', 'inquieto'):
+            for k in range(len(self.t['flora'][nome])):
+                f, l = self.t['flora'][nome][k].getbbox(), self.t['lupin'][nome][k].getbbox()
+                self.assertGreater(f[2] - f[0], l[2] - l[0], (nome, k))
+                self.assertGreater(f[3] - f[1], l[3] - l[1], (nome, k))
+        # andando, a altura muda no máximo 1 px (o corpo sobe na passagem)
+        for cid, a in self.t.items():
+            h0 = self.em_pe[cid].getbbox()
+            for im in a['andando']:
+                self.assertLessEqual(abs((im.getbbox()[3] - im.getbbox()[1]) - (h0[3] - h0[1])), 1, cid)
+
+    def test_caracteristicas(self):
+        # 12. a coleira vermelha da Flora e a barba caramelo do Lupin em
+        # todos os quadros, inclusive deitados
+        vermelho = {(0xD7, 0x35, 0x2E), (0xEF, 0x5A, 0x50)}
+        caramelo = {(0x70, 0x46, 0x2A), (0x94, 0x60, 0x3A)}
+        for cid, cores in (('flora', vermelho), ('lupin', caramelo)):
+            for nome, qs in self.t[cid].items():
+                for k, im in enumerate(qs):
+                    self.assertTrue(any(pixels(im, c) for c in cores), (cid, nome, k))
+
+    def test_andando_quatro_poses(self):
+        # 6. quatro poses distintas; nos contatos o corpo está no lugar do em pé
+        for cid, a in self.t.items():
+            q = a['andando']
+            self.assertEqual(len({im.tobytes() for im in q}), 4, cid)
+            topo = [im.getbbox()[1] for im in q]
+            self.assertEqual(topo[0], self.em_pe[cid].getbbox()[1], cid)
+            self.assertEqual(topo[0], topo[2], cid)
+
+    def test_dormindo_de_olhos_fechados(self):
+        # 12. deitado, nada dos olhos abertos (íris e brilho) aparece
+        olhos = {'flora': {(0x5A, 0x2E, 0x14), (0x8C, 0x4E, 0x24), (255, 255, 255)},
+                 'lupin': {(0x5E, 0x32, 0x16), (255, 255, 255)}}
+        for cid, a in self.t.items():
+            for k, im in enumerate(a['dormindo_na_cama']):
+                cores = {im.getpixel(p)[:3] for p in pixels(im)}
+                self.assertFalse(cores & olhos[cid], (cid, k))
+            # e em pé eles estavam lá
+            cores = {self.em_pe[cid].getpixel(p)[:3] for p in pixels(self.em_pe[cid])}
+            self.assertTrue(cores & olhos[cid], cid)
+
+    def test_dormindo_so_respira(self):
+        # 6.2 e 6.5: no Q2 só as costas sobem 1 px; o que muda fica na
+        # metade de cima do corpo, e a cabeça não mexe
+        for cid, a in self.t.items():
+            q1, q2 = a['dormindo_na_cama']
+            dif = [(x, y) for y in range(q1.height) for x in range(q1.width) if q1.getpixel((x, y)) != q2.getpixel((x, y))]
+            self.assertTrue(dif, cid)
+            ops, _ = self.caes.gravar_deitado(cid)
+            cab = set()
+            for o in ops:
+                if o[2] == 'cabeca':
+                    cab |= set(o[1])
+            self.assertFalse(set(dif) & cab - {p for p in cab if q1.getpixel(p) == q2.getpixel(p)}, cid)
+            self.assertEqual(q2.getbbox()[1], q1.getbbox()[1] - (1 if q1.getbbox()[1] > q2.getbbox()[1] else 0), cid)
+
+    def test_inquieto_comeca_no_em_pe(self):
+        # 6.3 e 6.6: Q1 é o em pé; no Q2 a cabeça sobe
+        for cid, a in self.t.items():
+            q1, q2 = a['inquieto']
+            self.assertEqual(q1.tobytes(), self.em_pe[cid].tobytes(), cid)
+            self.assertLess(q2.getbbox()[1], q1.getbbox()[1], cid)
 
 
 if __name__ == '__main__':

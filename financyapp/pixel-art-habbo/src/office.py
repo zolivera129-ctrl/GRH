@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from px import Layer, rgb, mul, mix, up  # noqa: E402
 import chars  # noqa: E402
 import animacoes  # noqa: E402
+import caes  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'assets')
 LAYOUT = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'FinancyApp_Layout_12x10_v1.json')
@@ -1032,9 +1033,17 @@ def _humano(cid):
 _QUADROS = {}
 
 
-def _cachorro(fn, k):
-    # parado é o cachorro em pé, nas quatro patas
-    return {'parado_frente': lambda: dog(fn(k, 'em_pe')), 'sentado_frente': lambda: dog(fn(k))}
+def _cachorro(fn, k, cid):
+    # parado é o cachorro em pé, nas quatro patas; as animações da fase 6
+    # (caes.py) ficam na tela do em pé, com a âncora dele
+    out = {'parado_frente': lambda: dog(fn(k, 'em_pe')), 'sentado_frente': lambda: dog(fn(k))}
+    novas = {}
+
+    def quadros(nome):
+        return lambda: novas.setdefault(cid, caes.quadros(cid))[nome]
+    for nome in caes.ANIMACOES[cid]:
+        out[nome] = quadros(nome)
+    return out
 
 
 # id -> (nome, {animação: desenho}). Todos vão para o assets/; a folha tem
@@ -1044,8 +1053,8 @@ PERSONAGENS = {
     'saldanha': ('Saldanha', _humano('saldanha')),
     'caio': ('Caio', _humano('caio')),
     'vivi': ('Vivi', _humano('vivi')),
-    'flora': ('Flora', _cachorro(chars.flora, FLORA_K)),
-    'lupin': ('Lupin', _cachorro(chars.lupin, LUPIN_K)),
+    'flora': ('Flora', _cachorro(chars.flora, FLORA_K, 'flora')),
+    'lupin': ('Lupin', _cachorro(chars.lupin, LUPIN_K, 'lupin')),
     'gabriel': ('Gabriel', _humano('gabriel')),
     'nina': ('Nina', _humano('nina')),
     'otto': ('Otto', _humano('otto')),
@@ -1090,7 +1099,11 @@ def character(cid, anims):
         placed = {name: [(f, (0, 0)) for f in fs] for name, fs in frames.items()}
     else:
         firsts = [fs[0] for fs in frames.values()]
-        anchors = [anchor_of(cid, f) for f in firsts]
+        # as animações novas dos cachorros estão na tela do em pé (o
+        # parado_frente) e pisam onde ele pisa: a âncora é a dele
+        em_pe = anchor_of(cid, frames['parado_frente'][0])
+        anchors = [anchor_of(cid, f) if name in ('parado_frente', 'sentado_frente') else em_pe
+                   for name, f in zip(frames, firsts)]
         ax, ay = max(a[0] for a in anchors), max(a[1] for a in anchors)
         w = ax + max(f.width - a[0] for f, a in zip(firsts, anchors))
         h = ay + max(f.height - a[1] for f, a in zip(firsts, anchors))
@@ -1103,10 +1116,15 @@ def character(cid, anims):
             sheet.alpha_composite(f, (w * k + dx, h * i + dy))
     animacoes_ = {}
     for i, (name, fs) in enumerate(frames.items()):
-        fps, loop = animacoes.tempo(cid, name) if cid in animacoes.HUMANOS else (0, False)
+        if cid in animacoes.HUMANOS:
+            fps, loop = animacoes.tempo(cid, name)
+        else:
+            fps, loop = caes.ANIMACOES[cid].get(name, (0, False))
         animacoes_[name] = {'linha': i, 'quadros': len(fs), 'fps': fps, **({'loop': True} if loop else {})}
         if cid in animacoes.HUMANOS:
             animacoes_[name].update(animacoes.campos(cid, name, len(fs)))
+        elif name in caes.ANIMACOES[cid]:
+            animacoes_[name].update(caes.campos(cid, name))
     entry = {'pasta': 'personagens', 'folha': save(sheet, f'personagens/{cid}.png'),
              'tela': [w, h], 'ancora': [ax, ay], 'animacoes': animacoes_}
     with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:

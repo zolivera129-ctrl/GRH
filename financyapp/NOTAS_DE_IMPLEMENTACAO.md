@@ -114,6 +114,16 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 - **Onde:** manual de sprites e animações v1.0, §5, §7, §8.2 e §9 (marcadores e testes 9 a 11); `FinancyApp_Assets_v2.md`, "Lotes seguintes" (cortes 2, 3 e 4); planta 1.1 (`p_malote`, `p_quadro`, malote em (0, 7)).
 - **Sugestão:** no manual, trocar "braço da frente" por "braço do lado para onde ele olha" nas ações, registrar a entrega de costas e a tela do Caio pela pose original; na Assets, registrar os adereços (`envelope`, `tablet`, `selo_tablet`, `malote__com-envelope`, a `abertura` do malote e a tira `sineta__tocando`) e os campos `direcao`, `envelope`, `solta`, `dedo`, `tela`, `selo`, `flash`, `flash_no_quadro` e `no_lugar_do_teclado`.
 
+### 14. Cachorros (fase 6): deitados é pose nova e trote em diagonal
+
+- **O que foi:** a pedido do Guilherme, a Flora e o Lupin ganharam a §6 do manual: `andando` (4 quadros; Flora a 8 FPS, Lupin a 9), `dormindo_na_cama` (2 quadros, 1 FPS) e `inquieto` (2 quadros; Flora a 3 FPS, Lupin a 4), todos em loop, nas linhas 2 a 4 da folha. A tela e a âncora não mudaram: os quadros novos ficam na tela do em pé e pisam na linha dele. O outro sentido é o espelho, como o manual pede. Pontos que não fecham com o manual:
+  - **Deitados:** o manual diz que só o em pé e o sentado já existem; não havia desenho deitado. Fiz uma pose nova, de lado, como esfinge: o tronco e a coxa do em pé baixados até o chão, as patas da frente esticadas, a cabeça de sempre com o queixo nas patas, olhos fechados e o rabo no chão. Na Flora a coleira aparece por baixo da orelha, com a plaquinha. A respiração do Q2 sobe as costas 1 px; cabeça, orelhas e patas não mexem.
+  - **Cama:** o deitado não traz a cama. O jogo cola na âncora da cama (o centro do tile), espelhado como o sentado da sala; o manifesto diz qual cama em `na_cama`. A cama não muda.
+  - **Andar:** o manual descreve uma pata por vez; fiz o trote em pares cruzados (a da frente de perto com a de trás de longe), no mesmo esquema da caminhada dos humanos: 2 px no contato, o corpo 1 px acima na passagem, com a pata que passa 1 px no ar. O rabo da Flora desce e sobe 1 px; no Lupin a cabeça vai 1 px à frente e a orelha dobrada fica para trás.
+  - **Inquieto:** o Q1 é o em pé, exatamente; no Q2 a cabeça sobe, a pata da frente de perto sai do chão e o rabo mexe, nos px do manual.
+- **Onde:** manual de sprites e animações v1.0, §6, §8.2 e §9.2 (teste 12); `FinancyApp_Assets_v2.md`, lista do corte 2.
+- **Sugestão:** registrar no manual a pose deitada (e que ela não traz a cama) e o trote em pares; na Assets, o campo `na_cama` e as três animações como entregues.
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.

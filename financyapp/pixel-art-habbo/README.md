@@ -104,6 +104,9 @@ Detalhes:
   marcadores dela: `envelope` e `solta` (o Gabriel e o Saldanha também
   têm `envelope` nas caminhadas), `dedo`, `tela` e `selo`, `flash` e
   `flash_no_quadro`, `no_lugar_do_teclado`.
+- Cachorros, fase 6 (`caes.py`), linhas 2 a 4: `andando` (4 quadros),
+  `dormindo_na_cama` (2) e `inquieto` (2), em loop, na tela e na âncora do
+  em pé. O deitado traz `na_cama`, a cama em que o jogo o põe.
 - Adereços da fase 5 em `objetos/`: `envelope.png`, `tablet__frente-esq`
   e `__frente-dir` (deitado no tampo, no lugar do teclado) e
   `selo_tablet__verde`, `__amarelo` e `__vermelho`; em `moveis/`,
@@ -172,12 +175,14 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
 - `especiais.py`: as ações especiais da fase 5 (só os braços do gesto e
   o adereço são desenhados; o resto é o desenho original), o envelope, os
   selos e os marcadores de cada uma.
+- `caes.py`: os cachorros da fase 6: o em pé gravado e remontado para
+  andar e ficar inquieto, e a pose deitada, nova, para dormir.
 - `animacoes.py`: a lista de animações de cada humano, com quadros por
   segundo e os campos do manifesto, na ordem das linhas da folha.
 - `previa_animacoes.py`: a página de prévia (`previa/animacoes/`), com os
   ciclos tocando nas quatro direções, e as faixas ampliadas.
-- `teste_animacoes.py`: os testes do manual (§9.2) para os 12 e para as
-  ações especiais: `python3 src/teste_animacoes.py`.
+- `teste_animacoes.py`: os testes do manual (§9.2) para os 12, para as
+  ações especiais e para os cachorros: `python3 src/teste_animacoes.py`.
 
 Para gerar tudo de novo (o `build.py` também gera o `assets/` e as prévias):
 
