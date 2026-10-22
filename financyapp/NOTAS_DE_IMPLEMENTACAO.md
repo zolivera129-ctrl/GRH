@@ -64,6 +64,12 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 - **Piso:** as três variações ficam em `variacoes`, e a âncora segue a regra dos móveis (vértice de baixo, [32, 32]).
 - **Cores da parede:** ficam na chave `parede` do manifesto (altura, rodapé, cores e borda do piso), que não é um modelo da planta.
 
+### 9. Âncora dos humanos e o pé nas passagens (animações)
+
+- **O que foi:** os humanos pisam em y 62 ou 63 da tela de 40×70, e cinco (Guilherme, Nina, Sr. Pra Ontem, Íris e Duda) encostam o cabelo na linha 0. Na caminhada o corpo sobe 1 px nas passagens e cortaria a primeira linha do cabelo; o `comemorando_tablet` do Saldanha também precisa de espaço acima da cabeça. Além disso, de frente o pé de trás fica 1 px acima do da frente, então, no quadro em que o da frente levanta, o ponto mais baixo do quadro sobe 1 px sem a âncora mexer.
+- **Onde:** Manual de sprites e animações v1.0, §1 (âncora "(20,66) provisoriamente") e §9.2 (testes 2 e 6); `office.py`, `anchor_of` e `check`, que hoje pegam a âncora do pé de cada quadro e exigem o pé na linha da âncora em todos.
+- **Sugestão:** fechar a âncora dos humanos em (20, 66): cada personagem desce até a sola cair em 66 (3 ou 4 px), em todas as animações, e o manifesto troca a âncora (o jogo já lê de lá). A conferência do build passa a exigir o pé na âncora nas poses e nos contatos, e aceitar 1 px acima no quadro em que o pé da frente está no ar. O piloto do Guilherme (`pixel-art-habbo/previa/animacoes/`) já está assim.
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.

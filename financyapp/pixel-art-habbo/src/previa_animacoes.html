@@ -1,0 +1,341 @@
+<title>Caminhada do __NOME__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap">
+<style>
+/* Layout: uma coluna de revisão. O palco da sala abre a página; embaixo,
+   os ciclos no lugar, as poses e o quadro a quadro. Escuro de propósito,
+   como a tela do jogo: é a noite atrás do escritório. */
+:root {
+  --noite: #181e34;
+  --painel: #222a46;
+  --borda: #323c60;
+  --texto: #e8ebf4;
+  --suave: #a9b1c9;
+  --foco: #f4c04f;          /* o latão das plaquinhas */
+  --novo: #7fd18b;
+  --fonte-titulo: 'Pixelify Sans', ui-monospace, monospace;
+  --fonte-texto: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --fonte-dado: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--noite);
+  color: var(--texto);
+  font: 15px/1.55 var(--fonte-texto);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.pagina { max-width: 980px; margin: 0 auto; padding-block: 20px 40px; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--fonte-titulo); font-weight: 700; text-wrap: balance; margin: 0; }
+h1 { font-size: 30px; letter-spacing: 0.02em; }
+h2 { font-size: 20px; letter-spacing: 0.02em; }
+header p, .sec > p { margin: 6px 0 0; color: var(--suave); max-width: 65ch; }
+.sec { display: grid; gap: 14px; }
+code, .dado { font-family: var(--fonte-dado); font-size: 13px; font-variant-numeric: tabular-nums; }
+canvas, .px { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+
+/* palco */
+.palco {
+  background: var(--painel);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+#sala { width: 100%; max-width: 624px; height: auto; }
+.controles { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: center; }
+button, select {
+  font: 700 14px var(--fonte-texto);
+  color: var(--noite);
+  background: var(--foco);
+  border: 0;
+  border-radius: 6px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+button.sec2 { background: transparent; color: var(--texto); box-shadow: inset 0 0 0 1px var(--borda); }
+select { background: var(--noite); color: var(--texto); box-shadow: inset 0 0 0 1px var(--borda); padding: 6px 8px; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+label { color: var(--suave); display: inline-flex; gap: 8px; align-items: center; }
+input[type=range] { accent-color: var(--foco); width: 120px; }
+.vel { min-width: 5ch; color: var(--texto); }
+
+/* grades de cartões */
+.grade { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.cartao {
+  background: var(--painel);
+  border-radius: 8px;
+  padding: 10px 10px 12px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-width: 0;
+}
+.cartao canvas, .cartao img { width: 100%; max-width: 216px; height: auto; }
+.legenda { text-align: center; display: grid; gap: 2px; }
+.legenda strong { font-family: var(--fonte-dado); font-size: 13px; font-weight: 600; }
+.legenda span { color: var(--suave); font-size: 13px; }
+.tag { font: 700 11px var(--fonte-texto); letter-spacing: 0.08em; text-transform: uppercase; color: var(--suave); }
+.tag.novo { color: var(--novo); }
+
+/* quadro a quadro */
+.tira { display: grid; gap: 8px; }
+.tira h3 { margin: 0; font: 600 14px var(--fonte-dado); color: var(--texto); }
+.quadros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.quadro { background: var(--painel); border-radius: 6px; padding: 6px; display: grid; gap: 4px; justify-items: center; }
+.quadro img { width: 100%; max-width: 160px; height: auto; }
+.quadro span { font-size: 12px; color: var(--suave); text-align: center; }
+
+ul.decidir { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 70ch; }
+ul.decidir li::marker { color: var(--foco); }
+@media (max-width: 520px) { h1 { font-size: 24px; } .quadros { gap: 4px; } }
+</style>
+
+<div class="pagina">
+  <header>
+    <h1>Caminhada do __NOME__</h1>
+    <p>Piloto da fase 2 do manual de animações: as poses de costas e os dois ciclos de caminhada, em 40 × 70 px, desenhados a partir do sprite original. Os espelhados são o mesmo desenho virado, como no jogo.</p>
+  </header>
+
+  <section class="sec" aria-labelledby="t-sala">
+    <h2 id="t-sala">Na sala</h2>
+    <p>Ele dá a volta num pedaço de 3 × 3 do piso do jogo e passa pelas quatro direções da planta: +A, +B, −A e −B.</p>
+    <div class="palco">
+      <canvas id="sala" width="208" height="164" aria-label="Guilherme andando em volta de um quadrado de piso"></canvas>
+      <div class="controles">
+        <button id="tocar" type="button">Pausar</button>
+        <button id="passo" type="button" class="sec2">Próximo quadro</button>
+        <label for="fps">Quadros por segundo
+          <select id="fps"><option value="8" selected>8 (manual)</option><option value="4">4</option><option value="2">2</option><option value="1">1</option></select>
+        </label>
+        <label for="velocidade">Passo na sala
+          <input id="velocidade" type="range" min="0.25" max="2.5" step="0.25" value="1">
+          <span class="vel dado" id="vel-v">1 tile/s</span>
+        </label>
+        <label for="grade"><input id="grade" type="checkbox"> Grade</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-lugar">
+    <h2 id="t-lugar">No lugar</h2>
+    <div class="grade" id="lugar"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-poses">
+    <h2 id="t-poses">Poses</h2>
+    <div class="grade" id="poses"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-quadros">
+    <h2 id="t-quadros">Quadro a quadro</h2>
+    <p>Tabelas 3.1 e 3.2 do manual. O corpo sobe 1 px nas passagens; a âncora fica no chão.</p>
+    <div class="tira" id="tira-frente"></div>
+    <div class="tira" id="tira-costas"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-decidir">
+    <h2 id="t-decidir">Para decidir</h2>
+    <ul class="decidir">
+      <li><strong>Pé que escorrega.</strong> O passo tem 2 px e o jogo ainda não tem velocidade de andar. Acima de uns 0,5 tile/s o pé de apoio desliza no piso; mexa no controle de passo para ver. A velocidade final é do jogo, não do sprite.</li>
+      <li><strong>Âncora em (20, 66).</strong> É a provisória do manual. Com a sola em 63, o cabelo do Guilherme (e de mais quatro) encosta no topo da tela, e o corpo subindo 1 px na passagem cortava a primeira linha de cachos. Ao levar para o jogo, os 12 descem até a sola cair em 66 e o manifesto troca a âncora; o jogo já lê a âncora de lá.</li>
+      <li><strong>O chão nas passagens.</strong> De frente, o pé de trás fica 1 px acima do da frente (é a profundidade). Quando o da frente levanta, no Q2, o ponto mais baixo do quadro sobe 1 px, sem a âncora mexer. A conferência do build, que hoje exige o pé na linha da âncora em todo quadro, vai precisar aceitar isso.</li>
+      <li><strong>Tênis de costas.</strong> O bico continua para a direita, como na silhueta do Habbo; a perna da direita vira a da frente, 1 px mais baixa.</li>
+      <li><strong>Alça e bolsa.</strong> De costas, a alça sai do ombro esquerdo e a bolsa fica no quadril direito, que é o lado perto da câmera.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const DADOS = __DADOS__;
+const PISO = __PISO__;
+const FASES = __FASES__;
+const ANCORA = [20, 66];
+
+const carregar = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = src; });
+
+// relógio comum: todas as telas mostram o mesmo quadro
+const estado = { tocando: true, t: 0, d: 0, fps: 8, vel: 1, grade: false, ultimo: null };
+const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (reduzido) estado.tocando = false;
+
+function colar(ctx, img, x, y, espelhar) {
+  if (!espelhar) { ctx.drawImage(img, x - ANCORA[0], y - ANCORA[1]); return; }
+  ctx.save();
+  ctx.translate(x, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(img, ANCORA[0] - img.width, y - ANCORA[1]);
+  ctx.restore();
+}
+
+// isométrico 2:1, tile de 64 × 32; (a, b) contínuos, o centro do tile é +0,5
+const tela = (X0, Y0, a, b) => [X0 + (a - b) * 32, Y0 + (a + b) * 16];
+
+function piso(ctx, img, X0, Y0, n, grade) {
+  for (let s = 0; s <= 2 * (n - 1); s++)
+    for (let a = 0; a < n; a++) {
+      const b = s - a;
+      if (b < 0 || b >= n) continue;
+      const [x, y] = tela(X0, Y0, a + 1, b + 1);   // vértice de baixo
+      ctx.drawImage(img[(a * 7 + b * 3) % 3], x - 32, y - 32);
+    }
+  if (!grade) return;
+  ctx.strokeStyle = 'rgba(24,30,52,0.55)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= n; i++) {
+    let [x1, y1] = tela(X0, Y0, i, 0), [x2, y2] = tela(X0, Y0, i, n);
+    ctx.beginPath(); ctx.moveTo(x1 + 0.5, y1 + 0.5); ctx.lineTo(x2 + 0.5, y2 + 0.5); ctx.stroke();
+    [x1, y1] = tela(X0, Y0, 0, i); [x2, y2] = tela(X0, Y0, n, i);
+    ctx.beginPath(); ctx.moveTo(x1 + 0.5, y1 + 0.5); ctx.lineTo(x2 + 0.5, y2 + 0.5); ctx.stroke();
+  }
+}
+
+// as quatro direções da planta
+const DIRECOES = [
+  { nome: '+A · frente-dir', anim: 'andando_frente', esp: false, da: 1, db: 0, nota: 'desenhada' },
+  { nome: '+B · frente-esq', anim: 'andando_frente', esp: true, da: 0, db: 1, nota: 'espelho de frente-dir' },
+  { nome: '−A · costas-esq', anim: 'andando_costas', esp: true, da: -1, db: 0, nota: 'espelho de costas-dir' },
+  { nome: '−B · costas-dir', anim: 'andando_costas', esp: false, da: 0, db: -1, nota: 'desenhada' },
+];
+
+// a volta: 2 tiles em cada lado, partindo do canto do fundo
+function naVolta(d) {
+  const lado = Math.floor(d / 2) % 4, k = d % 2;
+  const cantos = [[0.5, 0.5], [2.5, 0.5], [2.5, 2.5], [0.5, 2.5]];
+  const [a0, b0] = cantos[lado], dir = DIRECOES[lado];
+  return { a: a0 + dir.da * k, b: b0 + dir.db * k, dir };
+}
+
+Promise.all([
+  Promise.all(PISO.map(carregar)),
+  Promise.all(Object.entries(DADOS).map(async ([k, v]) => [k, await Promise.all(v.map(carregar))])),
+]).then(([pisoImg, lista]) => {
+  const anims = Object.fromEntries(lista);
+
+  // palco da sala
+  const sala = document.getElementById('sala');
+  const sctx = sala.getContext('2d');
+  sctx.imageSmoothingEnabled = false;
+  const SX0 = 104, SY0 = 60;
+
+  // no lugar
+  const lugar = document.getElementById('lugar');
+  const telas = DIRECOES.map((dir) => {
+    const c = document.createElement('div');
+    c.className = 'cartao';
+    const cv = document.createElement('canvas');
+    cv.width = 72; cv.height = 98;
+    cv.setAttribute('aria-label', 'Andando na direção ' + dir.nome);
+    c.append(cv);
+    const lg = document.createElement('div');
+    lg.className = 'legenda';
+    lg.innerHTML = `<strong>${dir.nome}</strong><span>${dir.anim}, ${dir.nota}</span>`;
+    c.append(lg);
+    lugar.append(c);
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    return { ctx, dir };
+  });
+
+  // poses paradas
+  const poses = [
+    ['parado_frente', 'já existia'], ['parado_costas', 'novo'],
+    ['sentado_frente', 'já existia'], ['sentado_costas', 'novo'],
+  ];
+  const pg = document.getElementById('poses');
+  for (const [k, tag] of poses) {
+    const c = document.createElement('div');
+    c.className = 'cartao';
+    const cv = document.createElement('canvas');
+    cv.width = 72; cv.height = 98;
+    cv.setAttribute('aria-label', k);
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    piso(ctx, pisoImg, 36, 62, 1, false);
+    colar(ctx, anims[k][0], 36, 78, false);
+    c.append(cv);
+    const lg = document.createElement('div');
+    lg.className = 'legenda';
+    lg.innerHTML = `<strong>${k}</strong><span class="tag ${tag === 'novo' ? 'novo' : ''}">${tag}</span>`;
+    c.append(lg);
+    pg.append(c);
+  }
+
+  // tiras quadro a quadro
+  for (const [id, k] of [['tira-frente', 'andando_frente'], ['tira-costas', 'andando_costas']]) {
+    const el = document.getElementById(id);
+    el.innerHTML = `<h3>${k} · 4 quadros · 8 FPS · loop</h3>`;
+    const q = document.createElement('div');
+    q.className = 'quadros';
+    anims[k].forEach((img, i) => {
+      const f = document.createElement('div');
+      f.className = 'quadro';
+      const im = document.createElement('img');
+      im.className = 'px';
+      im.src = DADOS[k][i];
+      im.alt = `${k}, ${FASES[i]}`;
+      im.width = 160; im.height = 280;
+      f.append(im);
+      const s = document.createElement('span');
+      s.textContent = FASES[i];
+      f.append(s);
+      q.append(f);
+    });
+    el.append(q);
+  }
+
+  function desenhar() {
+    const f = Math.floor(estado.t * estado.fps) % 4;
+    // sala
+    sctx.fillStyle = '#181e34';
+    sctx.fillRect(0, 0, sala.width, sala.height);
+    piso(sctx, pisoImg, SX0, SY0, 3, estado.grade);
+    const pos = naVolta(estado.d % 8);
+    const [x, y] = tela(SX0, SY0, pos.a, pos.b);
+    colar(sctx, anims[pos.dir.anim][f], Math.round(x), Math.round(y), pos.dir.esp);
+    // no lugar
+    for (const { ctx, dir } of telas) {
+      ctx.fillStyle = '#222a46';
+      ctx.fillRect(0, 0, 72, 98);
+      piso(ctx, pisoImg, 36, 62, 1, false);
+      colar(ctx, anims[dir.anim][f], 36, 78, dir.esp);
+    }
+  }
+
+  function quadro(agora) {
+    if (estado.tocando && estado.ultimo !== null) {
+      const dt = Math.min(0.1, (agora - estado.ultimo) / 1000);
+      estado.t += dt;
+      estado.d += dt * estado.vel;
+    }
+    estado.ultimo = agora;
+    desenhar();
+    requestAnimationFrame(quadro);
+  }
+  requestAnimationFrame(quadro);
+
+  const tocar = document.getElementById('tocar');
+  const rotulo = () => { tocar.textContent = estado.tocando ? 'Pausar' : 'Tocar'; };
+  rotulo();
+  tocar.addEventListener('click', () => { estado.tocando = !estado.tocando; rotulo(); });
+  document.getElementById('passo').addEventListener('click', () => {
+    estado.tocando = false; rotulo();
+    const t1 = (Math.floor(estado.t * estado.fps) + 1) / estado.fps + 1e-6;
+    estado.d += (t1 - estado.t) * estado.vel;
+    estado.t = t1;
+  });
+  document.getElementById('fps').addEventListener('change', (e) => { estado.fps = Number(e.target.value); });
+  const vel = document.getElementById('velocidade');
+  vel.addEventListener('input', () => {
+    estado.vel = Number(vel.value);
+    document.getElementById('vel-v').textContent = `${String(estado.vel).replace('.', ',')} tile/s`;
+  });
+  document.getElementById('grade').addEventListener('change', (e) => { estado.grade = e.target.checked; });
+});
+</script>
