@@ -1,0 +1,9721 @@
+{
+ "problemas": [],
+ "animacoes": [
+  {
+   "personagem": "guilherme",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "guilherme",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/guilherme.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ],
+    "envelope": [
+     [
+      31,
+      50
+     ],
+     [
+      30,
+      49
+     ],
+     [
+      28,
+      50
+     ],
+     [
+      28,
+      49
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "envelope": [
+     [
+      27,
+      51
+     ],
+     [
+      28,
+      50
+     ],
+     [
+      31,
+      51
+     ],
+     [
+      30,
+      50
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "digitando_sentado",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 6,
+   "modo": "loop",
+   "linha": 18,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "digitando_sentado_tampo",
+    "no_lugar_do_teclado": "tablet"
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "digitando_sentado_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 6,
+   "modo": "loop",
+   "linha": 19,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "camada_de": "digitando_sentado"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "alerta",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 20,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {},
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "apresentando_quadro",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 5,
+   "modo": "loop",
+   "linha": 21,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {
+    "rosto": [
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "dedo": [
+     [
+      37,
+      31
+     ],
+     [
+      39,
+      27
+     ]
+    ]
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "saldanha",
+   "animacao": "comemorando_tablet",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 22,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/saldanha.png",
+   "marcadores": {},
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "caio",
+   "animacao": "mostrando_tablet",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 18,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/caio.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ],
+    "tela": [
+     1,
+     18,
+     9,
+     27
+    ],
+    "selo": [
+     5,
+     22
+    ]
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ]
+    ],
+    "mesa": "balcao",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       44
+      ],
+      [
+       34,
+       42
+      ]
+     ],
+     [
+      [
+       27,
+       46
+      ],
+      [
+       34,
+       40
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ]
+    ],
+    "mesa": "balcao",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ]
+    ],
+    "mesa": "balcao",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ],
+     [
+      [
+       27,
+       45
+      ],
+      [
+       34,
+       41
+      ]
+     ]
+    ],
+    "mesa": "balcao",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "vivi",
+   "animacao": "tirando_foto",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 18,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/vivi.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ],
+    "flash": [
+     36,
+     21
+    ],
+    "flash_no_quadro": 1
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "flora",
+   "animacao": "parado_frente",
+   "direcao": "de lado",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    47,
+    41
+   ],
+   "ancora": [
+    20,
+    37
+   ],
+   "folha": "personagens/flora.png",
+   "marcadores": {},
+   "manual": "§6",
+   "confere": true
+  },
+  {
+   "personagem": "flora",
+   "animacao": "sentado_frente",
+   "direcao": "de lado",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    47,
+    41
+   ],
+   "ancora": [
+    20,
+    37
+   ],
+   "folha": "personagens/flora.png",
+   "marcadores": {},
+   "manual": "§6",
+   "confere": true
+  },
+  {
+   "personagem": "flora",
+   "animacao": "andando",
+   "direcao": "de lado",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 2,
+   "tela": [
+    47,
+    41
+   ],
+   "ancora": [
+    20,
+    37
+   ],
+   "folha": "personagens/flora.png",
+   "marcadores": {},
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "flora",
+   "animacao": "dormindo_na_cama",
+   "direcao": "de lado",
+   "quadros": 2,
+   "fps": 1,
+   "modo": "loop",
+   "linha": 3,
+   "tela": [
+    47,
+    41
+   ],
+   "ancora": [
+    20,
+    37
+   ],
+   "folha": "personagens/flora.png",
+   "marcadores": {
+    "na_cama": "manta_flora"
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "flora",
+   "animacao": "inquieto",
+   "direcao": "de lado",
+   "quadros": 2,
+   "fps": 3,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    47,
+    41
+   ],
+   "ancora": [
+    20,
+    37
+   ],
+   "folha": "personagens/flora.png",
+   "marcadores": {},
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "lupin",
+   "animacao": "parado_frente",
+   "direcao": "de lado",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    38,
+    32
+   ],
+   "ancora": [
+    16,
+    27
+   ],
+   "folha": "personagens/lupin.png",
+   "marcadores": {},
+   "manual": "§6",
+   "confere": true
+  },
+  {
+   "personagem": "lupin",
+   "animacao": "sentado_frente",
+   "direcao": "de lado",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    38,
+    32
+   ],
+   "ancora": [
+    16,
+    27
+   ],
+   "folha": "personagens/lupin.png",
+   "marcadores": {},
+   "manual": "§6",
+   "confere": true
+  },
+  {
+   "personagem": "lupin",
+   "animacao": "andando",
+   "direcao": "de lado",
+   "quadros": 4,
+   "fps": 9,
+   "modo": "loop",
+   "linha": 2,
+   "tela": [
+    38,
+    32
+   ],
+   "ancora": [
+    16,
+    27
+   ],
+   "folha": "personagens/lupin.png",
+   "marcadores": {},
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "lupin",
+   "animacao": "dormindo_na_cama",
+   "direcao": "de lado",
+   "quadros": 2,
+   "fps": 1,
+   "modo": "loop",
+   "linha": 3,
+   "tela": [
+    38,
+    32
+   ],
+   "ancora": [
+    16,
+    27
+   ],
+   "folha": "personagens/lupin.png",
+   "marcadores": {
+    "na_cama": "caminha_lupin"
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "lupin",
+   "animacao": "inquieto",
+   "direcao": "de lado",
+   "quadros": 2,
+   "fps": 4,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    38,
+    32
+   ],
+   "ancora": [
+    16,
+    27
+   ],
+   "folha": "personagens/lupin.png",
+   "marcadores": {},
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ],
+    "envelope": [
+     [
+      31,
+      50
+     ],
+     [
+      30,
+      49
+     ],
+     [
+      28,
+      50
+     ],
+     [
+      28,
+      49
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "envelope": [
+     [
+      27,
+      51
+     ],
+     [
+      28,
+      50
+     ],
+     [
+      31,
+      51
+     ],
+     [
+      30,
+      50
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "deixando_envelope_no_malote",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 18,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "rosto": [
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "envelope": [
+     [
+      36,
+      37
+     ],
+     [
+      37,
+      42
+     ]
+    ],
+    "solta": 1
+   },
+   "manual": "8.2",
+   "confere": true
+  },
+  {
+   "personagem": "gabriel",
+   "animacao": "deixando_envelope_no_malote_costas",
+   "direcao": "costas",
+   "quadros": 2,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 19,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/gabriel.png",
+   "marcadores": {
+    "envelope": [
+     [
+      35,
+      36
+     ],
+     [
+      37,
+      38
+     ]
+    ],
+    "solta": 1
+   },
+   "manual": null,
+   "acrescimo": "a entrega de costas, a da planta (nota 13)",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "nina",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/nina.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "otto",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/otto.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sr_pra_ontem",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/sr_pra_ontem.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "iris",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/iris.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "joana",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/joana.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "malu",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/malu.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "parado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 0,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "sentado_frente",
+   "direcao": "frente",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 1,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "parado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 2,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "sentado_costas",
+   "direcao": "costas",
+   "quadros": 1,
+   "fps": 0,
+   "modo": "estático",
+   "linha": 3,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "andando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 4,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ],
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      -1
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "andando_costas",
+   "direcao": "costas",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 5,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {},
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "sentado_frente_idle",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 6,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "sentado_frente_idle_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "teclando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 7,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       53
+      ],
+      [
+       34,
+       51
+      ]
+     ],
+     [
+      [
+       27,
+       55
+      ],
+      [
+       34,
+       49
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "teclando_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "assentindo_para_tela_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 8,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      4
+     ],
+     [
+      1,
+      5
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "assentindo_para_tela_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "olhando_para_o_lado_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 9,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "maos": [
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ],
+     [
+      [
+       27,
+       54
+      ],
+      [
+       34,
+       50
+      ]
+     ]
+    ],
+    "mesa": "mesa",
+    "tampo": "olhando_para_o_lado_frente_tampo"
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "sentado_frente_idle_tampo",
+   "direcao": "frente",
+   "quadros": 2,
+   "fps": 2,
+   "modo": "loop",
+   "linha": 10,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "camada_de": "sentado_frente_idle"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "teclando_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 11,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "camada_de": "teclando_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "assentindo_para_tela_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 6,
+   "modo": "uma vez",
+   "linha": 12,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "camada_de": "assentindo_para_tela_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "olhando_para_o_lado_frente_tampo",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 5,
+   "modo": "uma vez",
+   "linha": 13,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "camada_de": "olhando_para_o_lado_frente"
+   },
+   "manual": null,
+   "acrescimo": "camada do tampo: antebraços e mãos que o jogo cola depois da mesa (nota 11)",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "piscando_frente",
+   "direcao": "frente",
+   "quadros": 3,
+   "fps": 12,
+   "modo": "uma vez",
+   "linha": 14,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "falando_frente",
+   "direcao": "frente",
+   "quadros": 4,
+   "fps": 8,
+   "modo": "loop",
+   "linha": 15,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "sobreposicao": true
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "levantando_da_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 16,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      3
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      0
+     ]
+    ],
+    "desloca": [
+     [
+      0,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      16,
+      8
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "duda",
+   "animacao": "sentando_na_cadeira_frente",
+   "direcao": "frente",
+   "quadros": 6,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 17,
+   "tela": [
+    40,
+    70
+   ],
+   "ancora": [
+    20,
+    66
+   ],
+   "folha": "personagens/duda.png",
+   "marcadores": {
+    "rosto": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      1,
+      3
+     ],
+     [
+      0,
+      3
+     ]
+    ],
+    "desloca": [
+     [
+      16,
+      8
+     ],
+     [
+      14,
+      7
+     ],
+     [
+      10,
+      5
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      0
+     ]
+    ]
+   },
+   "manual": "8.1",
+   "confere": true
+  },
+  {
+   "personagem": "sineta",
+   "animacao": "tocando",
+   "direcao": "não se aplica",
+   "quadros": 2,
+   "fps": 8,
+   "modo": "uma vez",
+   "linha": 0,
+   "tela": [
+    15,
+    6
+   ],
+   "ancora": [
+    7,
+    5
+   ],
+   "folha": "objetos/sineta__tocando.png",
+   "marcadores": {
+    "tela": [
+     15,
+     6
+    ],
+    "toque": 1
+   },
+   "manual": "8.2",
+   "confere": true
+  }
+ ]
+}

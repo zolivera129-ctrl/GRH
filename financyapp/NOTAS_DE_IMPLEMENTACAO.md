@@ -124,6 +124,26 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 - **Onde:** manual de sprites e animações v1.0, §6, §8.2 e §9.2 (teste 12); `FinancyApp_Assets_v2.md`, lista do corte 2.
 - **Sugestão:** registrar no manual a pose deitada (e que ela não traz a cama) e o trote em pares; na Assets, o campo `na_cama` e as três animações como entregues.
 
+### 15. Conferência (fase 7): o que ficou para decidir
+
+- **O que foi:** a fase 7 do manual. `src/qa.py` lê o `assets/` como o jogo lê, monta a listagem de todas as animações (236 linhas, em `previa/qa/animacoes.json`) e confere com as tabelas 8.1 e 8.2: nenhuma divergência; as 50 linhas que não estão no manual (as camadas do tampo e a entrega de costas do Gabriel) têm o motivo registrado. Os testes cobrem os 14 itens da §9.2: 45 no pacote de arte (`teste_animacoes.py`, com três novos: paleta, quadril sentado e listagem) e 6 novos do lado do jogo (`jogo/testes/animacoes.test.js`), que leem o manifesto e os PNGs pela regra de nomes do jogo. O jogo do corte 1 continua desenhando só o parado e o sentado de frente, nas linhas 0 e 1, e a sala ficou igual pixel a pixel em todas as fases. A página `previa/qa/index.html` junta a comparação por personagem e por animação (recortada das folhas, ao lado do desenho original, com o que mudou e os marcadores), a checklist com o resultado de cada teste e o registro do que é fiel, do que foi ajustado e do que precisa de decisão.
+- **Diferenças que os testes mostraram e ficaram assim:**
+  - **Quadril sentado:** o manual pede 14 px acima da âncora. O alto das pernas sentadas fica a 14 ou 15 px; em quem tem cintura alta (Vivi, Íris, Joana e Duda) a calça começa até 18 px acima. Bate com o "uns 14 px" da Assets.
+  - **Cores novas:** só a luz no dorso da mão à mesa (a pele clareada), a boca aberta ao falar e os adereços (tablet erguido, celular, flash). Roupa, cabelo e pele usam só as cores das poses-base.
+- **Para decidir (junta o que está em aberto nas notas 4, 6 e 11 a 14):**
+  1. o monitor cobre o teclado e o tablet na mesa do Saldanha (nota 4);
+  2. teclado e tablet no campo `objetos` da planta ou presos a quem senta (nota 11);
+  3. por onde se sai de cada cadeira (nota 12);
+  4. a velocidade de andar do jogo (o pé desliza acima de uns 0,5 tile/s);
+  5. quem usa a vida à mesa (o Gabriel não vira funcionário);
+  6. piscar nos quadros 2 e 3 do olhar para o lado;
+  7. a entrega de costas como oficial e quanto o Gabriel se aproxima do malote (nota 13);
+  8. a bandeirinha do malote como estado à parte (nota 13);
+  9. o encosto da cadeira de costas em outra camada (nota 6);
+  10. levar ao manual e à Assets os campos novos do manifesto e os ajustes das notas 9 a 14.
+- **Onde:** manual de sprites e animações v1.0, §9.2, §10 (fase 7) e §12.
+- **Sugestão:** levar os dez pontos ao projeto de design; a página de conferência mostra cada um no quadro.
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.

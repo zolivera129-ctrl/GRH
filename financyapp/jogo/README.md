@@ -60,6 +60,11 @@ npm test
 - `empacotar.py`: monta o pacote para publicar como Artifact.
 - `testes/validacao.test.js`: o layout padrão passa, e layouts quebrados
   de propósito falham na regra certa.
+- `testes/animacoes.test.js`: o manifesto e as folhas do pacote de arte,
+  lidos como o jogo lê: o parado e o sentado de frente continuam nas linhas
+  0 e 1, cada folha cabe as linhas e os quadros, as camadas, os marcadores
+  e os adereços citados existem. O jogo do corte 1 ainda não toca as
+  animações; o teste garante que elas chegam inteiras.
 
 O desenho segue a mesma montagem da prévia `sala-parada.png` que o
 `build.py` gera. Na conferência, o canvas saiu igual à prévia; só 192

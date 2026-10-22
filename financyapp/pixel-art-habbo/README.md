@@ -183,6 +183,11 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
   ciclos tocando nas quatro direções, e as faixas ampliadas.
 - `teste_animacoes.py`: os testes do manual (§9.2) para os 12, para as
   ações especiais e para os cachorros: `python3 src/teste_animacoes.py`.
+- `qa.py` e `qa.html`: a conferência da fase 7. Lê o `assets/` como o jogo
+  lê, gera a listagem de todas as animações conferida com as tabelas do
+  manual, roda os testes daqui e os do jogo e monta a página de comparação:
+  `python3 src/qa.py`, saída em `previa/qa/` (`index.html`,
+  `animacoes.json` e `testes.json`).
 
 Para gerar tudo de novo (o `build.py` também gera o `assets/` e as prévias):
 

@@ -1,0 +1,563 @@
+<title>Conferência das animações</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap">
+<style>
+/* Mesa de conferência: uma coluna, do veredito para o detalhe. Primeiro o
+   resumo e a checklist do manual, depois a comparação quadro a quadro de
+   quem for escolhido, a listagem e o registro. Escuro de propósito, como a
+   tela do jogo e a prévia das animações, que esta página acompanha. */
+:root {
+  --noite: #181e34;
+  --painel: #222a46;
+  --painel2: #1d2440;
+  --borda: #323c60;
+  --texto: #e8ebf4;
+  --suave: #a9b1c9;
+  --foco: #f4c04f;          /* o latão das plaquinhas */
+  --ok: #7fd18b;
+  --falha: #ff7a6b;
+  --olho: #8fb8ff;
+  --mudou: rgba(255, 64, 200, 0.62);
+  --fonte-titulo: 'Pixelify Sans', ui-monospace, monospace;
+  --fonte-texto: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --fonte-dado: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--noite);
+  color: var(--texto);
+  font: 15px/1.55 var(--fonte-texto);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.pagina { max-width: 1040px; margin: 0 auto; padding-block: 20px 48px; display: grid; gap: 32px; }
+h1, h2, h3 { font-family: var(--fonte-titulo); font-weight: 700; text-wrap: balance; margin: 0; }
+h1 { font-size: 30px; letter-spacing: 0.02em; }
+h2 { font-size: 21px; letter-spacing: 0.02em; }
+h3 { font-size: 16px; font-family: var(--fonte-dado); font-weight: 600; letter-spacing: 0; }
+p { margin: 0; }
+header { display: grid; gap: 14px; }
+header > p, .sec > p { color: var(--suave); max-width: 68ch; }
+.sec { display: grid; gap: 14px; min-width: 0; }
+code, .dado { font-family: var(--fonte-dado); font-size: 13px; }
+canvas, .px { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+
+/* resumo */
+.numeros { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.numero { background: var(--painel); border-radius: 8px; padding: 12px 14px; display: grid; gap: 2px; }
+.numero strong { font: 700 26px/1.1 var(--fonte-titulo); font-variant-numeric: tabular-nums; }
+.numero span { color: var(--suave); font-size: 13px; }
+.numero.ok strong { color: var(--ok); }
+.numero.falha strong { color: var(--falha); }
+
+/* checklist */
+.check { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.item { background: var(--painel); border-radius: 8px; padding: 12px 14px; display: grid; grid-template-columns: 2.2em 1fr; gap: 4px 12px; min-width: 0; }
+.item .n { font: 700 18px var(--fonte-titulo); color: var(--suave); grid-row: span 3; }
+.item .t { min-width: 0; }
+.item .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 600 12px var(--fonte-dado); border-radius: 999px; padding: 2px 9px; max-width: 100%; overflow-wrap: anywhere; background: var(--painel2); box-shadow: inset 0 0 0 1px var(--borda); color: var(--suave); }
+.chip.ok { color: var(--ok); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ok) 45%, transparent); }
+.chip.falha { color: var(--falha); box-shadow: inset 0 0 0 1px var(--falha); }
+.item .olho { color: var(--olho); font-size: 14px; }
+.item .olho::before { content: 'De olhar: '; font-weight: 700; }
+
+/* comparação */
+.elenco { display: flex; flex-wrap: wrap; gap: 8px; }
+.elenco button {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 700 14px var(--fonte-texto); color: var(--texto); background: var(--painel);
+  border: 0; box-shadow: inset 0 0 0 1px var(--borda); border-radius: 6px;
+  padding: 4px 12px 4px 4px; cursor: pointer;
+}
+.elenco button canvas { width: 36px; height: 32px; }
+.elenco button[aria-pressed="true"] { background: var(--foco); color: var(--noite); box-shadow: none; }
+.controles { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
+.controles label { color: var(--suave); display: inline-flex; gap: 8px; align-items: center; }
+.controles input { accent-color: var(--foco); }
+.legenda-marcas { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--suave); font-size: 13px; }
+.legenda-marcas i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; vertical-align: -1px; }
+
+.anim { background: var(--painel); border-radius: 8px; padding: 12px; display: grid; gap: 10px; min-width: 0; }
+.anim .cab { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.anim .meta { color: var(--suave); font-size: 13px; font-family: var(--fonte-dado); }
+.anim .obs { color: var(--suave); font-size: 13px; }
+.tira { display: flex; flex-wrap: wrap; gap: 10px; }
+.quadro { display: grid; gap: 4px; justify-items: center; background: var(--painel2); border-radius: 6px; padding: 6px; }
+.quadro span { font: 600 12px var(--fonte-dado); color: var(--suave); }
+.quadro canvas { max-width: 100%; height: auto; }
+.grupo-tit { color: var(--suave); font: 700 12px var(--fonte-texto); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; }
+.anims { display: grid; gap: 10px; }
+
+/* listagem */
+details { background: var(--painel); border-radius: 8px; padding: 10px 14px; }
+summary { cursor: pointer; font-weight: 700; }
+.rolagem { overflow-x: auto; margin-top: 10px; }
+table { border-collapse: collapse; font-size: 13px; width: 100%; }
+th, td { text-align: left; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--borda); vertical-align: top; white-space: nowrap; }
+td.livre { white-space: normal; min-width: 18ch; color: var(--suave); }
+th { color: var(--suave); font-weight: 700; }
+td.n { font-variant-numeric: tabular-nums; font-family: var(--fonte-dado); }
+td.ok { color: var(--ok); }
+td.falha { color: var(--falha); }
+
+/* registro */
+.registro { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); align-items: start; }
+.bloco { background: var(--painel); border-radius: 8px; padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.bloco h3 { font-family: var(--fonte-titulo); font-size: 17px; }
+.bloco.fiel h3 { color: var(--ok); }
+.bloco.ajuste h3 { color: var(--foco); }
+.bloco.decidir h3 { color: var(--olho); }
+.bloco ul, .bloco ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.bloco li { font-size: 14px; }
+.bloco li .nota { color: var(--suave); font-family: var(--fonte-dado); font-size: 12px; }
+@media (max-width: 520px) { h1 { font-size: 24px; } .numero strong { font-size: 22px; } }
+</style>
+
+<div class="pagina">
+  <header>
+    <h1>Conferência das animações</h1>
+    <p>Fase 7 do manual de animações: tudo o que o pacote de arte entrega, lido das folhas e do manifesto do <code>assets/</code>, como o jogo lê. Os testes rodaram junto com esta página; a comparação mostra cada quadro ampliado, ao lado do desenho original.</p>
+    <div class="numeros" id="numeros"></div>
+  </header>
+
+  <section class="sec" aria-labelledby="t-check">
+    <h2 id="t-check">Checklist do manual (§9.2)</h2>
+    <p>Os 14 itens, com os testes que conferem cada um. O que depende de olhar está marcado e tem onde ver nesta página ou na prévia das animações.</p>
+    <ol class="check" id="check"></ol>
+  </section>
+
+  <section class="sec" aria-labelledby="t-comp">
+    <h2 id="t-comp">Comparação por personagem e por animação</h2>
+    <p>Cada linha da folha, recortada do PNG que o jogo carrega, a 4×. "O que mudou" pinta de rosa os pixels diferentes da pose-base (o parado ou o sentado): o que não está rosa é o desenho original, sem retoque. Uma parte que só subiu 1 px, como o corpo na passagem, também fica rosa.</p>
+    <div class="elenco" id="elenco" aria-label="Personagem"></div>
+    <div class="controles">
+      <label for="mudou"><input id="mudou" type="checkbox"> O que mudou</label>
+      <label for="marcas"><input id="marcas" type="checkbox" checked> Marcadores</label>
+      <label for="zoom">Ampliação
+        <select id="zoom"><option value="4" selected>4×</option><option value="6">6×</option><option value="8">8×</option></select>
+      </label>
+    </div>
+    <div class="legenda-marcas" id="legenda-marcas"></div>
+    <div class="anims" id="anims"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="t-lista">
+    <h2 id="t-lista">Listagem validável</h2>
+    <p>Todas as animações do manifesto, conferidas com as tabelas 8.1 e 8.2. O mesmo conteúdo fica em <code>previa/qa/animacoes.json</code>, no repositório.</p>
+    <details id="lista">
+      <summary id="lista-resumo">Abrir a listagem</summary>
+      <div class="rolagem"><table id="tabela"></table></div>
+    </details>
+  </section>
+
+  <section class="sec" aria-labelledby="t-reg">
+    <h2 id="t-reg">Registro</h2>
+    <p>O que ficou fiel ao manual e ao desenho original, o que foi ajustado e por quê, e o que ainda precisa da sua decisão. As notas citadas estão em <code>NOTAS_DE_IMPLEMENTACAO.md</code>.</p>
+    <div class="registro">
+      <div class="bloco fiel">
+        <h3>Fiel</h3>
+        <ul>
+          <li>O parado e o sentado de frente dos 12, e o em pé e o sentado dos cachorros, continuam pixel a pixel. Tudo o que é novo sai deles, gravado camada por camada e remontado.</li>
+          <li>Contagem, FPS e modo de todas as linhas das tabelas 8.1 e 8.2 conferem com o manifesto.</li>
+          <li>Caminhada em 4 quadros com apoio alternado e o corpo 1 px acima nas passagens; costas com a nuca e o cabelo de trás de cada um; as outras duas direções por espelho.</li>
+          <li>Piscar e falar como sobreposições, com o deslocamento do rosto marcado em cada quadro.</li>
+          <li>Levantar e sentar em 6 quadros, começando e terminando exatamente nas poses, sem quadro repetido.</li>
+          <li>Os eventos caem no quadro certo: o envelope sai no Q2, o flash dispara no Q2, a sineta vibra no Q2.</li>
+          <li>O selo do Caio é um adereço por cor, colado pelo jogo dentro da tela, sem três sprites do Caio.</li>
+          <li>Nenhuma cor nova na roupa, no cabelo ou na pele. As únicas cores novas são a luz no dorso da mão à mesa, a boca aberta e os adereços.</li>
+          <li>Flora maior que o Lupin em todas as animações; coleira e barba caramelo sempre visíveis; olhos fechados dormindo; camas sem mexer.</li>
+        </ul>
+      </div>
+      <div class="bloco ajuste">
+        <h3>Ajustado</h3>
+        <ul>
+          <li>Âncora em (20, 66), com cada um descido 3 ou 4 px: os desenhos pisavam em 62 e 63, e sem folga o cabelo cortaria quando o corpo sobe. <span class="nota">nota 9</span></li>
+          <li>Mãos à mesa calibradas pela planta, em torno de (27, 56) e (34, 52); as do manual só batiam com o balcão da Vivi. <span class="nota">nota 11</span></li>
+          <li>Uma linha a mais por animação à mesa, a camada do tampo, para a mesa não cobrir as mãos. <span class="nota">nota 11</span></li>
+          <li>Pedidos seus: teclar só com as mãos, dentes somem ao falar, braços à mesa no estilo do braço do tablet com a pele do rosto, e sair da cadeira pisando no chão. <span class="nota">notas 11 e 12</span></li>
+          <li>Levantar e sentar em 3 px, a distância do nosso sentado para o em pé; o manual fala em 9. <span class="nota">nota 12</span></li>
+          <li>O gesto é do braço da direita da tela (de frente, o de trás), onde o manual põe os pontos. <span class="nota">nota 13</span></li>
+          <li>Gabriel também deixa o envelope de costas, que é como a planta o põe no malote. <span class="nota">nota 13</span></li>
+          <li>Tela do Caio pela pose original, em (1, 18)–(9, 27), com o selo em (5, 22). <span class="nota">nota 13</span></li>
+          <li>Saldanha digita no tablet deitado na mesa, no lugar do teclado; o envelope andando vale também para ele. <span class="nota">nota 13</span></li>
+          <li>Selos com sinal além da cor: check, exclamação e x. <span class="nota">nota 13</span></li>
+          <li>Cachorros: deitados é pose nova (não existia) e o andar é um trote em pares cruzados. <span class="nota">nota 14</span></li>
+          <li>Relógios e pulseiras voltaram aos antebraços à mesa; na Íris, na Duda e na Vivi a manga cobre o pulso de trás. <span class="nota">nota 13</span></li>
+          <li>Quadril sentado a 14 ou 15 px do chão; em quem tem cintura alta (Vivi, Íris, Joana, Duda) a calça começa até 18 px acima. <span class="nota">item 3</span></li>
+        </ul>
+      </div>
+      <div class="bloco decidir">
+        <h3>Para você decidir</h3>
+        <ol>
+          <li>Na mesa do Saldanha o monitor cobre o teclado e o tablet: a mesa de trabalho ganha um encaixe por metade? <span class="nota">nota 4</span></li>
+          <li>Teclado e tablet entram no campo <code>objetos</code> da planta, com encaixe, ou ficam presos a quem senta, como estão? <span class="nota">nota 11</span></li>
+          <li>Por onde se sai de cada cadeira. A planta só pede um vizinho livre, e nas estações a frente é a mesa. <span class="nota">nota 12</span></li>
+          <li>A velocidade de andar do jogo: com passo de 2 px, acima de uns 0,5 tile/s o pé de apoio desliza.</li>
+          <li>Quem usa a vida à mesa no jogo. O manual pede para não transformar o Gabriel em funcionário.</li>
+          <li>Piscar não combina com os quadros 2 e 3 do olhar para o lado (as pupilas estão de lado). Pular o piscar nesses quadros ou desenhar a variante?</li>
+          <li>A entrega de costas vira a oficial no manual? E quanto o Gabriel se aproxima do malote (na prévia, 0,4 tile)? <span class="nota">nota 13</span></li>
+          <li>A bandeirinha levantada do malote, que a lista do corte 2 cita, é um estado à parte do envelope na abertura? <span class="nota">nota 13</span></li>
+          <li>O encosto da cadeira de costas em outra camada, para sentar de costas na reunião (corte 4). <span class="nota">nota 6</span></li>
+          <li>Levar ao manual e à lista de peças os campos novos do manifesto e os ajustes acima. <span class="nota">notas 9 a 14</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const D = __DADOS__;
+const carregar = (src) => new Promise((ok) => {
+  const i = new Image();
+  i.onload = () => ok(i);
+  i.onerror = () => ok(i);          // uma imagem que falta não trava a página
+  i.src = src;
+});
+
+// cores dos marcadores
+const MARCA = { frente: '#3fd0ff', tras: '#ffd23f', envelope: '#ffffff', dedo: '#ff9a3c', tela: '#7fd18b', flash: '#c9a6ff' };
+const POSES_BASE = new Set(['parado_frente', 'sentado_frente', 'parado_costas', 'sentado_costas']);
+
+function baseDe(cid, nome, a) {
+  if (POSES_BASE.has(nome) || a.sobreposicao || a.camada_de) return null;
+  if (cid === 'flora' || cid === 'lupin') return nome === 'dormindo_na_cama' ? null : 'parado_frente';
+  if (nome.startsWith('levantando') || nome.startsWith('sentando')) return null;
+  if (nome.endsWith('_costas')) return 'parado_costas';
+  if (a.mesa || a.tampo) return 'sentado_frente';
+  return 'parado_frente';
+}
+
+function situacao(cid, nome) {
+  return D.listagem.find((l) => l.personagem === cid && l.animacao === nome);
+}
+
+// ---------------------------------------------------------- resumo
+(function resumo() {
+  const pac = D.testes, jog = D.jogo;
+  const ok = (l) => l.filter((t) => t.resultado === 'passou').length;
+  const quadros = D.listagem.reduce((s, l) => s + l.quadros, 0);
+  const personagens = new Set(D.listagem.map((l) => l.personagem)).size;
+  const itens = [
+    [String(personagens), 'personagens e objetos (12 humanos, 2 cachorros, a sineta)', ''],
+    [String(D.listagem.length), `animações, com ${quadros} quadros`, ''],
+    [String(D.problemas.length), D.problemas.length ? 'divergências do manual na listagem' : 'divergências das tabelas 8.1 e 8.2', D.problemas.length ? 'falha' : 'ok'],
+    [`${ok(pac)}/${pac.length}`, 'testes do pacote de arte', ok(pac) === pac.length ? 'ok' : 'falha'],
+    [`${ok(jog)}/${jog.length}`, 'testes do jogo, lendo os assets', ok(jog) === jog.length ? 'ok' : 'falha'],
+  ];
+  const el = document.getElementById('numeros');
+  for (const [n, t, c] of itens) {
+    const d = document.createElement('div');
+    d.className = `numero ${c}`;
+    const s = document.createElement('strong');
+    s.textContent = n;
+    const sp = document.createElement('span');
+    sp.textContent = t;
+    d.append(s, sp);
+    el.append(d);
+  }
+})();
+
+// ---------------------------------------------------------- checklist
+(function checklist() {
+  const todos = [...D.testes, ...D.jogo];
+  const el = document.getElementById('check');
+  for (const c of D.checklist) {
+    const li = document.createElement('li');
+    li.className = 'item';
+    const n = document.createElement('span');
+    n.className = 'n';
+    n.textContent = c.item;
+    const t = document.createElement('p');
+    t.className = 't';
+    t.textContent = c.texto;
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    for (const nome of c.testes) {
+      const r = todos.find((x) => x.nome === nome);
+      const ch = document.createElement('span');
+      const passou = r && r.resultado === 'passou';
+      ch.className = `chip ${r ? (passou ? 'ok' : 'falha') : ''}`;
+      ch.textContent = `${r ? (passou ? '✓' : '✗') : '?'} ${nome}`;
+      ch.title = r ? `${r.grupo}: ${r.resultado}` : 'teste não encontrado';
+      chips.append(ch);
+    }
+    li.append(n, t, chips);
+    if (c.olho) {
+      const o = document.createElement('p');
+      o.className = 'olho';
+      o.textContent = c.olho;
+      li.append(o);
+    }
+    el.append(li);
+  }
+})();
+
+// ---------------------------------------------------------- listagem
+(function listagem() {
+  const t = document.getElementById('tabela');
+  const cab = ['Personagem', 'Animação', 'Direção', 'Quadros', 'FPS', 'Modo', 'Linha', 'Manual', 'Observação'];
+  const thead = t.createTHead().insertRow();
+  for (const c of cab) { const th = document.createElement('th'); th.textContent = c; thead.append(th); }
+  const tb = t.createTBody();
+  for (const l of D.listagem) {
+    const r = tb.insertRow();
+    const cel = (txt, cls = '') => { const c = r.insertCell(); c.textContent = txt; if (cls) c.className = cls; };
+    cel(D.nomes[l.personagem] ?? l.personagem);
+    cel(l.animacao, 'dado');
+    cel(l.direcao);
+    cel(l.quadros, 'n');
+    cel(l.fps || '—', 'n');
+    cel(l.modo);
+    cel(l.linha, 'n');
+    cel(l.manual ? `${l.manual} ${l.confere ? '✓' : '✗'}` : 'acréscimo', l.confere ? 'ok' : 'falha');
+    cel(l.acrescimo ?? Object.keys(l.marcadores).join(', '), 'livre');
+  }
+  document.getElementById('lista-resumo').textContent =
+    `Abrir a listagem: ${D.listagem.length} animações, ${D.listagem.filter((l) => l.manual).length} do manual e ${D.listagem.filter((l) => !l.manual).length} acréscimos com motivo`;
+})();
+
+// ---------------------------------------------------------- comparação
+const estado = { quem: 'guilherme', mudou: false, marcas: true, zoom: 4 };
+try {
+  const salvo = JSON.parse(localStorage.getItem('qa-animacoes') || '{}');
+  Object.assign(estado, salvo);
+} catch (e) { /* sem armazenamento: fica o padrão */ }
+const guardar = () => { try { localStorage.setItem('qa-animacoes', JSON.stringify(estado)); } catch (e) { /* tudo bem */ } };
+if (D.nomes[location.hash.slice(1)] || location.hash.slice(1) === 'sineta') estado.quem = location.hash.slice(1);
+
+Promise.all([
+  Promise.all(Object.entries(D.folhas).map(async ([k, v]) => [k, await carregar(v)])),
+  Promise.all(Object.entries(D.referencias).map(async ([k, v]) => [k, await carregar(v)])),
+  carregar(D.sineta.folha), carregar(D.sineta.parada),
+]).then(([fl, rf, sinFolha, sinParada]) => {
+  const folhas = Object.fromEntries(fl);
+  const refs = Object.fromEntries(rf);
+
+  // um quadro da folha, num canvas de 1×, como o jogo recorta
+  const cacheQ = new Map();
+  function quadro(cid, nome, k) {
+    const chave = `${cid}|${nome}|${k}`;
+    if (cacheQ.has(chave)) return cacheQ.get(chave);
+    const e = D.manifesto[cid], [w, h] = e.tela, a = e.animacoes[nome];
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(folhas[cid], w * k, h * a.linha, w, h, 0, 0, w, h);
+    cacheQ.set(chave, c);
+    return c;
+  }
+  const pixelsDe = (c) => c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+
+  function pintar(cv, cid, nome, k) {
+    const e = D.manifesto[cid], a = e.animacoes[nome], [w, h] = e.tela, z = estado.zoom;
+    cv.width = w * z; cv.height = h * z;
+    cv.style.width = `${w * z}px`;
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    // contexto: a sobreposição vai em cima do parado; a camada do tampo, em
+    // cima do quadro da animação dela, apagado
+    if (a.sobreposicao) ctx.drawImage(quadro(cid, 'parado_frente', 0), 0, 0, w * z, h * z);
+    if (a.camada_de) {
+      ctx.globalAlpha = 0.3;
+      ctx.drawImage(quadro(cid, a.camada_de, k), 0, 0, w * z, h * z);
+      ctx.globalAlpha = 1;
+    }
+    const q = quadro(cid, nome, k);
+    ctx.drawImage(q, 0, 0, w * z, h * z);
+    const base = baseDe(cid, nome, a);
+    if (estado.mudou && (base || a.sobreposicao)) {
+      const p = pixelsDe(q);
+      const b = base ? pixelsDe(quadro(cid, base, 0)) : null;
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--mudou');
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        const i = (y * w + x) * 4;
+        const dif = b ? (p[i] !== b[i] || p[i + 1] !== b[i + 1] || p[i + 2] !== b[i + 2] || p[i + 3] !== b[i + 3]) : p[i + 3] > 0;
+        if (dif) ctx.fillRect(x * z, y * z, z, z);
+      }
+    }
+    if (estado.marcas) marcas(ctx, a, k, z);
+  }
+
+  function ponto(ctx, [x, y], cor, z) {
+    ctx.strokeStyle = cor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x * z - 1, y * z - 1, z + 2, z + 2);
+  }
+  function marcas(ctx, a, k, z) {
+    if (a.maos) { ponto(ctx, a.maos[k][0], MARCA.frente, z); ponto(ctx, a.maos[k][1], MARCA.tras, z); }
+    if (a.envelope && a.envelope[k] && (a.solta === undefined || k < a.solta || k === a.solta)) ponto(ctx, a.envelope[k], MARCA.envelope, z);
+    if (a.dedo) ponto(ctx, a.dedo[k], MARCA.dedo, z);
+    if (a.tela) {
+      const [x0, y0, x1, y1] = a.tela;
+      ctx.strokeStyle = MARCA.tela;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x0 * z - 1, y0 * z - 1, (x1 - x0 + 1) * z + 2, (y1 - y0 + 1) * z + 2);
+      ponto(ctx, a.selo, MARCA.tela, z);
+    }
+    if (a.flash && k === a.flash_no_quadro) ponto(ctx, a.flash, MARCA.flash, z);
+  }
+
+  (function legenda() {
+    const el = document.getElementById('legenda-marcas');
+    for (const [cor, t] of [[MARCA.frente, 'mão da frente'], [MARCA.tras, 'mão de trás'], [MARCA.envelope, 'envelope'],
+      [MARCA.dedo, 'ponta do dedo'], [MARCA.tela, 'tela e selo'], [MARCA.flash, 'flash']]) {
+      const s = document.createElement('span');
+      const i = document.createElement('i');
+      i.style.background = cor;
+      s.append(i, document.createTextNode(t));
+      el.append(s);
+    }
+  })();
+
+  // escolha do personagem (e a sineta)
+  const barra = document.getElementById('elenco');
+  const botoes = {};
+  for (const cid of [...Object.keys(D.nomes), 'sineta']) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    const mini = document.createElement('canvas');
+    mini.width = 36; mini.height = 32;
+    mini.setAttribute('aria-hidden', 'true');
+    const m = mini.getContext('2d');
+    m.imageSmoothingEnabled = false;
+    if (cid === 'sineta') m.drawImage(sinParada, 13, 13, 9, 6);
+    else if (cid === 'flora' || cid === 'lupin') {
+      const r = refs[cid];
+      m.drawImage(r, 0, 0, r.width, Math.min(r.height, 32), 0, 0, r.width * 0.8, Math.min(r.height, 32) * 0.8);
+    } else m.drawImage(refs[cid], 2, 4, 36, 32, 0, 0, 36, 32);
+    b.append(mini, document.createTextNode(cid === 'sineta' ? 'Sineta' : D.nomes[cid]));
+    b.addEventListener('click', () => { estado.quem = cid; guardar(); montar(); });
+    barra.append(b);
+    botoes[cid] = b;
+  }
+
+  function cartaoAnim(titulo, meta, obs, frames) {
+    const box = document.createElement('div');
+    box.className = 'anim';
+    const cab = document.createElement('div');
+    cab.className = 'cab';
+    const h = document.createElement('h3');
+    h.textContent = titulo;
+    const m = document.createElement('span');
+    m.className = 'meta';
+    m.textContent = meta;
+    cab.append(h, m);
+    box.append(cab);
+    if (obs) {
+      const o = document.createElement('p');
+      o.className = 'obs';
+      o.textContent = obs;
+      box.append(o);
+    }
+    const tira = document.createElement('div');
+    tira.className = 'tira';
+    for (const [cv, rot] of frames) {
+      const f = document.createElement('div');
+      f.className = 'quadro';
+      const s = document.createElement('span');
+      s.textContent = rot;
+      f.append(cv, s);
+      tira.append(f);
+    }
+    box.append(tira);
+    return box;
+  }
+
+  function montar() {
+    for (const [k, b] of Object.entries(botoes)) b.setAttribute('aria-pressed', String(k === estado.quem));
+    document.getElementById('mudou').checked = estado.mudou;
+    document.getElementById('marcas').checked = estado.marcas;
+    document.getElementById('zoom').value = String(estado.zoom);
+    const el = document.getElementById('anims');
+    el.replaceChildren();
+    const cid = estado.quem, z = estado.zoom;
+
+    if (cid === 'sineta') {
+      const s = D.sineta, frames = [];
+      for (let k = 0; k < s.quadros; k++) {
+        const cv = document.createElement('canvas');
+        const [w, h] = s.tela, zz = z * 2;
+        cv.width = w * zz; cv.height = h * zz;
+        cv.className = 'px';
+        const c = cv.getContext('2d');
+        c.imageSmoothingEnabled = false;
+        c.drawImage(sinFolha, w * k, 0, w, h, 0, 0, w * zz, h * zz);
+        frames.push([cv, `Q${k + 1}${k === s.toque ? ' · toque' : ''}`]);
+      }
+      const p = document.createElement('canvas');
+      p.width = 9 * z * 2; p.height = 6 * z * 2;
+      const pc = p.getContext('2d');
+      pc.imageSmoothingEnabled = false;
+      pc.drawImage(sinParada, 0, 0, p.width, p.height);
+      el.append(cartaoAnim('sineta · parada', 'objeto · âncora [4, 5]', 'A peça que já existia, igual ao Q1 do toque.', [[p, 'parada']]));
+      el.append(cartaoAnim('sineta · tocando', `não se aplica · ${s.quadros} quadros · ${s.fps} FPS · uma vez · tela ${s.tela.join(' × ')} · âncora [${s.ancora.join(', ')}]`,
+        'A tela ganha 3 px de cada lado para as linhas de vibração; a sineta não muda de tamanho nem de cor.', frames));
+      return;
+    }
+
+    // a referência: o desenho original, como está no chars.py
+    const r = refs[cid];
+    const rc = document.createElement('canvas');
+    rc.width = r.width * z; rc.height = r.height * z;
+    const rcc = rc.getContext('2d');
+    rcc.imageSmoothingEnabled = false;
+    rcc.drawImage(r, 0, 0, rc.width, rc.height);
+    const e = D.manifesto[cid];
+    el.append(cartaoAnim('desenho original', `chars.py · ${r.width} × ${r.height} · antes da âncora (20, 66)`,
+      'A arte que veio antes das animações e manda em tudo (manual §0). Nos humanos, a pose da vitrine; no Saldanha e no Caio, com o tablet.',
+      [[rc, 'original']]));
+
+    const grupos = [
+      ['Poses-base', (n) => POSES_BASE.has(n)],
+      ['Caminhada', (n) => n.startsWith('andando')],
+      ['Vida à mesa e rosto', (n, a) => a.mesa || a.camada_de || a.sobreposicao],
+      ['Cadeira', (n) => n.startsWith('levantando') || n.startsWith('sentando')],
+      ['Ações especiais e cachorros', () => true],
+    ];
+    const feitos = new Set();
+    for (const [titulo, cond] of grupos) {
+      const nomes = Object.entries(e.animacoes).filter(([n, a]) => !feitos.has(n) && cond(n, a)).map(([n]) => n);
+      if (!nomes.length) continue;
+      const gt = document.createElement('p');
+      gt.className = 'grupo-tit';
+      gt.textContent = titulo;
+      el.append(gt);
+      for (const nome of nomes) {
+        feitos.add(nome);
+        const a = e.animacoes[nome], l = situacao(cid, nome);
+        const frames = [];
+        for (let k = 0; k < a.quadros; k++) {
+          const cv = document.createElement('canvas');
+          cv.setAttribute('aria-label', `${D.nomes[cid]}, ${nome}, quadro ${k + 1}`);
+          pintar(cv, cid, nome, k);
+          let rot = `Q${k + 1}`;
+          if (a.solta === k) rot += ' · solta';
+          if (a.flash_no_quadro === k) rot += ' · flash';
+          frames.push([cv, rot]);
+        }
+        const modo = l.modo === 'estático' ? 'estático' : `${l.fps} FPS · ${l.modo}`;
+        const manual = l.manual ? `tabela ${l.manual} ${l.confere ? '✓' : '✗'}` : 'acréscimo';
+        const meta = `${l.direcao} · ${a.quadros} ${a.quadros > 1 ? 'quadros' : 'quadro'} · ${modo} · linha ${a.linha} · ${manual}`;
+        const obs = [];
+        if (l.acrescimo) obs.push(`Fora do manual: ${l.acrescimo}.`);
+        if (a.sobreposicao) obs.push('Sobreposição: aparece colada no parado de frente.');
+        if (a.camada_de) obs.push(`Camada: aparece por cima de ${a.camada_de}, apagado.`);
+        const extra = Object.keys(l.marcadores).filter((k) => !['sobreposicao', 'camada_de'].includes(k));
+        if (extra.length) obs.push(`No manifesto: ${extra.join(', ')}.`);
+        el.append(cartaoAnim(nome, meta, obs.join(' '), frames));
+      }
+    }
+  }
+
+  document.getElementById('mudou').addEventListener('change', (ev) => { estado.mudou = ev.target.checked; guardar(); montar(); });
+  document.getElementById('marcas').addEventListener('change', (ev) => { estado.marcas = ev.target.checked; guardar(); montar(); });
+  document.getElementById('zoom').addEventListener('change', (ev) => { estado.zoom = Number(ev.target.value); guardar(); montar(); });
+  montar();
+});
+</script>

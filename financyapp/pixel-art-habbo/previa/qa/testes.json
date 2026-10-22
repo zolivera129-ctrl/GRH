@@ -1,0 +1,384 @@
+{
+ "pacote": [
+  {
+   "nome": "test_andando_quatro_poses",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_caracteristicas",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_dormindo_de_olhos_fechados",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_dormindo_so_respira",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_em_pe_e_o_desenho_original",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_inquieto_comeca_no_em_pe",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_mesma_tela_e_mesmo_chao",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_paleta_dos_caes",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_resumo_8_2",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_tamanho_relativo",
+   "grupo": "Caes",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_comemorando_tablet_no_alto",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_digitando_so_mexe_cabeca_e_maos",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_envelope_na_mao_andando",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_envelope_sai_no_q2",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_flash_so_no_q2",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_listagem_bate_com_o_resumo",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_relogio_do_saldanha_fica_no_braco",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_resumo_8_2",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_rosto_das_acoes",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_selo_dentro_da_tela_do_caio",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_sineta_vibra_no_q2",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_so_quem_tem",
+   "grupo": "Especiais",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_ancora_no_chao",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_braco_a_mesa_tem_a_pele_do_rosto",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_cadeira_comeca_e_termina_nas_poses",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_cadeira_sai_para_o_chao",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_cadeira_sem_quadro_congelado",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_caminhada_corpo_sobe_so_nas_passagens",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_caminhada_quatro_poses_distintas",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_contato_tem_a_cabeca_do_parado",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_de_costas_nao_tem_rosto",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_dentes_somem_ao_falar",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_lista_de_animacoes",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_mesa_parada_quadril_e_pernas_nao_mexem",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_nada_vaza_da_tela",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_paleta_e_a_do_desenho",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_pe_plantado_nao_mexe",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_quadril_sentado",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_rosto_marca_onde_esta_o_olho",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_sentado_de_costas_no_mesmo_assento",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_sobreposicoes_so_no_rosto",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_tampo_e_parte_do_quadro",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_teclando_alterna_os_punhos",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_teclando_so_mexe_as_maos",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "test_tela_40x70_sem_meio_tom",
+   "grupo": "Humanos",
+   "resultado": "passou",
+   "detalhe": ""
+  }
+ ],
+ "jogo": [
+  {
+   "nome": "a sala de hoje: o parado e o sentado de frente continuam nas linhas 0 e 1",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "cada folha tem uma linha por animação e cabe todos os quadros",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "as camadas e as sobreposições apontam para animações que existem",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "os marcadores caem dentro da tela do personagem",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "os adereços e as camas que as animações citam existem no manifesto",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "todo arquivo de peça existe, pela regra de nomes do jogo",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "o layout padrão passa nas seis regras",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "os números do layout padrão batem com a planta",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "a circulação obrigatória calculada é a da planta mais A1/B8",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 1: peça fora da sala",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 1: peças sobrepostas",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 2: entrada ocupada",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 3: ponto de uso ocupado",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 3: ponto de uso que fica sem caminho",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 4: frente de porta sem caminho",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 5: cadeira sem vizinho alcançável",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 5: caminha sem vizinho alcançável",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  },
+  {
+   "nome": "regra 6: a estação reservada ocupa os tiles dela",
+   "grupo": "jogo",
+   "resultado": "passou",
+   "detalhe": ""
+  }
+ ]
+}

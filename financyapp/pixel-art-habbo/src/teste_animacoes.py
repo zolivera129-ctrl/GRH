@@ -228,6 +228,45 @@ class Humanos(unittest.TestCase):
                     self.assertEqual(im.getpixel((19 + dx, 17 + n + dy)), pupila, (cid, nome, k))
 
 
+    def test_quadril_sentado(self):
+        # 3. sentado, o quadril (o alto das pernas, por baixo do tronco) fica
+        # a uns 14 px da âncora, na altura do assento da cadeira; a cintura
+        # alta das pantalonas e calças de cintura alta sobe até 18
+        import escritorio
+        for cid in self.t:
+            fn = costas.HUMANOS[cid][0]
+            n = anim.folga(fn)
+            ops = [[k, costas.mover(p, 0, n), g, d] for k, p, g, d in escritorio.gravar_sentado(fn)]
+            topo = anim.montar(ops, {}, so_grupos=('pernas',)).getbbox()[1]
+            self.assertTrue(14 <= PE - topo <= 18, (cid, PE - topo))
+
+    def test_paleta_e_a_do_desenho(self):
+        # 5 e 14. nenhuma cor nova na roupa, no cabelo ou na pele: todo
+        # quadro usa as cores das quatro poses-base (e do desenho original
+        # com o tablet, no Saldanha e no Caio), mais só estas, que são novas
+        # de propósito: a luz no dorso da mão à mesa, a boca aberta ao falar e
+        # os adereços (tablet erguido, celular e flash). Também garante que
+        # não há rótulo nem texto nas texturas.
+        import chars
+        import escritorio
+        from px import rgb
+        props = set(especiais.TABLET.values()) | set(especiais.COR_CELULAR.values()) \
+            | set(especiais.flash(0, 0).values())
+        for cid, a in self.t.items():
+            base = set()
+            for nome in ('parado_frente', 'sentado_frente', 'parado_costas', 'sentado_costas'):
+                base |= {c[:3] for c in a[nome][0].getdata() if c[3]}
+            if cid in ('saldanha', 'caio'):
+                base |= {c[:3] for c in getattr(chars, cid)('tablet').getdata() if c[3]}
+            ops, n = escritorio._parado(cid)
+            luz = escritorio.pele_do_rosto(ops, n, sentado=False)[3]
+            permitidas = base | props | {luz, escritorio.BOCA_ESCURA, rgb(escritorio.BOCA[cid][3])}
+            for nome, quadros in a.items():
+                for k, im in enumerate(quadros):
+                    novas = {c[:3] for c in im.getdata() if c[3]} - permitidas
+                    self.assertFalse(novas, (cid, nome, k, sorted(novas)[:4]))
+
+
     # ------------------------------------------------------------ fase 4
     def test_cadeira_comeca_e_termina_nas_poses(self):
         # 8. sentando termina exatamente na pose sentada; levantando, na pose
@@ -284,6 +323,17 @@ class Especiais(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.t = todos()
+
+    def test_listagem_bate_com_o_resumo(self):
+        # 13. a listagem de tudo o que o manifesto tem confere com as
+        # tabelas 8.1 e 8.2; o que não está no manual tem motivo registrado
+        import json
+        import os
+        import qa
+        man = json.load(open(os.path.join(qa.ASSETS, 'manifest.json'), encoding='utf-8'))
+        linhas = qa.listagem(man)
+        self.assertEqual(qa.conferir(linhas), [])
+        self.assertTrue(all(l['confere'] for l in linhas))
 
     def test_resumo_8_2(self):
         # 13. id, quadros, FPS e modo de cada ação, como no resumo 8.2
@@ -450,6 +500,17 @@ class Caes(unittest.TestCase):
                     self.assertEqual(im.getbbox()[3], ref.getbbox()[3], (cid, nome, k))
                     alfas = set(im.getchannel('A').getdata())
                     self.assertLessEqual(alfas, {0, 255}, (cid, nome, k))
+
+    def test_paleta_dos_caes(self):
+        # 12. andar, dormir e ficar inquieto usam só as cores do em pé e do
+        # sentado de cada um
+        import office
+        for cid, a in self.t.items():
+            fn, k = self.caes.DESENHO[cid]
+            base = {c[:3] for im in (self.em_pe[cid], office.dog(fn(k))) for c in im.getdata() if c[3]}
+            for nome, qs in a.items():
+                for q, im in enumerate(qs):
+                    self.assertFalse({c[:3] for c in im.getdata() if c[3]} - base, (cid, nome, q))
 
     def test_tamanho_relativo(self):
         # 12. a Flora continua maior que o Lupin, em pé, andando e deitada
