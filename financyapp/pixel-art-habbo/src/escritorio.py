@@ -59,7 +59,8 @@ def gravar_sentado(fn):
 
 # ------------------------------------------------------------ paleta do braço
 def _cores(pts):
-    """base, sombra e contorno de uma camada com sombra de 1 px e contorno."""
+    """base, sombra e contorno de uma manga (8 px de largura, sombra de
+    1 px e contorno): a base é a cor mais frequente."""
     base = Counter(pts.values()).most_common(1)[0][0]
     topo = min(y for _, y in pts)
     linha = pts[min((p for p in pts if p[1] == topo), key=lambda p: p[0])]
@@ -71,16 +72,31 @@ def _cores(pts):
     return base, sombra, linha
 
 
-def braco_de_frente(F, grupo):
-    """Lê o braço do desenho de frente: a manga (cores, onde termina, a cor
-    do punho, se houver) e a pele (cores e as faixas do pulso: relógio,
-    pulseira, munhequeira)."""
+def pele_do_rosto(ops, n):
+    """A pele de verdade, tirada da cabeça (a camada do _neck_head, na pose
+    sentada e já descida n px): base, sombra, contorno e luz. No braço solto,
+    de 4 px, o contorno aparece tanto quanto a pele, e a cor mais frequente
+    pode ser o contorno."""
+    d = chars.SIT_DY + n
+    cabeca = next(op for op in ops if op[0] == 'camada' and anim._caixa(op[1]) == (10, 9 + d, 28, 25 + d))
+    pts = cabeca[1]
+    base = Counter(pts.values()).most_common(1)[0][0]
+    linha = pts[(14, 9 + d)]
+    sombra = pts[(11, 15 + d)]
+    luz = mix(base, (255, 255, 255), 0.16)
+    return base, sombra, linha, luz
+
+
+def braco_de_frente(F, grupo, pele):
+    """Lê o braço do desenho de frente: a manga (cores, onde começa e
+    termina, a cor do punho, se houver) e as faixas do pulso (relógio,
+    pulseira, munhequeira), com a pele vinda do rosto."""
     ops = [op for op in F.ops if op[2] == grupo]
     camadas = [op for op in ops if op[0] == 'camada']
     camadas.sort(key=lambda op: min(y for _, y in op[1]))
-    manga, pele = camadas[0], camadas[-1]
-    i_manga, i_pele = manga[3], pele[3]
-    pts_manga, pts_pele = dict(manga[1]), dict(pele[1])
+    manga, pele_op = camadas[0], camadas[-1]
+    i_manga, i_pele = manga[3], pele_op[3]
+    pts_manga, pts_pele = dict(manga[1]), dict(pele_op[1])
     for op in ops:                      # pixels soltos em cima de cada camada
         if op[0] == 'pixel':
             (p, c), = op[1].items()
@@ -89,175 +105,166 @@ def braco_de_frente(F, grupo):
             elif op[3] == i_pele:
                 pts_pele[p] = c
     mb, ms, ml = _cores(manga[1])
-    pb, ps, pl = _cores(pele[1])
     fim = max(y for _, y in manga[1])
-    # punho: a cor que não é da manga nas linhas de baixo
-    # (só faixa de verdade: os botões dourados de punho, 1 ou 2 px, ficam de fora)
+    # punho: a cor que não é da manga nas linhas de baixo (só faixa de
+    # verdade: os botões dourados de punho, 1 ou 2 px, ficam de fora)
     punho = Counter(c for (x, y), c in pts_manga.items() if y >= fim - 2 and c not in (mb, ms, ml))
     punho = punho.most_common(1)[0] if punho else None
     punho = punho[0] if punho and punho[1] >= 3 else None
-    # faixas do pulso: linhas da pele com cor que não é de pele
+    # faixas do pulso: cores da camada de pele que não são pele nem
+    # contorno de pele, em ordem de cima para baixo
+    sk, sks, skl, _ = pele
+    pele_solta = set(pele_op[1].values())       # inclui o contorno e a sombra do braço
     faixas = {}
-    topo_pele = min(y for _, y in pele[1])
+    topo_pele = min(y for _, y in pele_op[1])
     for (x, y), c in pts_pele.items():
-        if c not in (pb, ps, pl):
+        if c not in pele_solta and c not in (sk, sks, skl):
             faixas.setdefault(y - topo_pele, Counter())[c] += 1
-    faixas = {k: v.most_common(1)[0][0] for k, v in faixas.items()}
-    return {'manga': (mb, ms, ml), 'pele': (pb, ps, pl), 'fim_manga': fim,
-            'topo_manga': min(y for _, y in manga[1]), 'fundo_pele': max(y for _, y in pele[1]),
-            'punho': punho, 'faixas': faixas,
-            'largura_pele': len({x for x, _ in pele[1]})}
+    faixas = [v.most_common(1)[0][0] for k, v in sorted(faixas.items())]
+    return {'manga': (mb, ms, ml), 'fim_manga': fim, 'topo_manga': min(y for _, y in manga[1]),
+            'punho': punho, 'faixas': faixas}
 
 
-# ------------------------------------------------------------ desenho
-def capsula(p0, p1, r):
-    """Pontos inteiros a até r do segmento p0-p1 (centro do pixel)."""
-    (x0, y0), (x1, y1) = p0, p1
+# ------------------------------------------------------------ o braço à mesa
+# Geometria do braço dobrado, no quadro final, no estilo do braço que segura
+# o tablet no desenho original: o braço de cima desce reto do ombro, o
+# antebraço é uma faixa de 4 px que vai para a frente (para a direita) e
+# desce até a borda do tampo, e a mão é um bloco no fim dela.
+#   cotovelo: linhas do ombro até o cotovelo (a partir do topo da manga)
+#   x_ant: onde o antebraço começa; pulso: (x, topo da faixa) no pulso
+#   mao: o centro da mão (o marcador do manifesto)
+GEOM = {
+    'mesa': {
+        'frente': {'cotovelo': 11, 'x_ant': 10, 'pulso': (24, 52), 'mao': (27, 54)},
+        'tras': {'cotovelo': 10, 'x_ant': 28, 'pulso': (32, 49), 'mao': (34, 50)},
+    },
+    'balcao': {
+        'frente': {'cotovelo': 9, 'x_ant': 10, 'pulso': (24, 43), 'mao': (27, 45)},
+        'tras': {'cotovelo': 8, 'x_ant': 28, 'pulso': (32, 40), 'mao': (34, 41)},
+    },
+}
+
+
+def _faixa(x0, y0, x1, y1, grossura):
+    """Uma faixa inclinada de x0 a x1, com o topo indo de y0 a y1."""
     pts = set()
-    dx, dy = x1 - x0, y1 - y0
-    L2 = dx * dx + dy * dy or 1e-9
-    for y in range(math.floor(min(y0, y1) - r) - 1, math.ceil(max(y0, y1) + r) + 2):
-        for x in range(math.floor(min(x0, x1) - r) - 1, math.ceil(max(x0, x1) + r) + 2):
-            t = max(0.0, min(1.0, ((x - x0) * dx + (y - y0) * dy) / L2))
-            px_, py_ = x0 + t * dx, y0 + t * dy
-            if (x - px_) ** 2 + (y - py_) ** 2 <= r * r:
-                pts.add((x, y))
+    for x in range(x0, x1 + 1):
+        t = (x - x0) / max(1, x1 - x0)
+        topo = round(y0 + (y1 - y0) * t)
+        for k in range(grossura):
+            pts.add((x, topo + k))
     return pts
 
 
-def _caminho(pontos):
-    """Comprimento de cada trecho de uma linha poligonal."""
-    return [math.dist(a, b) for a, b in zip(pontos, pontos[1:])]
-
-
-def _ponto(pontos, s):
-    """O ponto a s px do começo da linha poligonal."""
-    for a, b in zip(pontos, pontos[1:]):
-        L = math.dist(a, b)
-        if s <= L:
-            t = s / L if L else 0
-            return (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
-        s -= L
-    return pontos[-1]
-
-
-def _trecho(pontos, s0, s1):
-    """Os pontos da linha poligonal entre s0 e s1 px do começo."""
-    out = [_ponto(pontos, s0)]
-    acc = 0
-    for a, b in zip(pontos, pontos[1:]):
-        acc += math.dist(a, b)
-        if s0 < acc < s1:
-            out.append(b)
-    out.append(_ponto(pontos, s1))
-    return out
-
-
-def _engrossar(pontos, r):
-    pts = set()
-    for a, b in zip(pontos, pontos[1:]):
-        pts |= capsula(a, b, r)
-    return pts
-
-
-def braco_dobrado(info, ombro, cotovelo, pulso, mao, lado_sombra):
-    """O braço da pose da mesa, em camadas (manga de cima, antebraço, mão),
-    cada uma com o seu grupo. A manga cobre o mesmo comprimento que cobre no
-    braço solto do desenho de frente; o resto é pele. ombro, cotovelo,
-    pulso e mao são pontos do quadro final; devolve [(pts, parte)]."""
-    caminho = [ombro, cotovelo, pulso]
-    total = sum(_caminho(caminho))
-    # no braço solto, a manga vai do ombro até fim_manga e a pele até a
-    # ponta da mão; aqui a manga cobre a mesma fração do braço
-    braco_solto = info['fundo_pele'] - info['topo_manga']
-    frac_manga = (info['fim_manga'] - info['topo_manga'] + 1) / braco_solto
-    s_manga = min(total, frac_manga * (total + 3))
+def braco_mesa(info, pele, lado, tampo):
+    """O braço dobrado da pose da mesa, em camadas com o seu grupo:
+    [(pts, parte)], parte em 'cima', 'antebraco' e 'mao'."""
+    g = GEOM[tampo][lado]
+    S0 = info['topo_manga']
+    E = S0 + g['cotovelo']
+    sk, sks, skl, luz = pele
     mb, ms, ml = info['manga']
-    pb, ps, pl = info['pele']
-    s_cot = math.dist(ombro, cotovelo)
+    manga_len = info['fim_manga'] - S0 + 1      # linhas de manga no braço solto
 
-    out = []
-    # manga: em cima até o cotovelo (ou onde ela termina) e, se for comprida,
-    # um pedaço do antebraço
-    manga_cima = _engrossar(_trecho(caminho, 0, min(s_manga, s_cot)), 3.4)
-    L = Layer(mb, ml)
-    for p in manga_cima:
-        L.set(*p)
-    if s_manga > s_cot:
-        manga_baixo = _engrossar(_trecho(caminho, s_cot, s_manga), 2.6)
-        Lb = Layer(mb, ml)
-        for p in manga_baixo:
-            Lb.set(*p)
+    # braço de cima: o mesmo contorno do braço solto, inclinando 1 px para
+    # a frente na metade de baixo
+    if lado == 'frente':
+        def faixa_cima(k):
+            if k == 0:
+                return (9, 13)
+            if k == 1:
+                return (8, 14)
+            return (7, 14) if k < 6 else (8, 15)
+        pele_cima = lambda k: (8, 11) if k < 6 else (9, 12)
+        sombra_lado = 'l'
     else:
-        Lb = None
-    # pele: do fim da manga até o pulso
-    r_pele = 2.05
-    pele = _engrossar(_trecho(caminho, min(s_manga, total), total), r_pele)
-    P = Layer(pb, pl)
-    for p in pele:
+        def faixa_cima(k):
+            if k == 0:
+                return (25, 28)
+            if k == 1:
+                return (25, 29)
+            return (25, 30) if k < 6 else (26, 30)
+        pele_cima = lambda k: (27, 30) if k < 6 else (27, 30)
+        sombra_lado = 'r'
+
+    x_ant = g['x_ant']
+    xw, yw = g['pulso']
+    y_ant = E - 3                                     # topo do antebraço, no cotovelo
+    manga_no_antebraco = max(0, manga_len - (g['cotovelo'] + 1))
+
+    # pele: braço de cima abaixo da manga, antebraço e mão, numa camada só
+    P = Layer(sk, skl)
+    for k in range(min(manga_len, g['cotovelo'] + 1), g['cotovelo'] + 1):
+        x0, x1 = pele_cima(k)
+        P.rows({S0 + k: (x0, x1)})
+    for p in _faixa(x_ant, y_ant, xw, yw, 4):
         P.set(*p)
-    # a mão pousada no tampo: dorso claro em cima (a luz vem de cima e da
-    # esquerda), dedos para a frente, contorno só nos lados e embaixo
-    hx, hy = round(mao[0]), round(mao[1])
-    H = Layer(pb, pl)
-    H.rows({hy - 1: (hx - 2, hx + 1), hy: (hx - 2, hx + 2), hy + 1: (hx - 2, hx + 3), hy + 2: (hx - 1, hx + 3)})
+    mx, my = g['mao']
+    mao = {my - 2: (mx - 2, mx + 1), my - 1: (mx - 3, mx + 2), my: (mx - 3, mx + 2), my + 1: (mx - 2, mx + 2)}
+    for y, (x0, x1) in mao.items():
+        P.rows({y: (x0, x1)})
+    # sombra embaixo do antebraço e da mão (a luz vem de cima e da esquerda)
+    baixo = {}
+    for (x, y) in P.px:
+        baixo[x] = max(baixo.get(x, y), y)
+    for x, y in baixo.items():
+        if (x, y - 1) in P.px:
+            P.px[(x, y - 1)] = sks
+    P.outline()
+    # o dorso da mão pega luz
+    for x in range(mx - 1, mx + 1):
+        if (x, my - 1) in P.px and P.px[(x, my - 1)] != skl:
+            P.px[(x, my - 1)] = luz
+    # faixas do pulso (relógio, pulseira, munhequeira): listras de pé no
+    # antebraço, logo antes da mão, na ordem em que estão no braço solto
+    for k, cor in enumerate(info['faixas']):
+        x = xw - 3 - len(info['faixas']) + 1 + k
+        for y in range(0, 70):
+            if (x, y) in P.px and P.px[(x, y)] not in (skl,):
+                P.px[(x, y)] = cor
 
-    # faixas do pulso (relógio, pulseira, munhequeira) logo antes da mão,
-    # com o mesmo espaçamento que têm no braço solto
-    if info['faixas']:
-        ux, uy = pulso[0] - cotovelo[0], pulso[1] - cotovelo[1]
-        Lu = math.hypot(ux, uy)
-        ux, uy = ux / Lu, uy / Lu
-        ultima = max(info['faixas'])
-        for r, cor in info['faixas'].items():
-            alvo = Lu - 3.0 - (ultima - r)
-            for p in P.px:
-                s = (p[0] - cotovelo[0]) * ux + (p[1] - cotovelo[1]) * uy
-                if abs(s - alvo) <= 0.55:
-                    P.px[p] = cor
+    # manga: braço de cima e, se for comprida, um pedaço do antebraço
+    M = Layer(mb, ml)
+    for k in range(0, min(manga_len, g['cotovelo'] + 1)):
+        x0, x1 = faixa_cima(k)
+        M.rows({S0 + k: (x0, x1)})
+    if manga_no_antebraco:
+        x_fim = min(xw - 4, x_ant + manga_no_antebraco + 2)
+        y_fim = round(y_ant + (yw - y_ant) * (x_fim - x_ant) / max(1, xw - x_ant))
+        for p in _faixa(x_ant - 1, y_ant - 1, x_fim, y_fim - 1, 6):
+            M.set(*p)
+        # o cotovelo, arredondado
+        M.rows({E: faixa_cima(g['cotovelo'])})
+    M.shade_side(sombra_lado, 1, ms)
+    M.outline()
+    if info['punho'] and manga_no_antebraco:
+        for (x, y) in list(M.px):
+            if x >= x_fim - 1 and M.px[(x, y)] != ml:
+                M.px[(x, y)] = info['punho']
 
-    # a pele vem antes das mangas, que cobrem a ponta redonda dela
-    for camada, parte, sombra in ((P, 'antebraco', ps), (L, 'cima', ms), (Lb, 'antebraco', ms), (H, 'mao', ps)):
-        if camada is None:
-            continue
-        cor_det = {p: c for p, c in camada.px.items() if c not in (camada.base,)}
-        camada.px = {p: camada.base for p in camada.px}
-        camada.shade_side(lado_sombra, 1, sombra)
-        camada.px.update(cor_det)
-        if parte == 'mao':
-            camada.outline(skip='t')
-            luz = mix(pb, (255, 255, 255), 0.18)
-            for x in range(hx - 1, hx + 2):
-                if (x, hy - 1) in camada.px:
-                    camada.px[(x, hy - 1)] = luz
-            for x in range(hx, hx + 3):
-                if (x, hy + 2) in camada.px and camada.px[(x, hy + 2)] != pl:
-                    camada.px[(x, hy + 2)] = ps
-        else:
-            camada.outline()
-        out.append((camada.px, parte))
-    # o punho, na ponta da manga
-    if info['punho'] and s_manga < total:
-        fim = _ponto(caminho, s_manga)
-        cor = info['punho']
-        for camada_px, parte in out:
-            if parte in ('antebraco', 'cima'):
-                for p in list(camada_px):
-                    if math.dist(p, fim) <= 2.2 and camada_px[p] not in (ml, pl):
-                        camada_px[p] = cor
+    # partes: cima (até o cotovelo), antebraço e mão
+    def parte(p):
+        x, y = p
+        if x >= mx - 3:
+            return 'mao'
+        if y < y_ant or (lado == 'frente' and x < x_ant + 2) or (lado == 'tras' and x <= x_ant + 1 and y < yw):
+            return 'cima'
+        return 'antebraco'
+    out = []
+    for camada in (P, M):
+        grupos = {}
+        for p, c in camada.px.items():
+            grupos.setdefault(parte(p), {})[p] = c
+        for nome in ('cima', 'antebraco', 'mao'):
+            if nome in grupos:
+                out.append((grupos[nome], nome))
     return out
 
 
-# ------------------------------------------------------------ a pose da mesa
 def maos(tampo):
-    """Os pontos da pose da mesa (quadro final): ombros, cotovelos, pulsos e
-    mãos dos dois braços, para a mesa ou para o balcão."""
-    sobe = BORDA['mesa'] - BORDA[tampo]
-    frente = {'ombro': (10.5, 37.5), 'cotovelo': (11.5, 46.0 - sobe * 0.2),
-              'pulso': (24.0, 54.0 - sobe), 'mao': (27.0, 55.5 - sobe)}
-    tras = {'ombro': (28.5, 37.5), 'cotovelo': (29.5, 44.5 - sobe * 0.2),
-            'pulso': (31.5, 50.5 - sobe), 'mao': (34.0, 52.0 - sobe)}
-    return frente, tras
+    """Os centros das duas mãos da pose da mesa, (frente, trás), para o
+    manifesto."""
+    return GEOM[tampo]['frente']['mao'], GEOM[tampo]['tras']['mao']
 
 
 def pose_mesa(cid, tampo=None):
@@ -271,12 +278,12 @@ def pose_mesa(cid, tampo=None):
     ops = [[k, costas.mover(pts, 0, n), g, d] for k, pts, g, d in gravar_sentado(fn)]
     F2 = costas.Frente.__new__(costas.Frente)
     F2.ops = ops
-    frente, tras = maos(tampo)
+    pele = pele_do_rosto(ops, n)
     novos = {}
-    for grupo, pontos, sombra in (('braco_frente', frente, 'l'), ('braco_tras', tras, 'r')):
-        info = braco_de_frente(F2, grupo)
+    for grupo in ('braco_frente', 'braco_tras'):
         lado = grupo.split('_')[1]
-        partes = braco_dobrado(info, pontos['ombro'], pontos['cotovelo'], pontos['pulso'], pontos['mao'], sombra)
+        info = braco_de_frente(F2, grupo, pele)
+        partes = braco_mesa(info, pele, lado, tampo)
         novos[grupo] = [['camada', pts, {'cima': f'braco_{lado}', 'antebraco': f'antebraco_{lado}',
                                          'mao': f'mao_{lado}'}[parte], None] for pts, parte in partes]
     # a parte de cima de cada braço entra onde estava o braço solto; o
@@ -521,9 +528,9 @@ def maos_marcadas(cid, nome):
     out = []
     for mov in CICLOS[nome]:
         q = []
-        for lado, pts in (('frente', frente), ('tras', tras)):
+        for lado, (x, y) in (('frente', frente), ('tras', tras)):
             m = mov.get(f'mao_{lado}', {})
-            q.append([round(pts['mao'][0]) + m.get('dx', 0), round(pts['mao'][1]) + m.get('dy', 0)])
+            q.append([x + m.get('dx', 0), y + m.get('dy', 0)])
         out.append(q)
     return out
 

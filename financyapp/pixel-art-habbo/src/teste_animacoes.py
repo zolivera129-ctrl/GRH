@@ -4,6 +4,7 @@ para os 12 humanos.
     python3 src/teste_animacoes.py
 """
 import unittest
+from collections import Counter
 
 import anim
 import animacoes
@@ -167,6 +168,20 @@ class Humanos(unittest.TestCase):
                 ficaram = [p for p in dentes if min(im.getpixel(p)[:3]) >= 235]
                 if dentes:
                     self.assertEqual(len(ficaram), esperado, (cid, k))
+
+    def test_braco_a_mesa_tem_a_pele_do_rosto(self):
+        # pedido do Guilherme: o braço sentado à mesa tem a mesma pele do
+        # rosto (antes saía na cor do contorno em quem tem braço de 4 px)
+        import escritorio
+        from px import mix
+        for cid, a in self.t.items():
+            P = costas.Costas(costas.HUMANOS[cid][0]).P
+            sk, sks = P['sk'], P['sks']
+            luz = mix(sk, (255, 255, 255), 0.16)
+            frente, _ = escritorio.maos(escritorio.TAMPO.get(cid, 'mesa'))
+            cores = Counter(c for c in a['teclando_frente_tampo'][0].getdata() if c[3])
+            self.assertIn(a['teclando_frente'][0].getpixel(frente)[:3], (sk, sks, luz), cid)
+            self.assertIn(sk + (255,), cores, cid)
 
     def test_teclando_alterna_os_punhos(self):
         # 4.2: as mãos sobem e descem 1 px em oposição; a mesa (o tampo) não
