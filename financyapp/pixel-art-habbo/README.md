@@ -81,6 +81,15 @@ Detalhes:
   `sentado_costas` (3), `andando_frente` (4) e `andando_costas` (5), as
   caminhadas com 4 quadros a 8 FPS e `loop`. As direções que faltam são o
   espelho destas, como no jogo.
+- Humanos, fase 3 (vida à mesa), linhas 6 a 15: `sentado_frente_idle`,
+  `teclando_frente`, `assentindo_para_tela_frente` e
+  `olhando_para_o_lado_frente`, com as mãos no tampo; para cada uma, uma
+  linha `..._tampo` só com antebraços e mãos, que o jogo cola depois da
+  mesa e antes dos objetos sobre ela; e as sobreposições do rosto,
+  `piscando_frente` e `falando_frente`, na tela do parado de frente. No
+  manifesto, cada quadro com rosto traz `rosto` (onde colar olhos e boca),
+  e as animações à mesa trazem `tampo`, `maos` e `mesa` (`mesa` ou
+  `balcao`).
 - Móveis não são espelhados: a cadeira tem as quatro direções desenhadas.
 - A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
   (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
@@ -134,8 +143,12 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
 - `costas.py`: os 12 humanos de costas. Braços, pernas, tronco e pescoço
   vêm do desenho de frente; a nuca, o cabelo e os detalhes de trás de cada
   um são desenhados ali.
+- `escritorio.py`: a vida à mesa. Os braços dobrados com as mãos na borda
+  do tampo (calibrados pela planta), os ciclos da fase 3, as pupilas de
+  lado, piscar e falar, e as estações de trabalho montadas com as peças
+  do jogo, para conferir.
 - `animacoes.py`: a lista de animações de cada humano, com quadros por
-  segundo, na ordem das linhas da folha.
+  segundo e os campos do manifesto, na ordem das linhas da folha.
 - `previa_animacoes.py`: a página de prévia (`previa/animacoes/`), com os
   ciclos tocando nas quatro direções, e as faixas ampliadas.
 - `teste_animacoes.py`: os testes do manual (§9.2) para os 12:

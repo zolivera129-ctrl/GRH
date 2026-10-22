@@ -1002,6 +1002,8 @@ def character(cid, anims):
     for i, (name, fs) in enumerate(frames.items()):
         fps, loop = animacoes.ANIMACOES.get(name, (0, False))
         animacoes_[name] = {'linha': i, 'quadros': len(fs), 'fps': fps, **({'loop': True} if loop else {})}
+        if cid in animacoes.HUMANOS:
+            animacoes_[name].update(animacoes.campos(cid, name, len(fs)))
     entry = {'pasta': 'personagens', 'folha': save(sheet, f'personagens/{cid}.png'),
              'tela': [w, h], 'ancora': [ax, ay], 'animacoes': animacoes_}
     with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:
@@ -1027,7 +1029,8 @@ def check(man):
     estão onde a regra diz.
     - personagens: a âncora cai no pé de todos os quadros (o sentado pisa
       onde o parado pisa); na caminhada, no quadro em que o pé da frente
-      está no ar o mais baixo é o de trás, 1 px acima (a profundidade);
+      está no ar o mais baixo é o de trás, 1 px acima (a profundidade). As
+      linhas do tampo e do rosto são camadas, não pisam no chão;
     - piso e móveis: no vértice de baixo da base, x = 32 × tiles em A;
     - objetos: dentro da imagem;
     - parede: na ponta esquerda da base, e as camadas no mesmo recorte."""
@@ -1036,6 +1039,8 @@ def check(man):
             sheet = Image.open(os.path.join(ROOT, e['folha']))
             w, h = e['tela']
             for name, a in e['animacoes'].items():
+                if a.get('sobreposicao') or a.get('camada_de'):
+                    continue            # rosto e tampo não pisam no chão
                 for k in range(a['quadros']):
                     frame = sheet.crop((w * k, h * a['linha'], w * (k + 1), h * (a['linha'] + 1)))
                     pe = frame.getbbox()[3]

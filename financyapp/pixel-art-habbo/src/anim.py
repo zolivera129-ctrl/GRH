@@ -136,23 +136,32 @@ def _limites(ops):
     return lim
 
 
-def montar(ops, mov, desce=0, w=40, h=70):
+def montar(ops, mov, desce=0, w=40, h=70, so_grupos=None):
     """Remonta o desenho com cada grupo deslocado.
 
     mov[grupo] = dict com:
       dx, dy: deslocamento inteiro do grupo inteiro;
       ponta: deslocamento horizontal da ponta (pé ou mão), com o topo do
              grupo preso (quadril ou ombro) e o meio em degraus;
-      ergue: px que o pé sobe (só a parte de baixo da perna).
+      ergue: px que o pé sobe (só a parte de baixo da perna);
+      acima_de: só as linhas acima desta mexem (o resto do grupo fica).
+    so_grupos: se dado, o quadro traz só os pixels que, no quadro inteiro,
+    ficaram com esses grupos por cima (uma camada que o jogo cola depois).
     """
     lim = _limites(ops)
     S = px.Sprite(w, h)
+    dono = {}
     for op in ops:
         pts, g = op[1], op[2]
         m = mov.get(g, {})
         top, bot = lim[g]
         pe = bot - 4                 # do cano do tênis para baixo, ponta cheia
+        corte = m.get('acima_de')
         for (x, y), c in pts.items():
+            if corte is not None and y >= corte:
+                S.px[(x, y + desce)] = c          # abaixo do corte, fica onde está
+                dono[(x, y + desce)] = g
+                continue
             nx, ny = x + m.get('dx', 0), y + m.get('dy', 0)
             ponta = m.get('ponta', 0)
             if ponta:
@@ -164,6 +173,9 @@ def montar(ops, mov, desce=0, w=40, h=70):
             if m.get('ergue') and y >= bot - 7:
                 ny -= m['ergue']
             S.px[(nx, ny + desce)] = c
+            dono[(nx, ny + desce)] = g
+    if so_grupos is not None:
+        S.px = {p: c for p, c in S.px.items() if dono[p] in so_grupos}
     return S.image()
 
 

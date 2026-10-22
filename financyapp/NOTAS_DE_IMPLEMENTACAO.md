@@ -77,6 +77,15 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 - **Onde:** `FinancyApp_Assets_v2.md`, "Animações de todo humano" (a tabela tem só frente-dir e costas-dir; o manual tem as mesmas) e "Lotes seguintes"; manual de sprites e animações v1.0, §3 e §10 (fase 2).
 - **Sugestão:** na Assets, marcar as quatro animações como entregues para os 12 e tirar o andar dos lotes dos cortes 2 a 4; registrar o formato do manifesto (`quadros`, `fps`, `loop`).
 
+### 11. Vida à mesa (fase 3): onde ficam as mãos e o que o jogo cola por cima
+
+- **O que foi:** a pedido do Guilherme, os 12 humanos ganharam a fase 3 do manual: `sentado_frente_idle`, `teclando_frente`, `assentindo_para_tela_frente` e `olhando_para_o_lado_frente`, e as sobreposições `piscando_frente` e `falando_frente`. Três pontos não fecham com o manual e com a planta:
+  - **Mãos:** o manual sugere as mãos em (28, 44) e (19, 43). Pela planta, quem senta olhando +B à mesa de 24 px tem a borda do tampo passando por (20, 58) no sprite, subindo meio pixel a cada pixel para a direita. As mãos ficaram em torno de (27, 56) e (34, 52), logo depois da borda. As coordenadas do manual só batem com o balcão da recepção (34 px), e a Vivi ficou assim.
+  - **Camada do tampo:** a mesa fica mais perto da câmera que a cadeira e o jogo a desenha depois do personagem, então ela cobre as mãos. Cada animação à mesa ganhou uma linha `..._tampo` só com antebraços e mãos. A ordem é: cadeira, personagem, rosto, mesa, camada do tampo e só então os objetos sobre a mesa (o monitor fica mais perto da câmera que as mãos).
+  - **Rosto:** piscar e falar são sobreposições na tela do parado de frente, como o manual pede. Cada quadro com rosto visível traz no manifesto o deslocamento `rosto`, para o jogo colar olhos e boca no lugar certo (sentado é [0, 3]; nas passagens da caminhada, [0, -1]). No olhar para o lado as pupilas andam 1 px, e o piscar não combina com esses dois quadros.
+- **Onde:** manual de sprites e animações v1.0, §1.1 (camadas), §4 (pose-base, mãos, tabelas 4.1 a 4.6) e §9 (marcadores); `FinancyApp_Assets_v2.md`, "Animações de todo humano"; planta 1.1 (altura das mesas e do balcão).
+- **Sugestão:** registrar no manual as mãos por móvel (mesa e balcão) e a camada do tampo com a ordem de desenho; registrar na Assets os campos `rosto`, `tampo`, `maos`, `mesa`, `camada_de` e `sobreposicao`. Quem usa a vida à mesa no jogo continua sendo regra do GDD (o manual pede para não transformar o Gabriel em funcionário).
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.

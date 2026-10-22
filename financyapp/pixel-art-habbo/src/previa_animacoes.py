@@ -15,6 +15,7 @@ import os
 from PIL import Image, ImageDraw
 
 import animacoes
+import escritorio
 import office
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -52,12 +53,34 @@ def prancha(todos, k=3, fundo=(34, 42, 70, 255)):
     return out
 
 
+def estacoes(ids):
+    """As estações de trabalho em camadas, uma por móvel (quem não tem
+    estação própria usa a flexível), e de quem é cada uma."""
+    por_chave, de_quem = {}, {}
+    for cid in ids:
+        fundo, mesa, objs, esp = escritorio.camadas_da_estacao(cid)
+        chave = png64(fundo) + png64(mesa)
+        if chave not in por_chave:
+            por_chave[chave] = {'fundo': png64(fundo), 'mesa': png64(mesa), 'objetos': png64(objs),
+                                'espelhar': esp, 'ancora': [100, 84]}
+        de_quem[cid] = list(por_chave).index(chave)
+    return list(por_chave.values()), de_quem
+
+
 def pagina(todos):
     dados = {cid: {k: [png64(f) for f in v] for k, v in a.items()} for cid, a in todos.items()}
+    lista, de_quem = estacoes(list(todos))
+    mesa = {
+        'estacoes': lista, 'de_quem': de_quem,
+        'rosto': {n: escritorio.rosto(n) for n in animacoes.ESCRITORIO},
+        'tempo': {n: list(animacoes.ANIMACOES[n]) for n in animacoes.ANIMACOES},
+        'tampo': {cid: escritorio.TAMPO.get(cid, 'mesa') for cid in todos},
+    }
     nomes = {cid: office.PERSONAGENS[cid][0] for cid in todos}
     piso = [png64(Image.open(os.path.join(PISO, f'piso_madeira__{i}.png'))) for i in (1, 2, 3)]
     modelo = open(os.path.join(AQUI, 'previa_animacoes.html'), encoding='utf-8').read()
     return (modelo.replace('__DADOS__', json.dumps(dados))
+            .replace('__MESA__', json.dumps(mesa))
             .replace('__NOMES__', json.dumps(nomes, ensure_ascii=False))
             .replace('__PISO__', json.dumps(piso))
             .replace('__ANCORA__', json.dumps(list(animacoes.ANCORA)))

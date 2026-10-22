@@ -11,6 +11,7 @@ import costas
 from anim import PE    # a linha do chão, a âncora (o bbox termina aqui)
 
 CACHE = {}
+CAMADAS = {n for n in animacoes.ANIMACOES if n.endswith('_tampo')} | set(animacoes.SOBREPOSICOES)
 
 
 def todos():
@@ -44,6 +45,8 @@ class Humanos(unittest.TestCase):
         # trás, plantado, fica 1 px acima (é a profundidade).
         for cid, a in self.t.items():
             for nome, quadros in a.items():
+                if nome in CAMADAS:
+                    continue
                 for i, im in enumerate(quadros):
                     esperado = PE - 1 if nome.startswith('andando') and i == 1 else PE
                     self.assertEqual(im.getbbox()[3], esperado, (cid, nome, i))
@@ -63,6 +66,8 @@ class Humanos(unittest.TestCase):
         for cid, a in self.t.items():
             for nome, quadros in a.items():
                 for i, im in enumerate(quadros):
+                    if im.getbbox() is None:
+                        continue            # quadro vazio de sobreposição
                     x0, y0, x1, y1 = im.getbbox()
                     self.assertTrue(x0 > 0 and y0 > 0 and x1 <= 40, (cid, nome, i))
 
@@ -104,6 +109,73 @@ class Humanos(unittest.TestCase):
             f, c = a['parado_frente'][0], a['parado_costas'][0]
             for x, y in ((19, 16), (24, 16), (19, 17), (24, 17)):
                 self.assertNotEqual(c.getpixel((x, y + n)), f.getpixel((x, y + n)), (cid, x, y))
+
+
+    # ------------------------------------------------------------ fase 3
+    def test_mesa_parada_quadril_e_pernas_nao_mexem(self):
+        # 7. na vida à mesa, do quadril para baixo nada mexe, a não ser as
+        # mãos e os antebraços (que estão na camada do tampo)
+        for cid, a in self.t.items():
+            for nome in animacoes.ESCRITORIO:
+                tampo = set()
+                for im in a[f'{nome}_tampo']:
+                    tampo |= {(x, y) for y in range(70) for x in range(40) if im.getpixel((x, y))[3]}
+                base = a[nome][0]
+                for k, im in enumerate(a[nome]):
+                    for y in range(PE - 12, 70):
+                        for x in range(40):
+                            if (x, y) not in tampo:
+                                self.assertEqual(im.getpixel((x, y)), base.getpixel((x, y)), (cid, nome, k, x, y))
+
+    def test_tampo_e_parte_do_quadro(self):
+        # a camada do tampo repete os pixels do quadro: colada por cima, não muda nada
+        for cid, a in self.t.items():
+            for nome in animacoes.ESCRITORIO:
+                for k, (corpo, tampo) in enumerate(zip(a[nome], a[f'{nome}_tampo'])):
+                    self.assertIsNotNone(tampo.getbbox(), (cid, nome, k))
+                    for y in range(70):
+                        for x in range(40):
+                            p = tampo.getpixel((x, y))
+                            if p[3]:
+                                self.assertEqual(p, corpo.getpixel((x, y)), (cid, nome, k, x, y))
+
+    def test_teclando_alterna_os_punhos(self):
+        # 4.2: as mãos sobem e descem 1 px em oposição; a mesa (o tampo) não
+        # existe no sprite, e o quadril fica onde estava
+        for cid, a in self.t.items():
+            q = a['teclando_frente_tampo']
+            self.assertNotEqual(q[1].tobytes(), q[0].tobytes(), cid)
+            self.assertNotEqual(q[2].tobytes(), q[0].tobytes(), cid)
+            self.assertNotEqual(q[1].tobytes(), q[2].tobytes(), cid)
+
+    def test_sobreposicoes_so_no_rosto(self):
+        # 4.4 e 4.6: piscar e falar mexem só nos olhos e na boca, e o quadro
+        # de repouso é vazio
+        for cid, a in self.t.items():
+            n = anim.folga(costas.HUMANOS[cid][0])
+            pisca, fala = a['piscando_frente'], a['falando_frente']
+            self.assertIsNone(pisca[0].getbbox(), cid)
+            self.assertIsNone(pisca[2].getbbox(), cid)
+            self.assertIsNone(fala[0].getbbox(), cid)
+            x0, y0, x1, y1 = pisca[1].getbbox()
+            self.assertTrue(16 <= x0 and x1 <= 28 and 15 + n <= y0 and y1 <= 18 + n, (cid, pisca[1].getbbox()))
+            for k in (1, 2):
+                x0, y0, x1, y1 = fala[k].getbbox()
+                self.assertTrue(21 <= x0 and x1 <= 27 and 21 + n <= y0 and y1 <= 27 + n, (cid, k, fala[k].getbbox()))
+            self.assertEqual(fala[1].tobytes(), fala[3].tobytes(), cid)
+
+    def test_rosto_marca_onde_esta_o_olho(self):
+        # o deslocamento "rosto" de cada quadro leva a pupila do parado de
+        # frente até a pupila daquele quadro (menos quando ela olha de lado)
+        for cid, a in self.t.items():
+            n = anim.folga(costas.HUMANOS[cid][0])
+            pupila = a['parado_frente'][0].getpixel((19, 17 + n))
+            for nome in ['sentado_frente', 'andando_frente'] + animacoes.ESCRITORIO:
+                marcas = animacoes.campos(cid, nome, len(a[nome]))['rosto']
+                for k, (im, (dx, dy)) in enumerate(zip(a[nome], marcas)):
+                    if nome == 'olhando_para_o_lado_frente' and k in (1, 2):
+                        continue
+                    self.assertEqual(im.getpixel((19 + dx, 17 + n + dy)), pupila, (cid, nome, k))
 
 
 if __name__ == '__main__':

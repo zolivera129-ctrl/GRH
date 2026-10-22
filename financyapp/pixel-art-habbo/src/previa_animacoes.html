@@ -66,6 +66,7 @@ canvas, .px { image-rendering: pixelated; image-rendering: crisp-edges; display:
   justify-items: center;
 }
 #sala { width: 100%; max-width: 624px; height: auto; }
+#mesa { width: 100%; max-width: 600px; height: auto; }
 .controles { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: center; }
 .controles button, select {
   font: 700 14px var(--fonte-texto);
@@ -117,7 +118,7 @@ ul.decidir li::marker { color: var(--foco); }
 <div class="pagina">
   <header>
     <h1>Caminhada do elenco</h1>
-    <p>Fase 2 do manual de animações para os 12: as poses de costas e as duas caminhadas, em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
+    <p>Fases 2 e 3 do manual de animações para os 12: costas, caminhada e a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar), em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
     <div class="elenco" id="elenco" aria-label="Personagem"></div>
   </header>
 
@@ -141,6 +142,28 @@ ul.decidir li::marker { color: var(--foco); }
     </div>
   </section>
 
+  <section class="sec" aria-labelledby="t-mesa">
+    <h2 id="t-mesa">À mesa</h2>
+    <p><span id="nome-mesa">Guilherme</span> na estação da planta, montada com as peças do jogo. As mãos pousam na borda do tampo; a camada do tampo é colada depois da mesa e antes do monitor. Piscar e falar vão por cima, no deslocamento do rosto de cada quadro.</p>
+    <div class="palco">
+      <canvas id="mesa" width="200" height="130" aria-label="Personagem sentado à mesa"></canvas>
+      <div class="controles">
+        <label for="mesa-anim">Animação
+          <select id="mesa-anim">
+            <option value="teclando_frente" selected>Teclando</option>
+            <option value="sentado_frente_idle">Respirando</option>
+            <option value="assentindo_para_tela_frente">Assentindo para a tela</option>
+            <option value="olhando_para_o_lado_frente">Olhando para o lado</option>
+          </select>
+        </label>
+        <label for="piscar"><input id="piscar" type="checkbox" checked> Piscar</label>
+        <label for="falar"><input id="falar" type="checkbox"> Falar</label>
+        <label for="tampo"><input id="tampo" type="checkbox" checked> Camada do tampo</label>
+      </div>
+    </div>
+    <div class="tira" id="tira-mesa"></div>
+  </section>
+
   <section class="sec" aria-labelledby="t-lugar">
     <h2 id="t-lugar">No lugar</h2>
     <div class="grade" id="lugar"></div>
@@ -152,7 +175,7 @@ ul.decidir li::marker { color: var(--foco); }
   </section>
 
   <section class="sec" aria-labelledby="t-quadros">
-    <h2 id="t-quadros">Quadro a quadro</h2>
+    <h2 id="t-quadros">Caminhada quadro a quadro</h2>
     <p>Tabelas 3.1 e 3.2 do manual. O corpo sobe 1 px nas passagens; a âncora fica no chão, em (20, 66).</p>
     <div class="tira" id="tira-frente"></div>
     <div class="tira" id="tira-costas"></div>
@@ -161,6 +184,10 @@ ul.decidir li::marker { color: var(--foco); }
   <section class="sec" aria-labelledby="t-decidir">
     <h2 id="t-decidir">Para conferir</h2>
     <ul class="decidir">
+      <li><strong>Mãos calibradas pela planta.</strong> Na mesa (24 px), quem senta olhando +B tem a borda do tampo passando por (20, 58) no sprite; as mãos ficam em torno de (27, 56) e (34, 52). As coordenadas do manual, (28, 44), só batem com o balcão da Vivi (34 px), e é assim que ela ficou.</li>
+      <li><strong>Camada do tampo.</strong> A mesa fica mais perto da câmera e é desenhada depois do personagem, então cobriria as mãos. Cada animação à mesa tem uma linha a mais só com antebraços e mãos, para o jogo colar depois da mesa e antes do monitor. Desligue a caixa "Camada do tampo" para ver a diferença.</li>
+      <li><strong>Piscar não combina com olhar para o lado.</strong> No olhar para o lado as pupilas andam 1 px, e o piscar apaga o olho na posição de sempre. Falar combina com tudo.</li>
+      <li><strong>Quem usa.</strong> Os 12 têm a vida à mesa na folha, mas quem senta à mesa no jogo é decisão do jogo: o manual pede para não transformar o Gabriel em funcionário.</li>
       <li><strong>Detalhes de costas que eu decidi.</strong> Boné do Gabriel com o fecho do snapback e a ponta da aba aparecendo; cordão do crachá do Caio passando atrás do pescoço; haste dos óculos de sol da Malu à direita; coroa de cabelo branco do Otto de orelha a orelha; nuca grisalha do Sr. Pra Ontem; argolas da Nina, da Joana e da Duda na orelha direita. Na Vivi, na Íris e na Malu o cabelo cobre as orelhas.</li>
       <li><strong>Cabelão de costas.</strong> Na Vivi e na Malu o cabelo cobre a parte de cima do braço direito; a mão aparece embaixo.</li>
       <li><strong>Pé que escorrega.</strong> O passo tem 2 px e o jogo ainda não tem velocidade de andar. Acima de uns 0,5 tile/s o pé de apoio desliza no piso; mexa no controle de passo para ver. A velocidade final é do jogo, não do sprite.</li>
@@ -175,11 +202,13 @@ const NOMES = __NOMES__;
 const PISO = __PISO__;
 const FASES = __FASES__;
 const ANCORA = __ANCORA__;
+const MESA = __MESA__;
 
 const carregar = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = src; });
 
 // relógio comum: todas as telas mostram o mesmo quadro
-const estado = { tocando: true, t: 0, d: 0, fps: 8, vel: 1, grade: false, ultimo: null, quem: 'guilherme' };
+const estado = { tocando: true, t: 0, d: 0, fps: 8, vel: 1, grade: false, ultimo: null, quem: 'guilherme',
+                mesaAnim: 'teclando_frente', piscar: true, falar: false, tampo: true };
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) estado.tocando = false;
 const pedido = (location.hash || '').slice(1);
 if (DADOS[pedido]) estado.quem = pedido;
@@ -262,10 +291,11 @@ function cartao(pai, cv, titulo, sub, cls = '') {
 }
 
 Promise.all([
+  Promise.all(MESA.estacoes.map(async (s) => ({ ...s, fundo: await carregar(s.fundo), mesa: await carregar(s.mesa), objetos: await carregar(s.objetos) }))),
   Promise.all(PISO.map(carregar)),
   Promise.all(Object.entries(DADOS).map(async ([cid, a]) => [cid, Object.fromEntries(
     await Promise.all(Object.entries(a).map(async ([k, v]) => [k, await Promise.all(v.map(carregar))])))])),
-]).then(([pisoImg, lista]) => {
+]).then(([estacoes, pisoImg, lista]) => {
   const elenco = Object.fromEntries(lista);
   const anims = () => elenco[estado.quem];
 
@@ -294,6 +324,71 @@ Promise.all([
   sctx.imageSmoothingEnabled = false;
   const SX0 = 104, SY0 = 60;
 
+  // à mesa
+  const mesaCv = document.getElementById('mesa');
+  const mctx = mesaCv.getContext('2d');
+  mctx.imageSmoothingEnabled = false;
+  const NOMES_MESA = {
+    teclando_frente: 'teclando_frente', sentado_frente_idle: 'sentado_frente_idle',
+    assentindo_para_tela_frente: 'assentindo_para_tela_frente', olhando_para_o_lado_frente: 'olhando_para_o_lado_frente',
+  };
+
+  function tiraMesa() {
+    const cid = estado.quem, k = estado.mesaAnim;
+    const el = document.getElementById('tira-mesa');
+    el.replaceChildren();
+    const [fps, loop] = MESA.tempo[k];
+    const h = document.createElement('h3');
+    h.textContent = `${k} · ${DADOS[cid][k].length} quadros · ${fps} FPS · ${loop ? 'loop' : 'uma vez'}`;
+    const q = document.createElement('div');
+    q.className = 'quadros';
+    DADOS[cid][k].forEach((src, i) => {
+      const f = document.createElement('div');
+      f.className = 'quadro';
+      const im = document.createElement('img');
+      im.className = 'px';
+      im.src = src;
+      im.alt = `${NOMES[cid]}, ${k}, quadro ${i + 1}`;
+      im.width = 160; im.height = 280;
+      const s = document.createElement('span');
+      s.textContent = `Q${i + 1}`;
+      f.append(im, s);
+      q.append(f);
+    });
+    el.append(h, q);
+  }
+
+  function desenharMesa() {
+    const cid = estado.quem, k = estado.mesaAnim, A = anims();
+    const st = estacoes[MESA.de_quem[cid]];
+    const [ax, ay] = st.ancora;
+    const [fps, loop] = MESA.tempo[k];
+    const n = A[k].length;
+    let f;
+    if (loop) f = Math.floor(estado.t * fps) % n;
+    else {
+      // uma vez: toca e descansa 1 s na pose de base
+      const ciclo = n / fps + 1;
+      const t = estado.t % ciclo;
+      f = t < n / fps ? Math.min(n - 1, Math.floor(t * fps)) : 0;
+    }
+    mctx.fillStyle = '#181e34';
+    mctx.fillRect(0, 0, mesaCv.width, mesaCv.height);
+    mctx.drawImage(st.fundo, 0, 0);
+    colar(mctx, A[k][f], ax, ay, st.espelhar);
+    const [dx, dy] = MESA.rosto[k][f];
+    const rx = ax + (st.espelhar ? -dx : dx), ry = ay + dy;
+    const olhandoDeLado = k === 'olhando_para_o_lado_frente' && (f === 1 || f === 2);
+    if (estado.piscar && !olhandoDeLado) {
+      const tp = estado.t % 2.6;
+      if (tp < 3 / 12) colar(mctx, A.piscando_frente[Math.floor(tp * 12)], rx, ry, st.espelhar);
+    }
+    if (estado.falar) colar(mctx, A.falando_frente[Math.floor(estado.t * 8) % 4], rx, ry, st.espelhar);
+    mctx.drawImage(st.mesa, 0, 0);
+    if (estado.tampo) colar(mctx, A[`${k}_tampo`][f], ax, ay, st.espelhar);
+    mctx.drawImage(st.objetos, 0, 0);
+  }
+
   // no lugar
   const lugar = document.getElementById('lugar');
   const telas = DIRECOES.map((dir) => {
@@ -314,6 +409,8 @@ Promise.all([
     estado.quem = cid;
     for (const [k, b] of Object.entries(botoes)) b.setAttribute('aria-pressed', String(k === cid));
     document.getElementById('nome-sala').textContent = NOMES[cid];
+    document.getElementById('nome-mesa').textContent = NOMES[cid];
+    tiraMesa();
     for (const { ctx, k } of poses) {
       ctx.fillStyle = '#222a46';
       ctx.fillRect(0, 0, 72, 98);
@@ -346,6 +443,7 @@ Promise.all([
   escolher(estado.quem);
 
   function desenhar() {
+    desenharMesa();
     const f = Math.floor(estado.t * estado.fps) % 4;
     sctx.fillStyle = '#181e34';
     sctx.fillRect(0, 0, sala.width, sala.height);
@@ -390,5 +488,9 @@ Promise.all([
     document.getElementById('vel-v').textContent = `${String(estado.vel).replace('.', ',')} tile/s`;
   });
   document.getElementById('grade').addEventListener('change', (e) => { estado.grade = e.target.checked; });
+  document.getElementById('mesa-anim').addEventListener('change', (e) => { estado.mesaAnim = e.target.value; tiraMesa(); });
+  document.getElementById('piscar').addEventListener('change', (e) => { estado.piscar = e.target.checked; });
+  document.getElementById('falar').addEventListener('change', (e) => { estado.falar = e.target.checked; });
+  document.getElementById('tampo').addEventListener('change', (e) => { estado.tampo = e.target.checked; });
 });
 </script>
