@@ -139,6 +139,35 @@ class Humanos(unittest.TestCase):
                             if p[3]:
                                 self.assertEqual(p, corpo.getpixel((x, y)), (cid, nome, k, x, y))
 
+    def test_teclando_so_mexe_as_maos(self):
+        # pedido do Guilherme: teclando não balança o corpo; fora da camada
+        # do tampo, os quadros são iguais ao primeiro
+        for cid, a in self.t.items():
+            tampo = set()
+            for im in a['teclando_frente_tampo']:
+                tampo |= {(x, y) for y in range(70) for x in range(40) if im.getpixel((x, y))[3]}
+            base = a['teclando_frente'][0]
+            for k, im in enumerate(a['teclando_frente']):
+                for y in range(70):
+                    for x in range(40):
+                        if (x, y) not in tampo:
+                            self.assertEqual(im.getpixel((x, y)), base.getpixel((x, y)), (cid, k, x, y))
+
+    def test_dentes_somem_ao_falar(self):
+        # pedido do Guilherme: quem tem dente na boca de repouso perde metade
+        # dos dentes no Q2 e todos no Q3
+        import escritorio
+        for cid, a in self.t.items():
+            n = anim.folga(costas.HUMANOS[cid][0])
+            base = a['parado_frente'][0]
+            dentes = escritorio._dentes(base, cid, n)
+            for k, esperado in ((1, len({x for x, _ in dentes}) // 2 or (1 if dentes else 0)), (2, 0)):
+                im = base.copy()
+                im.alpha_composite(a['falando_frente'][k])
+                ficaram = [p for p in dentes if min(im.getpixel(p)[:3]) >= 235]
+                if dentes:
+                    self.assertEqual(len(ficaram), esperado, (cid, k))
+
     def test_teclando_alterna_os_punhos(self):
         # 4.2: as mãos sobem e descem 1 px em oposição; a mesa (o tampo) não
         # existe no sprite, e o quadril fica onde estava

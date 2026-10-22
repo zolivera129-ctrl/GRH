@@ -144,7 +144,7 @@ ul.decidir li::marker { color: var(--foco); }
 
   <section class="sec" aria-labelledby="t-mesa">
     <h2 id="t-mesa">À mesa</h2>
-    <p><span id="nome-mesa">Guilherme</span> na estação da planta, montada com as peças do jogo. As mãos pousam na borda do tampo; a camada do tampo é colada depois da mesa e antes do monitor. Piscar e falar vão por cima, no deslocamento do rosto de cada quadro.</p>
+    <p><span id="nome-mesa">Guilherme</span> na estação da planta, montada com as peças do jogo. As mãos pousam na borda do tampo, sobre o teclado; a camada do tampo é colada depois da mesa e do teclado e antes do monitor. Piscar e falar vão por cima, no deslocamento do rosto de cada quadro.</p>
     <div class="palco">
       <canvas id="mesa" width="200" height="130" aria-label="Personagem sentado à mesa"></canvas>
       <div class="controles">
@@ -186,6 +186,9 @@ ul.decidir li::marker { color: var(--foco); }
     <ul class="decidir">
       <li><strong>Mãos calibradas pela planta.</strong> Na mesa (24 px), quem senta olhando +B tem a borda do tampo passando por (20, 58) no sprite; as mãos ficam em torno de (27, 56) e (34, 52). As coordenadas do manual, (28, 44), só batem com o balcão da Vivi (34 px), e é assim que ela ficou.</li>
       <li><strong>Camada do tampo.</strong> A mesa fica mais perto da câmera e é desenhada depois do personagem, então cobriria as mãos. Cada animação à mesa tem uma linha a mais só com antebraços e mãos, para o jogo colar depois da mesa e antes do monitor. Desligue a caixa "Camada do tampo" para ver a diferença.</li>
+      <li><strong>Teclando só com as mãos.</strong> Tirei a cabeça e os ombros do ciclo do manual (4.2): só os punhos alternam 1 px.</li>
+      <li><strong>Dentes ao falar.</strong> Guilherme, Caio, Vivi e Gabriel mostram os dentes na boca de repouso. Falando, os dentes diminuem para a metade do meio na abertura de 1 px e somem na de 2 px.</li>
+      <li><strong>Teclado.</strong> A planta ainda não tem o teclado nos objetos das mesas, então ele vai pela âncora de quem senta, embaixo das mãos, entre a mesa e a camada do tampo. No Saldanha ele fica atrás do monitor, que é o encaixe único da mesa de trabalho (ponto 4 da passagem do corte 1).</li>
       <li><strong>Piscar não combina com olhar para o lado.</strong> No olhar para o lado as pupilas andam 1 px, e o piscar apaga o olho na posição de sempre. Falar combina com tudo.</li>
       <li><strong>Quem usa.</strong> Os 12 têm a vida à mesa na folha, mas quem senta à mesa no jogo é decisão do jogo: o manual pede para não transformar o Gabriel em funcionário.</li>
       <li><strong>Detalhes de costas que eu decidi.</strong> Boné do Gabriel com o fecho do snapback e a ponta da aba aparecendo; cordão do crachá do Caio passando atrás do pescoço; haste dos óculos de sol da Malu à direita; coroa de cabelo branco do Otto de orelha a orelha; nuca grisalha do Sr. Pra Ontem; argolas da Nina, da Joana e da Duda na orelha direita. Na Vivi, na Íris e na Malu o cabelo cobre as orelhas.</li>
@@ -291,7 +294,8 @@ function cartao(pai, cv, titulo, sub, cls = '') {
 }
 
 Promise.all([
-  Promise.all(MESA.estacoes.map(async (s) => ({ ...s, fundo: await carregar(s.fundo), mesa: await carregar(s.mesa), objetos: await carregar(s.objetos) }))),
+  Promise.all(MESA.estacoes.map(async (s) => ({ ...s, fundo: await carregar(s.fundo), mesa: await carregar(s.mesa),
+    teclado: await carregar(s.teclado), objetos: await carregar(s.objetos) }))),
   Promise.all(PISO.map(carregar)),
   Promise.all(Object.entries(DADOS).map(async ([cid, a]) => [cid, Object.fromEntries(
     await Promise.all(Object.entries(a).map(async ([k, v]) => [k, await Promise.all(v.map(carregar))])))])),
@@ -385,6 +389,7 @@ Promise.all([
     }
     if (estado.falar) colar(mctx, A.falando_frente[Math.floor(estado.t * 8) % 4], rx, ry, st.espelhar);
     mctx.drawImage(st.mesa, 0, 0);
+    mctx.drawImage(st.teclado, 0, 0);
     if (estado.tampo) colar(mctx, A[`${k}_tampo`][f], ax, ay, st.espelhar);
     mctx.drawImage(st.objetos, 0, 0);
   }

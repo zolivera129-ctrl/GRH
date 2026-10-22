@@ -58,11 +58,11 @@ def estacoes(ids):
     estação própria usa a flexível), e de quem é cada uma."""
     por_chave, de_quem = {}, {}
     for cid in ids:
-        fundo, mesa, objs, esp = escritorio.camadas_da_estacao(cid)
-        chave = png64(fundo) + png64(mesa)
+        fundo, mesa, teclado, objs, esp = escritorio.camadas_da_estacao(cid)
+        chave = png64(fundo) + png64(mesa) + png64(teclado)
         if chave not in por_chave:
-            por_chave[chave] = {'fundo': png64(fundo), 'mesa': png64(mesa), 'objetos': png64(objs),
-                                'espelhar': esp, 'ancora': [100, 84]}
+            por_chave[chave] = {'fundo': png64(fundo), 'mesa': png64(mesa), 'teclado': png64(teclado),
+                                'objetos': png64(objs), 'espelhar': esp, 'ancora': [100, 84]}
         de_quem[cid] = list(por_chave).index(chave)
     return list(por_chave.values()), de_quem
 

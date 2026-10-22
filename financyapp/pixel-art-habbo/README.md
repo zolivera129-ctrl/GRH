@@ -49,7 +49,8 @@ assets/
   moveis/        mesa_trabalho, mesa_fundador, mesa_reuniao, balcao_recepcao,
                  cadeira__frente-dir, __frente-esq, __costas-dir, __costas-esq,
                  malote__vazio, planta__viva, manta_flora, caminha_lupin
-  objetos/       monitor__ligado, bandeja__vazia, sineta__parada, headset
+  objetos/       monitor__ligado, bandeja__vazia, sineta__parada, headset,
+                 teclado__frente-esq e __frente-dir
   personagens/   guilherme, saldanha, caio, vivi, flora, lupin, gabriel,
                  nina, otto, sr_pra_ontem, iris, joana, malu, duda
                  (folha PNG + JSON com tela, âncora e animações)
@@ -65,7 +66,9 @@ assets/
   Na parede esquerda, é o fim do último tile; na direita, o começo do
   primeiro. As camadas vêm no mesmo recorte, com a mesma âncora.
 - Objetos de mesa: o centro da base, no tampo. O objeto vai em
-  `âncora da mesa + encaixe - âncora do objeto`.
+  `âncora da mesa + encaixe - âncora do objeto`. O teclado é a exceção:
+  vai pela âncora de quem senta (`no_personagem`, por móvel), entre a mesa
+  e a camada do tampo.
 - Personagens: o meio dos pés (cachorros: das patas). No sentado, é o chão
   embaixo do quadril, no mesmo ponto da tela do parado. Nos 12 humanos é
   (20, 66) em todos os quadros: cada um desce até a sola cair na linha 66,

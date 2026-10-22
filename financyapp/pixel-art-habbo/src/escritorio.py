@@ -317,7 +317,8 @@ def camadas_da_estacao(cid, W=200, H=130, ax=100, ay=84):
     O personagem vai entre o fundo e a mesa, com o pé em (ax, ay); a camada
     do tampo vai entre a mesa e os objetos. Quem não tem estação própria usa
     a estação flexível; a Vivi, o balcão da recepção.
-    Devolve (fundo, mesa, objetos, espelhar)."""
+    Devolve (fundo, mesa, teclado, objetos, espelhar); o teclado vai entre
+    a mesa e a camada do tampo."""
     import json
     import os
     from PIL import Image
@@ -335,7 +336,7 @@ def camadas_da_estacao(cid, W=200, H=130, ax=100, ay=84):
     mesa = next(p for p in lay['pecas_piso'] if p['modelo'] in ('mesa_trabalho', 'mesa_fundador', 'balcao_recepcao')
                 and p['tile'][0] <= a + da < p['tile'][0] + p['base'][0]
                 and p['tile'][1] <= b + db < p['tile'][1] + p['base'][1])
-    fundo, frente, objs = (Image.new('RGBA', (W, H), (0, 0, 0, 0)) for _ in range(3))
+    fundo, frente, teclado, objs = (Image.new('RGBA', (W, H), (0, 0, 0, 0)) for _ in range(4))
 
     def P(s, t, z=0):
         return ax + 32 * (s - t) - 32 * (a + 0.5 - b - 0.5), ay + 16 * (s + t) - 16 * (a + b + 1) - z
@@ -359,14 +360,17 @@ def camadas_da_estacao(cid, W=200, H=130, ax=100, ay=84):
         o = man[obj]
         nomeobj = f"objetos/{obj}__{o['estados'][0]}.png" if o.get('estados') else f'objetos/{obj}.png'
         colar(objs, arq(nomeobj), o['ancora'], mx + e['encaixes'][obj][0], my + e['encaixes'][obj][1])
-    return fundo, frente, objs, espelhar
+    t = man['teclado']
+    dx, dy = t['no_personagem'][TAMPO.get(cid, 'mesa')]
+    colar(teclado, arq(f'objetos/teclado__{direcao}.png'), t['ancora'], ax + dx, ay + dy)
+    return fundo, frente, teclado, objs, espelhar
 
 
 def estacao(cid, quadro=None, tampo_por_cima=True, k=1):
     """A estação montada (conferência): fundo, personagem, mesa, camada do
     tampo e objetos."""
     from PIL import Image
-    fundo, mesa, objs, esp = camadas_da_estacao(cid)
+    fundo, mesa, teclado, objs, esp = camadas_da_estacao(cid)
     ops = pose_mesa(cid)
     corpo = quadro or anim.montar(ops, {})
     cima = so_tampo(ops)
@@ -375,6 +379,7 @@ def estacao(cid, quadro=None, tampo_por_cima=True, k=1):
     for img, depois_da_mesa in ((corpo, False), (cima, True)):
         if depois_da_mesa:
             tela.alpha_composite(mesa)
+            tela.alpha_composite(teclado)
             if not tampo_por_cima:
                 break
         if esp:
@@ -411,13 +416,14 @@ CICLOS = {
         {},
         _junto(('cabeca',) + OMBROS, dy=1),
     ],
-    # 4.2: teclando. Punhos alternam 1 px; no Q4 os ombros vão 1 px para a
-    # frente e as mãos voltam ao apoio.
+    # 4.2: teclando. Só os punhos alternam 1 px; cabeça, ombros e tronco
+    # ficam parados (com a cabeça e os ombros mexendo, como no manual,
+    # parecia que a pessoa dançava). Q4 volta ao apoio.
     'teclando_frente': [
         {},
-        {'cabeca': {'dy': 1}, 'mao_frente': {'dy': -1}, 'mao_tras': {'dy': 1}},
+        {'mao_frente': {'dy': -1}, 'mao_tras': {'dy': 1}},
         {'mao_frente': {'dy': 1}, 'mao_tras': {'dy': -1}},
-        _junto(OMBROS, dx=1),
+        {},
     ],
     # 4.3: assentindo para a tela (uma vez).
     'assentindo_para_tela_frente': [
@@ -590,23 +596,46 @@ def piscando(cid):
     return [vazio, _diferenca(aberto, anim.montar(fechado, {})), vazio.copy()]
 
 
+def _dentes(img, cid, n):
+    """Os dentes da boca de repouso: pixels quase brancos na área da boca."""
+    x0, x1, L, _ = BOCA[cid]
+    pts = []
+    for y in range(L - 2 + n, L + 1 + n):
+        for x in range(x0 - 2, x1 + 3):
+            r, g, b, a = img.getpixel((x, y))
+            if a and min(r, g, b) >= 235:
+                pts.append((x, y))
+    return pts
+
+
 def falando(cid):
     """4 quadros: boca de repouso, abertura de 1 px, de 2 px (com o fundo
-    escuro) e de 1 px de novo (8 FPS, em loop enquanto fala)."""
+    escuro) e de 1 px de novo (8 FPS, em loop enquanto fala). Quem mostra os
+    dentes na boca de repouso: no Q2 eles diminuem (fica a metade do meio) e
+    no Q3 somem, para a boca abrir de verdade."""
     from PIL import Image
     from px import rgb
     ops, n = _parado(cid)
     x0, x1, L, labio = BOCA[cid]
     labio = rgb(labio)
     aberto = anim.montar(ops, {})
+    dentes = _dentes(aberto, cid, n)
 
-    def abre(px_):
+    def abre(px_, sobra_dentes):
         pts = {}
+        if dentes:
+            xs = sorted({x for x, _ in dentes})
+            meio = len(xs) / 2
+            fica = set(xs[int(meio - sobra_dentes / 2):int(meio + sobra_dentes / 2)]) if sobra_dentes else set()
+            for (x, y) in dentes:
+                if x not in fica:
+                    pts[(x, y)] = BOCA_ESCURA
         for x in range(x0, x1 + 1):
             for k in range(px_):
                 pts[(x, L + k + n)] = BOCA_ESCURA
             pts[(x, L + px_ + n)] = labio
         return _diferenca(aberto, anim.montar(ops + [['camada', pts, 'corpo', None]], {}))
     vazio = Image.new('RGBA', aberto.size, (0, 0, 0, 0))
-    um = abre(1)
-    return [vazio, um, abre(2), um.copy()]
+    largura = len({x for x, _ in dentes})
+    um = abre(1, max(1, largura // 2))
+    return [vazio, um, abre(2, 0), um.copy()]

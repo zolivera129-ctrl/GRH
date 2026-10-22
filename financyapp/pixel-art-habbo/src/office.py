@@ -788,6 +788,41 @@ def headset(state=None):
     return iso.image(anchor_at=(0.5, 0.5, 0))
 
 
+def keyboard(direcao='frente-esq'):
+    """Teclado pousado no tampo, na frente de quem senta: preto, com as
+    teclas em cinza e a quina da frente clara. direcao é para onde a pessoa
+    olha, como na cadeira: frente-esq (+B, as mesas de trabalho; o teclado
+    fica comprido ao longo de A) ou frente-dir (+A, o balcão da recepção;
+    comprido ao longo de B). Móvel não espelha, por causa da luz.
+    A âncora é o centro da base, no tampo."""
+    iso = Iso(1, 1, 30)
+    base, lado, fundo = rgb('#3A3C46'), rgb('#2A2B33'), rgb('#1E1F25')
+    tecla, tecla_l = rgb('#7E8190'), rgb('#A3A6B3')
+    if direcao == 'frente-esq':
+        s0, s1, t0, t1 = 0.27, 0.73, 0.41, 0.59
+    else:
+        s0, s1, t0, t1 = 0.41, 0.59, 0.27, 0.73
+
+    def teclas(face, s, t, z, c):
+        if face != 'top':
+            return c
+        # fileiras de teclas: pontos claros em grade, com a barra de espaço
+        u = (s - s0) / (s1 - s0) if direcao == 'frente-esq' else (t - t0) / (t1 - t0)
+        v = (t - t0) / (t1 - t0) if direcao == 'frente-esq' else (s - s0) / (s1 - s0)
+        if 0.08 < u < 0.92 and 0.12 < v < 0.88:
+            if int(u * 15) % 2 == 0 and int(v * 5) % 2 == 0:
+                return tecla_l if u < 0.45 else tecla
+        return c
+    iso.box(s0, s1, t0, t1, 0, 2, base, lado, fundo, tex=teclas)
+    return iso.image(anchor_at=((s0 + s1) / 2, (t0 + t1) / 2, 0))
+
+
+# onde vai o teclado: a âncora dele em relação ao pé do personagem, na tela,
+# por móvel; fica embaixo das mãos da pose da mesa (escritorio.maos), um
+# pouco à frente dos dedos
+TECLADO_NO_PERSONAGEM = {'mesa': [-11, -10], 'balcao': [11, -21]}
+
+
 def reception_counter():
     """Balcão da recepção, 1x3 ao longo de B, 34 px. A frente de ripas olha
     para +A, para quem chega; a Vivi senta atrás, do lado -A."""
@@ -1150,6 +1185,13 @@ def build():
         im, anchor = fn()
         save(im, f'objetos/{modelo}__{estado}.png' if estado else f'objetos/{modelo}.png')
         man[modelo] = {'pasta': 'objetos', 'ancora': anchor, **({'estados': [estado]} if estado else {})}
+    # teclado: ainda fora do layout (o campo objetos da planta não tem); vai
+    # pela âncora do personagem sentado, entre a mesa e a camada do tampo
+    for d in ('frente-esq', 'frente-dir'):
+        im, anchor = keyboard(d)
+        save(im, f'objetos/teclado__{d}.png')
+    man['teclado'] = {'pasta': 'objetos', 'ancora': anchor, 'direcoes': ['frente-esq', 'frente-dir'],
+                      'no_personagem': TECLADO_NO_PERSONAGEM}
 
     check(man)
     layout = check_layout(man)
