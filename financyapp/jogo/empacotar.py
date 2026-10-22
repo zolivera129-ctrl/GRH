@@ -3,7 +3,8 @@
 Uso: python3 empacotar.py  (gera ./pacote/, que fica fora do git)
 
 O Artifact serve só os arquivos publicados junto com a página, então o
-pacote leva a página, o estilo, os scripts, os assets e o layout da planta,
+pacote leva a página, o estilo, os scripts, os assets, o roteiro de falas e o
+layout da planta,
 com os caminhos dos dados trocados para dentro do pacote. A página publicada
 não leva doctype, head nem body: o Artifact põe esse esqueleto na hora.
 """
@@ -28,6 +29,7 @@ def pagina():
     body = body.replace('data-layout="../docs/FinancyApp_Layout_12x10_v1.json"',
                         f'data-layout="dados/{LAYOUT.name}"')
     assert 'data-assets="assets/"' in body and 'data-layout="dados/' in body
+    assert 'data-roteiro="dados/financyapp_roteiro_falas_v03.json"' in body
     return head.strip() + '\n' + body.strip() + '\n'
 
 
@@ -38,7 +40,8 @@ def main():
     shutil.copy(AQUI / 'estilo.css', PACOTE / 'estilo.css')
     shutil.copytree(AQUI / 'src', PACOTE / 'src')
     shutil.copytree(ASSETS, PACOTE / 'assets')
-    (PACOTE / 'dados').mkdir()
+    # o roteiro de falas (dados/) e o layout da planta
+    shutil.copytree(AQUI / 'dados', PACOTE / 'dados')
     shutil.copy(LAYOUT, PACOTE / 'dados' / LAYOUT.name)
     arquivos = sorted(p.relative_to(PACOTE).as_posix() for p in PACOTE.rglob('*')
                       if p.is_file() and p.name != 'index.html')

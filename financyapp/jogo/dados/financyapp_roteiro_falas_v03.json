@@ -1,0 +1,1931 @@
+{
+  "schemaVersion": "1.0",
+  "project": "FinancyApp",
+  "artifact": "dialogue-and-animation-scripts-for-2d-browser",
+  "documentVersion": "0.3-dialogue-consolidated",
+  "language": "pt-BR",
+  "purpose": "Roteiro único para o Claude Code e o motor 2D: texto literal das 16 alternativas escolhidas mais variantes contextualizadas.",
+  "sourceOfTruth": {
+    "originalHtmlFile": "financyapp_roteiros_interativos_01_04.html",
+    "authorReviewFile": "financyapp-decisoes-capitulos-01-a-04.json",
+    "previousImplementationFile": "financyapp_cenas_primeiro_ciclo_para_dev_v02.json",
+    "howToInterpret": "As 16 alternativas selecionadas contêm falas textualmente idênticas ao HTML original; falas novas são explicitamente marcadas como provisórias."
+  },
+  "approvalPolicy": {
+    "A_B_C": "Preferências de direção do autor para cenas, NÃO opções de decisão oferecidas ao jogador.",
+    "original_html_base": "Texto previamente redigido no HTML original, não há aprovação individual da redação.",
+    "original_html_selected_direction": "Texto literal da alternativa escolhida pelo autor. Direção escolhida, redação sujeita a revisão editorial.",
+    "previous_tech_proposal_not_html": "Texto do pré-aviso M0 no JSON v02, ainda provisório.",
+    "new_provisional_not_author_approved": "Falas condicionais novas para cobrir estados reais; revisão editorial necessária.",
+    "technical_proposal": "Animações, efeitos e arquitetura recomendados; não equivalem a assets existentes nem decisões finais."
+  },
+  "runtimeContract": {
+    "format": "in_engine_pixel_art_actions_no_video",
+    "characters": "Sprites isométricos 3/4, loops reutilizáveis e balões renderizados pelo navegador.",
+    "commandTypes": {
+      "play": "executar animação de personagem; reutilizar sprites existentes ou fazer fallback para idle",
+      "speak": "exibir texto em balão, boca animada enquanto fala; prosseguir com interação",
+      "object": "alterar representação visual, sempre a partir do estado verificado",
+      "choice": "apresentar escolhas do JOGADOR (não confundir com alternativas A/B/C do autor)"
+    },
+    "sceneResolver": "Avaliador de condições de domínio seleciona variante ou faz skip. Nunca tocar diálogo incompatível com o estado atual.",
+    "variantSemantics": {
+      "replace_selected_lines": "tocar base + variante no lugar de falas selecionadas",
+      "replace_verdict_line": "tocar apenas falas anteriores ao veredito + texto da variante",
+      "replace_all_dialogue": "substituir TODAS as falas por texto da variante",
+      "replace_all_dialogue_and_start_mandatory": "não tocar falas padrão; entrar na mesa e tocar SOMENTE a variante",
+      "append_choices": "tocar padrão e então exibir opções do jogador",
+      "skip": "nenhuma cena exibida",
+      "play_selected_dialogue_and_choice": "tocar falas padrão e abrir botões",
+      "play_selected_lines_and_present_choice": "tocar falas padrão e abrir botões",
+      "keep_dialogue_no_success_badge": "tocar texto com objetos de estado real, sem selo falso"
+    },
+    "authoritativeDomain": "O código calcula pagamentos, saldo, reserva, conciliação, vereditos, tetos e conquistas. Narrativa não altera nenhum desses números.",
+    "interruption": "Reunião mensal vencida priorizada. Cenas ambientais não travam controles, optativas podem ser puladas e depois resumidas.",
+    "dialogueSafety": "Se placeholder estiver indisponível, usar variante segura ou omitir fala, NUNCA renderizar chaves cruas ou inventar número.",
+    "animationFallback": "Se a animação ainda não existir, usar idle/olhar/nod. Não bloquear diálogo por falta de um gesto.",
+    "dateTimezone": "America/Sao_Paulo",
+    "firstMeeting": {
+      "firstAccessDays1to5": "Primeira reunião devida em dia 6 do MESMO mês.",
+      "firstAccessDays7toEnd": "Primeira reunião devida em dia 6 do MÊS SEGUINTE.",
+      "firstAccessDay6": "UNRESOLVED_NO_AUTO_DECISION",
+      "onDay6Eligible": "Oferecer Entrar na reunião ou Na próxima visita apenas neste dia se ainda não foi adiada.",
+      "afterDay6DueAndUncompleted": "Abrir DIRETAMENTE reunião ao retornar, sem opção de novo adiamento.",
+      "alreadyDeferredOnReturn": "Abrir DIRETAMENTE reunião, mesmo quando o retorno é no mesmo dia 6.",
+      "firstScene": "c1s1 sempre na primeira entrada autenticada, mesmo com reunião pendente.",
+      "m0": "Pré-aviso a partir do dia 1 até antes do dia 6, apenas quando há reunião elegível; não retroagir depois do dia 6."
+    },
+    "meetingResult": "Reunião concluída e fechamento financeiro confirmado são estados separados; só usar FECHADO quando verificado.",
+    "replayProtection": [
+      "persist profileId and firstAccessAt",
+      "persist sceneId and sourceEventId",
+      "persist meeting competence and dueDate",
+      "persist shown/completed/deferred flags",
+      "deduplicate by source event and competence"
+    ]
+  },
+  "templateBindings": {
+    "{meses_validos}": {
+      "type": "integer",
+      "origin": "historical_data_validator",
+      "validation": "positive_integer_only",
+      "ifUnavailable": "use_missing_history_variant",
+      "privacy": "authorized_only"
+    },
+    "{descricao_segura}": {
+      "type": "string",
+      "origin": "sanitized_transaction_label",
+      "validation": "safe_redacted_title_only",
+      "ifUnavailable": "display_label_sem_identificacao",
+      "privacy": "private_on_demand"
+    },
+    "{categoria_a}": {
+      "type": "string",
+      "origin": "categorization_engine_options",
+      "validation": "allowed_category",
+      "ifUnavailable": "skip_category_question"
+    },
+    "{categoria_b}": {
+      "type": "string",
+      "origin": "categorization_engine_options",
+      "validation": "allowed_category",
+      "ifUnavailable": "skip_category_question"
+    },
+    "{veredito}": {
+      "type": "enum",
+      "origin": "caio_rules_engine",
+      "allowedValues": [
+        "verde",
+        "amarelo",
+        "vermelho"
+      ],
+      "ifUnavailable": "use_missing_consult_data_variant"
+    },
+    "{motivo_curto}": {
+      "type": "string",
+      "origin": "deterministic_verdict_reasons",
+      "validation": "explanation_grounded_in_verified_numbers",
+      "ifUnavailable": "use_missing_consult_data_variant"
+    },
+    "{quantidade_eventos_validos}": {
+      "type": "integer",
+      "origin": "weekly_event_aggregator",
+      "validation": "non_negative_integer",
+      "ifUnavailable": "use_no_valid_updates_variant"
+    }
+  },
+  "scenes": [
+    {
+      "sceneId": "c1s1",
+      "chapterId": "c1",
+      "chapterTitle": "A porta está aberta",
+      "title": "Vivi abre a porta",
+      "selectedEditorialAlternative": "B",
+      "selectedEditorialDirection": "Recepção com humor leve",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "first_authenticated_entry",
+      "eligibility": "Primeira entrada autenticada no escritório, uma única vez por perfil.",
+      "presentationKind": "micro_scene_mandatory",
+      "idempotencyScope": "per_profile",
+      "goal": "Apresentar o espaço sem transformar Vivi em consultora financeira.",
+      "stageDirectionVerbatim": "Vivi ajeita o crachá, olha para a mesa e sorri sem fazer uma apresentação longa.",
+      "guardrailVerbatim": "Não tratar o avatar-padrão Guilherme como nome universal do usuário. A recepção só orienta; Caio não ocupa esse balcão.",
+      "absenceOrMissingDataPolicy": "Se o primeiro acesso ocorreu durante um evento prioritário, exibir apenas a saudação curta da Vivi e enfileirar a apresentação restante.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "idle_blink",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "adjust_badge",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "face_player",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Bem-vindo ao escritório. Pode entrar — sua mesa já está por aqui.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s1:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Chegou na hora certa. Ainda tem café e ninguém perdeu a calculadora.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s1:alternative:B:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Brincadeira. Aqui a gente prefere números conferidos — o Saldanha pode mostrar.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s1:alternative:B:2"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "look_at",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "saldanha_desk"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "idle_standing",
+          "blocking": false,
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "intro_before_overdue_meeting",
+          "when": "first_login && overdue_meeting_exists",
+          "behavior": "play_main_dialogue_then_resume_to_mandatory_meeting",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Primeira cena sempre C1S1. Nunca desviar a primeira visita antes da saudacao obrigatoria."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c1s2",
+      "chapterId": "c1",
+      "chapterTitle": "A porta está aberta",
+      "title": "O contador já viu alguma coisa",
+      "selectedEditorialAlternative": "A",
+      "selectedEditorialDirection": "Uma evidência por vez",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "first_financial_history_read",
+      "eligibility": "Primeira leitura válida de histórico financeiro importado. Se não houver histórico, usar variante sem dados.",
+      "presentationKind": "micro_scene_optional",
+      "idempotencyScope": "per_profile_first_data_read",
+      "goal": "Demonstrar que números concretos antecedem opiniões.",
+      "stageDirectionVerbatim": "Ele gira discretamente o monitor. Uma linha validada acende no livro do mês.",
+      "guardrailVerbatim": "Jamais preencher montantes com valores fictícios. Se a amostra não suportar comparação, não declarar tendência.",
+      "absenceOrMissingDataPolicy": "Sem dados importados, Saldanha diz que ainda não pode tirar conclusões e oferece acessar a conexão/planilha. Nada é pontuado como zero.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "tablet_check",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "glasses_adjust",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Sou o Saldanha. Vou conferir o que está registrado. Só afirmo aquilo que consigo verificar.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s2:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Encontrei {meses_validos} período(s) com informações conferíveis.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s2:alternative:A:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Vou começar por aquilo que está completo; o restante fica marcado como pendente.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s2:alternative:A:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "point",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "monthly_book"
+        },
+        {
+          "op": "object",
+          "target": "monthly_book",
+          "state": "highlight_verified_entry",
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "missing_history",
+          "when": "user_opens_saldanha && !history_readable",
+          "behavior": "replace_selected_lines",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Ainda não tenho informações suficientes para ler seu histórico. Quando os registros estiverem disponíveis, começo a conferência.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Sem valor zero inventado; pode abrir painel de conexão."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c1s3",
+      "chapterId": "c1",
+      "chapterTitle": "A porta está aberta",
+      "title": "Quem decide por onde começar?",
+      "selectedEditorialAlternative": "A",
+      "selectedEditorialDirection": "Escolha livre entre postos",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "first_voluntary_exploration",
+      "eligibility": "Após a saudação, na primeira exploração voluntária da sala.",
+      "presentationKind": "ambient_optional",
+      "idempotencyScope": "per_profile",
+      "goal": "Apresentar as funções pelo ambiente, não por um tutorial comprido.",
+      "stageDirectionVerbatim": "O quadro, a mesa e a sala de consulta recebem brilho suave temporário; nada bloqueia cliques.",
+      "guardrailVerbatim": "Onboarding não rende moedas por visita. Qualquer passo pode ser ignorado ou retomado sem punição.",
+      "absenceOrMissingDataPolicy": "Se o usuário fechar a fala, os postos permanecem clicáveis e a introdução é considerada vista, não fracassada.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "point",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "saldanha_desk"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Cada mesa cuida de um assunto. Você não precisa visitar tudo agora.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s3:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Quer entender o mês? Vá ao Saldanha. Pensando numa compra? Procure o Caio.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s3:alternative:A:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "O resto você descobre usando.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s3:alternative:A:2"
+        },
+        {
+          "op": "object",
+          "target": "saldanha_desk",
+          "state": "temporary_hint",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "caio_station",
+          "state": "temporary_hint",
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c1s4",
+      "chapterId": "c1",
+      "chapterTitle": "A porta está aberta",
+      "title": "O escritório percebe você",
+      "selectedEditorialAlternative": "B",
+      "selectedEditorialDirection": "Um detalhe muda no cenário",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "first_financial_action_or_first_visit_exit",
+      "eligibility": "Após a primeira ação real ou no encerramento voluntário da primeira visita.",
+      "presentationKind": "ambient_optional",
+      "idempotencyScope": "per_profile",
+      "goal": "Dar personalidade ao escritório sem prêmio por abrir telas.",
+      "stageDirectionVerbatim": "Somente um objeto ligado ao dado realmente alterado anima; sem fogos ou XP por acesso.",
+      "guardrailVerbatim": "Distinguir visualmente um evento de ambientação de uma conquista certificada pelo código.",
+      "absenceOrMissingDataPolicy": "Se não houver ação válida, a despedida é apenas ambiental; não simular registro, recompensa ou progresso financeiro.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "typing",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Quando você registrar alguma coisa, o escritório vai refletir o que mudou.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s4:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Atualização confirmada. O meu livro já reflete a mudança.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s4:alternative:B:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Viu? Aqui as coisas se mexem quando a vida acontece.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c1s4:alternative:B:2"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "verified_changed_object",
+          "state": "animate_verified_state_only",
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "first_exit_without_financial_action",
+          "when": "first_visit_exit && !verified_financial_action",
+          "behavior": "replace_all_dialogue",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Vivi",
+              "text": "Quando você registrar alguma coisa, o escritório vai refletir o que mudou.",
+              "source": "original_html_base",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible",
+              "sourceRef": "html:c1s4:base:1"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não dizer \"atualização confirmada\" sem alteração registrada; a fala de abertura existe no HTML original."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c2s1",
+      "chapterId": "c2",
+      "chapterTitle": "O envelope sobre a mesa",
+      "title": "Gabriel traz notícias",
+      "selectedEditorialAlternative": "B",
+      "selectedEditorialDirection": "Pequena troca entre a equipe",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "card_batch_imported_or_historical_batch_detected",
+      "eligibility": "Primeira sincronização de cartão concluída ou primeira importação de conciliação histórica.",
+      "presentationKind": "micro_scene_optional",
+      "idempotencyScope": "per_batch",
+      "goal": "Transformar uma integração técnica em acontecimento visual compreensível.",
+      "stageDirectionVerbatim": "Reações rápidas de cabeça e boca; a cena não exige abrir painel.",
+      "guardrailVerbatim": "Gabriel entrega dados do cartão; não interpreta gastos nem tem acesso a detalhes que não estejam autorizados.",
+      "absenceOrMissingDataPolicy": "Sem sincronização, malote vazio e marcador discreto de “aguardando dados”; não fazer Gabriel aparecer só para cumprir roteiro.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Gabriel",
+          "animation": "walk_iso",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "mail_drop"
+        },
+        {
+          "op": "play",
+          "actor": "Gabriel",
+          "animation": "give_envelope",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "mail_drop",
+          "state": "received_not_reconciled",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Chegou uma atualização do cartão. Vou avisar ao Saldanha.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s1:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Gabriel",
+          "text": "Boa tarde, equipe. Hoje tem envelope.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s1:alternative:B:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Deixa ali. O Saldanha está de olho.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s1:alternative:B:2"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "De olho, sim. Conferido, ainda não.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s1:alternative:B:3"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "look_at",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "mail_drop"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "no_batch",
+          "when": "!verified_card_batch",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Nenhum envelope fictício; aguardar integração."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c2s2",
+      "chapterId": "c2",
+      "chapterTitle": "O envelope sobre a mesa",
+      "title": "O número que não fecha",
+      "selectedEditorialAlternative": "B",
+      "selectedEditorialDirection": "Investigação colaborativa",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "card_batch_reconciliation_evaluated",
+      "eligibility": "Após comparar a importação com o registro esperado. A fala muda conforme o estado de conciliação.",
+      "presentationKind": "micro_scene_optional",
+      "idempotencyScope": "per_batch_and_state_transition",
+      "goal": "Transformar exceções técnicas em confiança. O mesmo evento tem variantes de sucesso e divergência.",
+      "stageDirectionVerbatim": "A escolha de adiar preserva a pendência; nunca atribui culpa ou perde progresso.",
+      "guardrailVerbatim": "A frase “diferença encontrada” só pode aparecer se houve divergência real; nenhuma fala simula falha quando tudo fecha.",
+      "absenceOrMissingDataPolicy": "Se os totais conferirem, substituir “diferença” por “conferência concluída”; se faltar fonte, usar “ainda não conferível”, nunca “erro do usuário”.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "tablet_check",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "reconciliation_panel",
+          "state": "state_from_reconciliation_engine",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Comparei o que entrou com o que já tínhamos. O resultado tem um estado verificável.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s2:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Encontrei uma diferença entre as fontes.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s2:alternative:B:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Quer olhar comigo agora ou prefere deixar sinalizado para depois?",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s2:alternative:B:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "point",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "reconciliation_panel"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "matched",
+          "when": "reconciliation_state == matched",
+          "behavior": "replace_selected_lines",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Conferência concluída. Os totais disponíveis conferem com o registro esperado.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            },
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Pode consultar o resultado no livro do mês.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não exibir a frase original sobre diferença."
+        },
+        {
+          "variantId": "partial",
+          "when": "reconciliation_state == incomplete",
+          "behavior": "replace_selected_lines",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Ainda não tenho todas as fontes necessárias para concluir a conferência.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            },
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Vou deixar o estado parcial visível até termos os dados que faltam.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved"
+        },
+        {
+          "variantId": "different",
+          "when": "reconciliation_state == divergent",
+          "behavior": "play_selected_lines_and_present_choice",
+          "script": [
+            {
+              "op": "choice",
+              "choices": [
+                {
+                  "label": "Ver agora",
+                  "action": "open_reconciliation_details"
+                },
+                {
+                  "label": "Deixar para depois",
+                  "action": "keep_reconciliation_pending"
+                }
+              ],
+              "source": "technical_proposal",
+              "purpose": "user_initiated_choice"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "A diferença precisa ser calculada pelo código, nunca inferida da narrativa."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c2s3",
+      "chapterId": "c2",
+      "chapterTitle": "O envelope sobre a mesa",
+      "title": "Uma despesa sem sobrenome",
+      "selectedEditorialAlternative": "A",
+      "selectedEditorialDirection": "Pergunta de uma linha",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "expense_classification_ambiguous",
+      "eligibility": "Apenas quando houver classificação de gasto verdadeiramente ambígua e autorização para pedir confirmação.",
+      "presentationKind": "interactive_optional",
+      "idempotencyScope": "per_transaction_ambiguity",
+      "goal": "Pedir uma confirmação pontual para melhorar os dados sem transformar a rotina em interrogatório.",
+      "stageDirectionVerbatim": "No máximo uma pergunta por momento; interface mostra “Não sei / depois”.",
+      "guardrailVerbatim": "Não enviar descrições privadas integralmente à IA sem necessidade; a regra de confirmação permanece sob controle da pessoa.",
+      "absenceOrMissingDataPolicy": "Se não houver ambiguidade, a cena é pulada e não conta como conteúdo perdido.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "typing",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "category_prompt",
+          "state": "awaiting_confirmation",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Esta despesa não tem informação suficiente para uma categoria segura.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s3:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "{descricao_segura} entra em {categoria_a} ou {categoria_b}?",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s3:alternative:A:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Você decide a categoria; eu atualizo o registro.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s3:alternative:A:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "category_choices",
+          "when": "expense_ambiguous && current_user_can_access_transaction",
+          "behavior": "append_choices",
+          "script": [
+            {
+              "op": "choice",
+              "choices": [
+                {
+                  "label": "{categoria_a}",
+                  "action": "confirm_category_a"
+                },
+                {
+                  "label": "{categoria_b}",
+                  "action": "confirm_category_b"
+                },
+                {
+                  "label": "Não sei / depois",
+                  "action": "defer_classification"
+                }
+              ],
+              "source": "technical_proposal",
+              "purpose": "user_initiated_choice"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Somente mostrar categorias seguras oferecidas pelo motor. Nunca gravar categoria antes da confirmação."
+        },
+        {
+          "variantId": "no_ambiguity",
+          "when": "!expense_ambiguous",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved"
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c2s4",
+      "chapterId": "c2",
+      "chapterTitle": "O envelope sobre a mesa",
+      "title": "Um arquivo, não um veredito",
+      "selectedEditorialAlternative": "B",
+      "selectedEditorialDirection": "Fecho caloroso de equipe",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "card_batch_status_finalized",
+      "eligibility": "Quando o primeiro lote recebe estado final “conferido”, “parcial” ou “pendente”.",
+      "presentationKind": "micro_scene_optional",
+      "idempotencyScope": "per_batch",
+      "goal": "Encerrar o microarco com uma verdade verificável, não com celebração obrigatória.",
+      "stageDirectionVerbatim": "Troca curta; Gabriel se despede e sai. Nenhuma medalha se a conciliação ainda está parcial.",
+      "guardrailVerbatim": "Conciliação completa não implica automaticamente mês fechado, conta paga ou dinheiro economizado.",
+      "absenceOrMissingDataPolicy": "Se ficar parcial, registrar essa condição e manter acesso à conciliação; não bloquear outros recursos do app.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "look_at",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "mail_drop"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "O envelope já tem destino. Você pode consultar tudo no livro.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s4:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Gabriel",
+          "text": "Entrega feita. Agora é com vocês.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s4:alternative:B:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "É com os registros, Gabriel. E com a conferência.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s4:alternative:B:2"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Duas coisas em que esse escritório é bom.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c2s4:alternative:B:3"
+        },
+        {
+          "op": "play",
+          "actor": "Gabriel",
+          "animation": "wave",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Gabriel",
+          "animation": "walk_iso",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "exit_door"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "still_partial",
+          "when": "card_batch_finalized && reconciliation_state != matched",
+          "behavior": "keep_dialogue_no_success_badge",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "A fala de \"destino\" não equivale a conciliação completa; não exibir selo de concluído."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c3s1",
+      "chapterId": "c3",
+      "chapterTitle": "Pequenas coisas, dias reais",
+      "title": "Uma marca no calendário",
+      "selectedEditorialAlternative": "C",
+      "selectedEditorialDirection": "Reação breve de Vivi",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "account_or_payment_updated",
+      "eligibility": "Primeira atualização válida da conta corrente, pagamento confirmado ou lançamento novo registrado.",
+      "presentationKind": "ambient_optional",
+      "idempotencyScope": "per_financial_event_with_throttle",
+      "goal": "Premiar informação honesta e fazer o escritório mudar visualmente.",
+      "stageDirectionVerbatim": "A fala da Vivi é ambiente e só aparece se ela estiver visível; informação financeira permanece com Saldanha.",
+      "guardrailVerbatim": "Não comparar número alto com “erro moral”. Moedas por ação só pela primeira execução elegível do dia; pagamentos têm limite de 10 moedas por dia, independentemente de quantas contas.",
+      "absenceOrMissingDataPolicy": "Sem ação financeira, o calendário e a bandeja continuam com seus estados atuais; não inventar pagamento.",
+      "script": [
+        {
+          "op": "object",
+          "target": "payment_calendar",
+          "state": "sync_real_state",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "bill_inbox",
+          "state": "sync_real_state",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Vi uma alteração confirmada no registro. Vou atualizar a situação do mês.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s1:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "O quadro mudou! O Saldanha já deve ter visto.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s1:alternative:C:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Vi. Estado atualizado.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s1:alternative:C:2"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "typing",
+          "blocking": false,
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "no_confirmed_change",
+          "when": "!verified_account_or_payment_change",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved"
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c3s2",
+      "chapterId": "c3",
+      "chapterTitle": "Pequenas coisas, dias reais",
+      "title": "Antes de decidir uma compra",
+      "selectedEditorialAlternative": "B",
+      "selectedEditorialDirection": "Consulta com troca de bastidores",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "purchase_consult_requested",
+      "eligibility": "Primeira pergunta espontânea ao Caio sobre uma compra real ou hipotética.",
+      "presentationKind": "interactive_user_initiated",
+      "idempotencyScope": "per_explicit_consult",
+      "goal": "Dar a Caio voz de especialista e preservar a lógica determinística do seu parecer.",
+      "stageDirectionVerbatim": "Caio anda até a mesa, Saldanha assente e o tablet exibe dois ou três números.",
+      "guardrailVerbatim": "Caio não inventa valores ou aprova compras: o código aplica colchão, teto de parcelas, juros, consumo imediato e prazo máximo. IA só verbaliza.",
+      "absenceOrMissingDataPolicy": "Sem consulta, pular este encontro indefinidamente; a história continua por atualização, reunião ou outro evento. Nunca inventar desejo de compra.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Caio",
+          "animation": "tablet_check",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Caio",
+          "text": "Me diz o que você está pensando em comprar e como pretende pagar. Eu confiro com o Saldanha.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s2:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Caio",
+          "text": "Vou pedir os números atualizados.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s2:alternative:B:1"
+        },
+        {
+          "op": "play",
+          "actor": "Caio",
+          "animation": "walk_iso",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "saldanha_desk"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Projeções prontas. Sem arredondar o que importa.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s2:alternative:B:2"
+        },
+        {
+          "op": "play",
+          "actor": "Caio",
+          "animation": "walk_iso",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "caio_station"
+        },
+        {
+          "op": "speak",
+          "actor": "Caio",
+          "text": "Com isso, a orientação é: {veredito}. {motivo_curto}.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s2:alternative:B:3"
+        },
+        {
+          "op": "play",
+          "actor": "Caio",
+          "animation": "turn_tablet",
+          "blocking": false,
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "missing_consult_data",
+          "when": "purchase_consult_requested && verdict_status == insufficient_data",
+          "behavior": "replace_verdict_line",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Caio",
+              "text": "Ainda faltam dados para eu te dar uma orientação confiável. Podemos conferir o que está pendente com o Saldanha.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não emitir selo verde/amarelo/vermelho quando as regras não conseguem calcular."
+        },
+        {
+          "variantId": "not_requested",
+          "when": "!purchase_consult_requested",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved"
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c3s3",
+      "chapterId": "c3",
+      "chapterTitle": "Pequenas coisas, dias reais",
+      "title": "O quadro levanta a mão",
+      "selectedEditorialAlternative": "C",
+      "selectedEditorialDirection": "Microaprendizado contextual",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "category_threshold_crossed",
+      "eligibility": "Gasto de categoria com teto confirmado alcança 80% ou ultrapassa 100% do limite aplicável.",
+      "presentationKind": "ambient_optional",
+      "idempotencyScope": "per_competence_category_threshold",
+      "goal": "Sinalizar sem repreender; fazer o usuário enxergar o quadro como leitura, não punição.",
+      "stageDirectionVerbatim": "Abre card educativo somente por aceite; a pergunta não utiliza detalhes sensíveis desnecessários.",
+      "guardrailVerbatim": "Moradia, contas e saúde ficam fora dos tetos ajustáveis citados nas regras; tratamento de exceções econômicas e privacidade prevalece sobre a dramatização.",
+      "absenceOrMissingDataPolicy": "Sem teto validado ou sem limiar alcançado, nenhum alerta é emitido. Nunca usar dado ausente como estouro.",
+      "script": [
+        {
+          "op": "object",
+          "target": "category_progress_bar",
+          "state": "show_confirmed_threshold",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "tablet_check",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Uma categoria se aproximou do limite registrado. Vale observar, sem alarde.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s3:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "O teto é uma referência, não uma sentença.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s3:alternative:C:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Quer ver uma explicação de 30 segundos sobre o que mudou?",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s3:alternative:C:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "point",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "category_progress_bar"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "education_choice",
+          "when": "validated_category_threshold_crossed && education_card_available",
+          "behavior": "append_choices",
+          "script": [
+            {
+              "op": "choice",
+              "choices": [
+                {
+                  "label": "Ver explicação",
+                  "action": "open_contextual_education_card"
+                },
+                {
+                  "label": "Agora não",
+                  "action": "dismiss_education_card"
+                }
+              ],
+              "source": "technical_proposal",
+              "purpose": "user_initiated_choice"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Card só após consentimento; questão é contextual."
+        },
+        {
+          "variantId": "no_threshold",
+          "when": "!validated_category_threshold_crossed",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved"
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c3s4",
+      "chapterId": "c3",
+      "chapterTitle": "Pequenas coisas, dias reais",
+      "title": "Uma semana que não precisa ser perfeita",
+      "selectedEditorialAlternative": "A",
+      "selectedEditorialDirection": "Resumo sob demanda",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "weekly_return_with_new_information",
+      "eligibility": "Primeiro retorno após uma semana com ao menos uma ação financeira válida ou com informação nova relevante.",
+      "presentationKind": "ambient_optional",
+      "idempotencyScope": "per_week_summary",
+      "goal": "Introduzir a cadência semanal de forma orgânica, separada da reunião mensal obrigatória.",
+      "stageDirectionVerbatim": "O quadro sinaliza “resumo disponível”; usuário decide se abre, sem interromper a navegação.",
+      "guardrailVerbatim": "Ausência não apaga sequência automaticamente. Eventos perdidos devem ser recuperáveis segundo a política aprovada; não usar “streak” diário para punir.",
+      "absenceOrMissingDataPolicy": "Caso a pessoa fique dias sem abrir, não exibir bronca nem recuperar diálogos diários em cascata. Uma única síntese pode assumir o lugar das cenas perdidas.",
+      "script": [
+        {
+          "op": "object",
+          "target": "weekly_board",
+          "state": "summary_available",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "face_player",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "O escritório ficou por aqui. Quer um resumo do que mudou desde sua última visita?",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s4:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Nesta semana, {quantidade_eventos_validos} registro(s) mudaram de estado.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s4:alternative:A:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Se quiser, escolhemos uma prioridade prática para a próxima.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c3s4:alternative:A:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "typing",
+          "blocking": false,
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "no_valid_updates",
+          "when": "weekly_return && valid_changes_count == 0",
+          "behavior": "replace_selected_lines",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Ainda não apareceu uma nova alteração confirmada desde sua última visita.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            },
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Você pode continuar de onde parou.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não inventar entradas ou compromissos."
+        },
+        {
+          "variantId": "not_a_weekly_return",
+          "when": "!weekly_return_with_new_information",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved"
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "m0",
+      "chapterId": "c4",
+      "chapterTitle": "A primeira reunião de verdade",
+      "title": "Aviso de preparação do fechamento",
+      "selectedEditorialAlternative": null,
+      "selectedEditorialDirection": "Pré-aviso do dia 1 solicitado nas observações do autor",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "monthly_preclose_notice_due_day_1",
+      "eligibility": "Aviso no primeiro dia do mês (ou visita antes do dia 6) quando existe a reunião devida para esse dia 6 e ainda não foi avisada. Nunca exibir pré-aviso retroativo depois do dia 6.",
+      "presentationKind": "ambient_optional",
+      "idempotencyScope": "per_competence",
+      "goal": "Anunciar o fechamento com antecedência real sem iniciar a reunião antes do dia 6.",
+      "stageDirectionVerbatim": "Sinal discreto no quadro e pequeno balão de Saldanha; nunca obriga abrir painel.",
+      "guardrailVerbatim": "Nova redacao provisoria, pendente de aprovacao editorial. Nao enviar saldo ou pendencia a perfil nao autorizado.",
+      "absenceOrMissingDataPolicy": "Se a pessoa nao abriu o app ate dia 6, nao registrar aviso como mostrado nem simular uma visita anterior.",
+      "script": [
+        {
+          "op": "object",
+          "target": "meeting_board",
+          "state": "advance_notice_unread",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "tablet_check",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Comecamos a preparacao do fechamento do periodo anterior. Nossa reuniao e no dia 6.",
+          "source": "previous_tech_proposal_not_html",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible"
+        },
+        {
+          "op": "object",
+          "target": "meeting_board",
+          "state": "advance_notice_seen",
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "first_eligible_visit_day_2_to_5",
+          "when": "first_visit_in_month && local_day > 1 && local_day < 6 && meeting_due_this_month",
+          "behavior": "show_late_pre_notice_once",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Aviso pode acontecer após o dia 1 e antes do 6; não simular que já foi visto."
+        },
+        {
+          "variantId": "no_login_until_due",
+          "when": "local_day >= 6 && notice_not_shown",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não exibir pré-aviso retroativo; tratar reunião diretamente."
+        }
+      ],
+      "notesForDeveloper": "Cena técnica adicional; não consta das 16 preferências A/B/C. Texto já proposto anteriormente, ainda sem aprovação linha a linha."
+    },
+    {
+      "sceneId": "c4s1",
+      "chapterId": "c4",
+      "chapterTitle": "A primeira reunião de verdade",
+      "title": "O convite do dia 6",
+      "selectedEditorialAlternative": "A",
+      "selectedEditorialDirection": "Convocação segura e respeitosa",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "monthly_meeting_due_on_day_6",
+      "eligibility": "Dia 6, somente se primeira reunião ja elegível / reunião recorrente devida. Quem inicia após dia 6 só é elegível no dia 6 do mês seguinte. Retorno após a data devida abre a reunião diretamente, sem convite.",
+      "presentationKind": "monthly_invitation",
+      "idempotencyScope": "per_competence",
+      "goal": "Estabelecer compromisso com o fechamento sem confundir prioridade de evento com obrigação diária.",
+      "stageDirectionVerbatim": "Convite com “Entrar na reunião” e “Na próxima visita”. No retorno, o estado pendente abre a mesa antes do escritório livre.",
+      "guardrailVerbatim": "No próximo acesso com reunião pendente, não oferecer novo escape do fluxo. Registrar uma única reunião por competência; políticas de acumulação/recuperação aprovadas têm precedência.",
+      "absenceOrMissingDataPolicy": "Se a pessoa recusar no dia 6, gravar “reunião pendente”; na próxima visita abrir diretamente na reunião. Se houver coincidência com o primeiro login, Vivi só faz saudação mínima antes da convocação.",
+      "script": [
+        {
+          "op": "object",
+          "target": "meeting_board",
+          "state": "invitation_due",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "stand_up",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "face_player",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "O Saldanha pediu para te avisar: hoje é dia de reunião mensal.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s1:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Vamos olhar o período que temos registrado.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s1:base:2"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Dia 6. Temos nossa reunião do mês.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s1:alternative:A:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Você pode entrar agora ou deixar para a próxima visita. Nesse caso, começaremos por ela.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s1:alternative:A:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "point",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "meeting_table"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "eligible_day_6",
+          "when": "eligible && local_day == 6 && !already_deferred",
+          "behavior": "play_selected_dialogue_and_choice",
+          "script": [
+            {
+              "op": "choice",
+              "choices": [
+                {
+                  "label": "Entrar na reunião",
+                  "action": "start_monthly_meeting"
+                },
+                {
+                  "label": "Na próxima visita",
+                  "action": "defer_once_and_persist"
+                }
+              ],
+              "source": "technical_proposal",
+              "purpose": "user_initiated_choice"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Botões já previstos no roteiro original."
+        },
+        {
+          "variantId": "overdue_or_already_deferred",
+          "when": "eligible && meeting_uncompleted && (local_date > meeting_due_date || meeting_deferred_once)",
+          "behavior": "replace_all_dialogue_and_start_mandatory",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Temos uma reunião mensal pendente. Vamos começar pelo que está registrado.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não mostrar botões; entrar diretamente na reunião ao retornar."
+        },
+        {
+          "variantId": "not_yet_eligible",
+          "when": "first_meeting_due_date > local_date",
+          "behavior": "skip",
+          "script": [],
+          "source": "new_provisional_not_author_approved"
+        },
+        {
+          "variantId": "first_access_exact_day_6",
+          "when": "first_access_day == 6 && first_meeting_due_date_unresolved",
+          "behavior": "do_not_assume_eligibility",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Pendência autoral explícita; não codificar regra automática para o caso."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c4s2",
+      "chapterId": "c4",
+      "chapterTitle": "A primeira reunião de verdade",
+      "title": "Dois meses, nenhuma adivinhação",
+      "selectedEditorialAlternative": "A",
+      "selectedEditorialDirection": "Relatório guiado por três perguntas",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "monthly_meeting_started",
+      "eligibility": "Após a pessoa entrar na reunião, com leitura do histórico existente, idealmente os dois meses de cartão já conciliados.",
+      "presentationKind": "monthly_meeting",
+      "idempotencyScope": "per_competence",
+      "goal": "A primeira reunião introduz a linguagem do aplicativo sem atribuir mérito ou culpa.",
+      "stageDirectionVerbatim": "Quadro avança por três cartões: fluxo, compromissos e reserva. “Sem informação suficiente” é um estado legítimo.",
+      "guardrailVerbatim": "A reserva e o saldo projetado derivam de regras fixas. Nenhum personagem deve expor números sensíveis em falas ambiente ou diante de perfis sem autorização.",
+      "absenceOrMissingDataPolicy": "Se só houver um mês ou campos incompletos, usar leitura descritiva com “base parcial”; bloquear comparações sem amostra suficiente. Não converter ausência em zero.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "walk_iso",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "meeting_table"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "sit_down",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "object",
+          "target": "meeting_board",
+          "state": "page_financial_flow",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Antes de comparar os meses, vou separar o que está confirmado do que está pendente.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s2:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Primeiro: o que entrou e saiu? Segundo: o que ainda está comprometido? Terceiro: como está sua reserva?",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s2:alternative:A:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Vou mostrar cada resposta só com os dados disponíveis.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s2:alternative:A:2"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "partial_data",
+          "when": "meeting_started && financial_history_status == partial",
+          "behavior": "show_partial_state_no_false_comparison",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Há informações que ainda não permitem comparação. Vou marcar essas partes como pendentes.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Adicionar após fala de abertura; cartões mostram \"Base parcial\" quando necessário."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c4s3",
+      "chapterId": "c4",
+      "chapterTitle": "A primeira reunião de verdade",
+      "title": "O que merece atenção agora?",
+      "selectedEditorialAlternative": "C",
+      "selectedEditorialDirection": "Plano leve de observação",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "monthly_meeting_report_viewed",
+      "eligibility": "Após exibir dados suficientes ou lacunas explícitas na reunião mensal.",
+      "presentationKind": "monthly_meeting",
+      "idempotencyScope": "per_competence",
+      "goal": "Fechar com uma decisão pequena, específica e voluntária, nunca um julgamento.",
+      "stageDirectionVerbatim": "O quadro registra “observação” e marca próximo checkpoint, sem criar dívida de tarefas.",
+      "guardrailVerbatim": "A escolha no diálogo é do jogador. Nesta página, A/B/C são decisões do roteirista sobre como oferecer a escolha.",
+      "absenceOrMissingDataPolicy": "Se dados insuficientes, prioridade possível é completar/conferir informações; não sugerir “economizar X%” sem base.",
+      "script": [
+        {
+          "op": "object",
+          "target": "meeting_board",
+          "state": "page_priority",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "point",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "meeting_board"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Não precisamos resolver tudo neste encontro. O que merece atenção primeiro?",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s3:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Se ainda estamos conhecendo seus dados, nossa meta pode ser simples: acompanhar com clareza.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s3:alternative:C:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Sem meta artificial. No mês que vem a gente revisita.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s3:alternative:C:2"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "observation_confirmed",
+          "when": "player_confirms_observation_priority",
+          "behavior": "record_non_monetary_intention",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Combinado. Vamos observar os próximos registros e voltar a esse ponto no mês que vem.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Não criar meta financeira ou recompensa por confirmar intenção."
+        },
+        {
+          "variantId": "priority_deferred",
+          "when": "player_defers_priority",
+          "behavior": "finish_without_goal",
+          "script": [
+            {
+              "op": "speak",
+              "actor": "Saldanha",
+              "text": "Tudo bem. A reunião fica registrada mesmo sem uma prioridade escolhida hoje.",
+              "source": "new_provisional_not_author_approved",
+              "advance": "tap_or_enter",
+              "mouth": "talk_while_balloon_visible"
+            }
+          ],
+          "source": "new_provisional_not_author_approved"
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    },
+    {
+      "sceneId": "c4s4",
+      "chapterId": "c4",
+      "chapterTitle": "A primeira reunião de verdade",
+      "title": "A luz continua acesa",
+      "selectedEditorialAlternative": "C",
+      "selectedEditorialDirection": "Fecho coral discreto",
+      "approval": {
+        "directionChosenByAuthor": true,
+        "exactDialogueIndividuallyApproved": false,
+        "newFallbackTextApproved": false
+      },
+      "triggerEvent": "monthly_meeting_ended",
+      "eligibility": "Após concluir a reunião e registrar seu resultado, com diferenciação clara entre fechamento válido e revisão pendente.",
+      "presentationKind": "monthly_meeting",
+      "idempotencyScope": "per_competence",
+      "goal": "Entregar um epílogo contextual e inaugurar arcos mensais emergentes.",
+      "stageDirectionVerbatim": "Personagens assentem sentados. Flora e Lupin podem dormir; nenhuma comemoração de sucesso se houver pendência.",
+      "guardrailVerbatim": "Reunião realizada não é sinônimo de resultado positivo. Não abrir sala, progresso ou moedas sem condição de código; a primeira reunião é mais introdutória, as seguintes avançam pela história dos dados.",
+      "absenceOrMissingDataPolicy": "Se a competência não puder ser fechada, registrar “reunião realizada, fechamento pendente” e preservar pendências. A próxima reunião acompanha os fatos novos, não repete a introdução inteira.",
+      "script": [
+        {
+          "op": "play",
+          "actor": "Vivi",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Caio",
+          "animation": "nod",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "Nossa primeira reunião terminou. O que está comprovado fica no histórico; o que falta continua visível.",
+          "source": "original_html_base",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s4:base:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Vivi",
+          "text": "Reunião encerrada. Café liberado.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s4:alternative:C:1"
+        },
+        {
+          "op": "speak",
+          "actor": "Saldanha",
+          "text": "E os números seguem disponíveis.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s4:alternative:C:2"
+        },
+        {
+          "op": "speak",
+          "actor": "Caio",
+          "text": "Quando pintar uma decisão, estou na minha mesa.",
+          "source": "original_html_selected_direction",
+          "advance": "tap_or_enter",
+          "mouth": "talk_while_balloon_visible",
+          "sourceRef": "html:c4s4:alternative:C:3"
+        },
+        {
+          "op": "object",
+          "target": "meeting_board",
+          "state": "closing_state_from_domain",
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "stand_up",
+          "blocking": false,
+          "source": "technical_proposal"
+        },
+        {
+          "op": "play",
+          "actor": "Saldanha",
+          "animation": "walk_iso",
+          "blocking": false,
+          "source": "technical_proposal",
+          "target": "saldanha_desk"
+        }
+      ],
+      "conditionalVariants": [
+        {
+          "variantId": "closing_pending",
+          "when": "closing_status != confirmed",
+          "behavior": "avoid_closed_seal",
+          "script": [],
+          "source": "new_provisional_not_author_approved",
+          "notes": "Pode concluir a reunião sem concluir o fechamento financeiro. Não atribuir sucesso ou culpa."
+        }
+      ],
+      "notesForDeveloper": "Originais da alternativa escolhida devem aparecer na ordem do campo script; avaliar conditionalVariants ANTES de pronunciar falas incompatíveis. Alternatives A/B/C NÃO são opções exibidas ao jogador."
+    }
+  ],
+  "acceptanceExamples": [
+    {
+      "firstAccess": "2026-10-03",
+      "nextVisit": "2026-10-17",
+      "expected": "Vivi na primeira visita; na volta abrir reuniao devida de 06/10 diretamente."
+    },
+    {
+      "firstAccess": "2026-10-09",
+      "nextVisit": "2026-10-17",
+      "expected": "Sem reuniao de outubro; primeira reuniao em 06/11."
+    },
+    {
+      "firstAccess": "2026-10-05",
+      "nextVisit": "2026-10-06",
+      "expected": "Convite no dia 6 com opcao de adiar uma vez."
+    },
+    {
+      "firstAccess": "2026-10-05",
+      "nextVisit": "2026-10-08",
+      "expected": "Sem acesso dia 6; entrar diretamente na reuniao pendente em 08/10."
+    },
+    {
+      "firstAccess": "2026-10-06",
+      "nextVisit": "2026-10-06",
+      "expected": "PENDENCIA autoral para definir elegibilidade do primeiro fechamento."
+    },
+    {
+      "firstAccess": "2026-10-09",
+      "nextVisit": "2026-11-01",
+      "expected": "Pode exibir pre-aviso M0 para reuniao 06/11; nao inventar aviso em outubro."
+    },
+    {
+      "case": "reconciled_batch",
+      "expected": "C2S2 usa matched; nunca diz que encontrou diferenca."
+    },
+    {
+      "case": "no_new_financial_action_on_first_exit",
+      "expected": "C1S4 nao diz que houve atualizacao."
+    },
+    {
+      "case": "purchase_not_requested",
+      "expected": "C3S2 nao dispara."
+    },
+    {
+      "case": "reunion_partial_financial_history",
+      "expected": "Pode registrar reuniao realizada, mas sem selo FECHADO."
+    }
+  ],
+  "validation": {
+    "sourceHtmlSceneCount": 16,
+    "sourceSelectedSceneCount": 16,
+    "technicalExtraSceneCount": 1,
+    "countScenes": 17,
+    "verbatimSelectionChecked": true,
+    "noApprovedDialogueInvented": true
+  }
+}

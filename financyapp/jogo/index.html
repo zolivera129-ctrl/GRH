@@ -13,22 +13,21 @@
 <body>
   <header>
     <h1>FinancyApp</h1>
-    <p>Corte 1: a sala parada, com todo mundo no lugar e sem dados.</p>
+    <p>Primeiro ciclo: as cenas dos capítulos 1 a 4 acontecendo no escritório, com o roteiro de falas v0.3 e dados sintéticos de teste.</p>
   </header>
-  <main id="jogo" data-assets="../pixel-art-habbo/assets/" data-layout="../docs/FinancyApp_Layout_12x10_v1.json">
-    <div class="palco">
+  <main id="jogo" data-assets="../pixel-art-habbo/assets/" data-layout="../docs/FinancyApp_Layout_12x10_v1.json"
+    data-roteiro="dados/financyapp_roteiro_falas_v03.json">
+    <div class="palco" id="palco">
       <canvas id="sala" role="img"
-        aria-label="O escritório 12 por 10 visto em isométrico: a reunião ao fundo, o Saldanha na parede direita, o Caio no meio, o Guilherme no fundo à direita com a Flora e o Lupin nas camas, e a Vivi no balcão da recepção, junto da porta de entrada."></canvas>
-    </div>
-    <aside>
-      <h2>Validação da planta</h2>
-      <p id="veredito"></p>
-      <ol id="regras"></ol>
-      <ul id="resumo"></ul>
-      <label for="mostrar-planta"><input type="checkbox" id="mostrar-planta"> Mostrar a planta no piso: acesso em azul, circulação obrigatória em laranja</label>
+        aria-label="O escritório 12 por 10 visto em isométrico: a reunião ao fundo, o Saldanha na parede direita, o Caio no meio, o Guilherme no fundo à direita com a Flora e o Lupin nas camas, e a Vivi no balcão da recepção, junto da porta de entrada. As falas aparecem em balões e também no texto abaixo."></canvas>
+      <div id="encerrada" class="encerrada" hidden>
+        <p>Visita encerrada. O escritório guarda o que aconteceu até a próxima.</p>
+      </div>
       <p id="erro" class="falha" hidden></p>
-    </aside>
+    </div>
+    <aside id="teste" aria-label="Bancada de teste"></aside>
   </main>
+  <p id="falas-sr" class="sr" aria-live="polite"></p>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

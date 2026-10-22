@@ -144,6 +144,26 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 - **Onde:** manual de sprites e animações v1.0, §9.2, §10 (fase 7) e §12.
 - **Sugestão:** levar os dez pontos ao projeto de design; a página de conferência mostra cada um no quadro.
 
+### 16. Primeiro ciclo narrativo: a direção v0.2 e o roteiro de falas v0.3 no jogo
+
+- **O que foi:** a pedido do Guilherme, o jogo ganhou a narrativa do primeiro ciclo, adiantando a parte de cena dos cortes 2 a 4: o diretor narrativo (fila, prioridade, unicidade), o executor de cenas no mesmo mapa 2D, as 17 cenas do `financyapp_roteiro_falas_completo_para_claude_v03.json` (copiado sem alteração para `jogo/dados/`), o ciclo mensal (§3.1 da direção) e uma bancada de teste com dados sintéticos. O módulo financeiro de verdade ainda não existe: `jogo/src/dados.js` gera os eventos de domínio (§5) marcados como sintéticos, e sai quando a planilha entrar.
+- **Onde:** `jogo/src/calendario.js`, `diretor.js`, `estado.js`, `roteiro.js`, `executor.js`, `atores.js`, `caminho.js`, `ui.js`, `paineis.js`, `painel.js`, `dados.js`, `sala.js` e `main.js`; testes em `jogo/testes/ciclo.test.js` (os exemplos de aceitação da direção) e `roteiro.test.js` (as variantes do JSON).
+- **Como o JSON é lido:** as falas, a ordem, as variantes e as escolhas saem do JSON; `roteiro.js` só traduz as animações técnicas (com o fallback do contrato: olhar, nod ou idle), os alvos (malote, mesa do Saldanha, quadro) e o "when" de cada variante para o contexto do jogo. Chave sem valor nunca vai para a tela: a fala é omitida.
+- **Decidido no código, para confirmar no projeto de design:**
+  1. **GDD §7.2 contra a direção v0.2.** O GDD diz que o primeiro acesso "no dia 6 ou depois" recebe convite adiável; a direção v0.2 (aprovada em 22/10) diz que depois do dia 6 a reunião abre direto, sem adiar. Segui a v0.2. Sugestão: atualizar o §7.2 e a máquina do §16.4.
+  2. **Primeiro acesso no dia 6:** nenhuma reunião é agendada, e o estado mostra "pendente". As duas leituras existem só na bancada, para teste.
+  3. **Reuniões acumuladas:** uma por competência, a mais antiga primeiro, em sequência na mesma visita. A consolidação do GDD §7.3 continua pendente e não foi feita.
+  4. **Gatilhos que o JSON descreve em texto:** C1S3 toca no primeiro clique no escritório depois da C1S1 (`first_voluntary_exploration`); a C1S2 sem histórico toca quando a pessoa abre a mesa do Saldanha (`user_opens_saldanha`); a C3S4 fica disponível no quadro na primeira visita de uma semana nova, ou quando mais de 3 eventos se acumulam fora do app (a síntese do §5), e conta os eventos registrados desde o último resumo visto; a C3S1 fala uma vez por visita e os outros pagamentos só marcam o calendário (`per_financial_event_with_throttle`, sem número no JSON).
+  5. **Texto completado:** a C4S3 tem as variantes "confirmou" e "adiou" a prioridade, mas não os botões; ficaram "Acompanhar com clareza" e "Deixar para depois", marcados como complemento do motor. O M0 veio sem acentos no JSON e só os acentos foram repostos. "Período(s)" e "registro(s)" viram singular ou plural pelo número da fala (direção §4). O "Boa tarde" do Gabriel segue a hora (direção §4). A fala "Nossa primeira reunião terminou" sai nas reuniões seguintes.
+  6. **Consulta ao Caio:** o formulário da compra entra logo depois da primeira fala dele ("me diz o que você está pensando em comprar"). O veredito e o motivo vêm de um seletor sintético, porque o motor de regras do Caio não existe.
+  7. **Card de 30 s (C3S3):** sem conteúdo, que ainda não foi escrito; o painel mostra o lugar dele.
+  8. **Reunião em cena:** Guilherme, Vivi e Caio vão às cadeiras de reunião deles e o Saldanha senta na cadeira 5; o Gabriel não vai. Nas cadeiras de costas, a pessoa é desenhada antes da cadeira (nota 6, segunda opção).
+  9. **Histórico inicial:** os dois meses importados chegam num envelope simbólico só, o lote `historico-inicial` (questão 2 do §10 da direção, ainda aberta).
+  10. **Andar:** velocidade padrão de 1,0 tile/s, ajustável na bancada (nota 15.4). A saída das cadeiras de frente é pela borda até o tile livre ao lado (nota 15.3).
+  11. **Persistência:** o perfil fica no armazenamento do navegador até existir servidor; reabrir não repete cena concluída nem duplica evento.
+  12. **Placeholders em blocos:** recado "6" no quadro (pré-aviso e convite), marca no calendário, barra de teto no mural, selo FECHADO na tela e bandeirinha no malote.
+- **Escopo:** o CLAUDE.md ainda diz "Corte atual: 1". Sugestão: registrar que a narrativa do primeiro ciclo entrou antes dos dados, por decisão do Guilherme.
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.
