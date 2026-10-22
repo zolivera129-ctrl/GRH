@@ -162,6 +162,11 @@ def montar(ops, mov, desce=0, w=40, h=70, so_grupos=None):
                 S.px[(x, y + desce)] = c          # abaixo do corte, fica onde está
                 dono[(x, y + desce)] = g
                 continue
+            if corte is not None and m.get('dy', 0) < 0 and y >= corte + m['dy']:
+                # subindo acima do corte, as linhas logo acima dele ficam
+                # também onde estavam (o tronco estica em vez de abrir um vão)
+                S.px[(x, y + desce)] = c
+                dono[(x, y + desce)] = g
             nx, ny = x + m.get('dx', 0), y + m.get('dy', 0)
             ponta = m.get('ponta', 0)
             if ponta:

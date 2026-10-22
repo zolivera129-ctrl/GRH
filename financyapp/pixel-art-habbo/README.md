@@ -96,6 +96,20 @@ Detalhes:
 - Humanos, fase 4, linhas 16 e 17: `levantando_da_cadeira_frente` e
   `sentando_na_cadeira_frente`, 6 quadros a 8 FPS, uma vez. O primeiro e o
   último quadro são o sentado e o parado de frente.
+- Humanos, fase 5 (`especiais.py`), a partir da linha 18, só na folha de
+  quem faz: Gabriel `deixando_envelope_no_malote` (e a variante
+  `_costas`, a da planta); Saldanha `digitando_sentado` (e `_tampo`),
+  `alerta`, `apresentando_quadro` e `comemorando_tablet`; Caio
+  `mostrando_tablet`; Vivi `tirando_foto`. Cada uma traz `direcao` e os
+  marcadores dela: `envelope` e `solta` (o Gabriel e o Saldanha também
+  têm `envelope` nas caminhadas), `dedo`, `tela` e `selo`, `flash` e
+  `flash_no_quadro`, `no_lugar_do_teclado`.
+- Adereços da fase 5 em `objetos/`: `envelope.png`, `tablet__frente-esq`
+  e `__frente-dir` (deitado no tampo, no lugar do teclado) e
+  `selo_tablet__verde`, `__amarelo` e `__vermelho`; em `moveis/`,
+  `malote__com-envelope.png` (o malote ganhou `abertura`); e a sineta
+  tocando, `objetos/sineta__tocando.png`, 2 quadros lado a lado, no campo
+  `animacoes` da sineta.
 - Móveis não são espelhados: a cadeira tem as quatro direções desenhadas.
 - A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
   (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
@@ -155,12 +169,15 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
   do jogo, para conferir.
 - `cadeira.py`: levantar e sentar, com as pernas meio dobradas desenhadas
   com as cores e os sapatos de cada um.
+- `especiais.py`: as ações especiais da fase 5 (só os braços do gesto e
+  o adereço são desenhados; o resto é o desenho original), o envelope, os
+  selos e os marcadores de cada uma.
 - `animacoes.py`: a lista de animações de cada humano, com quadros por
   segundo e os campos do manifesto, na ordem das linhas da folha.
 - `previa_animacoes.py`: a página de prévia (`previa/animacoes/`), com os
   ciclos tocando nas quatro direções, e as faixas ampliadas.
-- `teste_animacoes.py`: os testes do manual (§9.2) para os 12:
-  `python3 src/teste_animacoes.py`.
+- `teste_animacoes.py`: os testes do manual (§9.2) para os 12 e para as
+  ações especiais: `python3 src/teste_animacoes.py`.
 
 Para gerar tudo de novo (o `build.py` também gera o `assets/` e as prévias):
 

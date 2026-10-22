@@ -519,6 +519,24 @@
         "quadros": 4,
         "fps": 8,
         "loop": true,
+        "envelope": [
+          [
+            31,
+            50
+          ],
+          [
+            30,
+            49
+          ],
+          [
+            28,
+            50
+          ],
+          [
+            28,
+            49
+          ]
+        ],
         "rosto": [
           [
             0,
@@ -542,7 +560,25 @@
         "linha": 5,
         "quadros": 4,
         "fps": 8,
-        "loop": true
+        "loop": true,
+        "envelope": [
+          [
+            27,
+            51
+          ],
+          [
+            28,
+            50
+          ],
+          [
+            31,
+            51
+          ],
+          [
+            30,
+            50
+          ]
+        ]
       },
       "sentado_frente_idle": {
         "linha": 6,
@@ -938,6 +974,95 @@
             0
           ]
         ]
+      },
+      "digitando_sentado": {
+        "linha": 18,
+        "quadros": 2,
+        "fps": 6,
+        "loop": true,
+        "direcao": "frente",
+        "rosto": [
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "tampo": "digitando_sentado_tampo",
+        "maos": [
+          [
+            [
+              27,
+              54
+            ],
+            [
+              34,
+              50
+            ]
+          ],
+          [
+            [
+              27,
+              53
+            ],
+            [
+              34,
+              51
+            ]
+          ]
+        ],
+        "mesa": "mesa",
+        "no_lugar_do_teclado": "tablet"
+      },
+      "digitando_sentado_tampo": {
+        "linha": 19,
+        "quadros": 2,
+        "fps": 6,
+        "loop": true,
+        "direcao": "frente",
+        "camada_de": "digitando_sentado"
+      },
+      "alerta": {
+        "linha": 20,
+        "quadros": 2,
+        "fps": 5,
+        "direcao": "frente"
+      },
+      "apresentando_quadro": {
+        "linha": 21,
+        "quadros": 2,
+        "fps": 5,
+        "loop": true,
+        "direcao": "frente",
+        "rosto": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "dedo": [
+          [
+            37,
+            31
+          ],
+          [
+            39,
+            27
+          ]
+        ]
+      },
+      "comemorando_tablet": {
+        "linha": 22,
+        "quadros": 2,
+        "fps": 5,
+        "direcao": "frente"
       }
     }
   },
@@ -1408,6 +1533,28 @@
             0,
             0
           ]
+        ]
+      },
+      "mostrando_tablet": {
+        "linha": 18,
+        "quadros": 1,
+        "fps": 0,
+        "direcao": "frente",
+        "rosto": [
+          [
+            0,
+            0
+          ]
+        ],
+        "tela": [
+          1,
+          18,
+          9,
+          27
+        ],
+        "selo": [
+          5,
+          22
         ]
       }
     }
@@ -1880,6 +2027,27 @@
             0
           ]
         ]
+      },
+      "tirando_foto": {
+        "linha": 18,
+        "quadros": 2,
+        "fps": 6,
+        "direcao": "frente",
+        "rosto": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            -1
+          ]
+        ],
+        "flash": [
+          36,
+          21
+        ],
+        "flash_no_quadro": 1
       }
     }
   },
@@ -1980,6 +2148,24 @@
         "quadros": 4,
         "fps": 8,
         "loop": true,
+        "envelope": [
+          [
+            31,
+            50
+          ],
+          [
+            30,
+            49
+          ],
+          [
+            28,
+            50
+          ],
+          [
+            28,
+            49
+          ]
+        ],
         "rosto": [
           [
             0,
@@ -2003,7 +2189,25 @@
         "linha": 5,
         "quadros": 4,
         "fps": 8,
-        "loop": true
+        "loop": true,
+        "envelope": [
+          [
+            27,
+            51
+          ],
+          [
+            28,
+            50
+          ],
+          [
+            31,
+            51
+          ],
+          [
+            30,
+            50
+          ]
+        ]
       },
       "sentado_frente_idle": {
         "linha": 6,
@@ -2399,6 +2603,50 @@
             0
           ]
         ]
+      },
+      "deixando_envelope_no_malote": {
+        "linha": 18,
+        "quadros": 2,
+        "fps": 6,
+        "direcao": "frente",
+        "rosto": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "envelope": [
+          [
+            36,
+            37
+          ],
+          [
+            37,
+            42
+          ]
+        ],
+        "solta": 1
+      },
+      "deixando_envelope_no_malote_costas": {
+        "linha": 19,
+        "quadros": 2,
+        "fps": 6,
+        "direcao": "costas",
+        "envelope": [
+          [
+            35,
+            36
+          ],
+          [
+            37,
+            38
+          ]
+        ],
+        "solta": 1
       }
     }
   },
@@ -5969,7 +6217,12 @@
       56
     ],
     "estados": [
-      "vazio"
+      "vazio",
+      "com-envelope"
+    ],
+    "abertura": [
+      35,
+      18
     ]
   },
   "planta": {
@@ -6054,7 +6307,23 @@
     ],
     "estados": [
       "parada"
-    ]
+    ],
+    "animacoes": {
+      "tocando": {
+        "folha": "objetos/sineta__tocando.png",
+        "tela": [
+          15,
+          6
+        ],
+        "ancora": [
+          7,
+          5
+        ],
+        "quadros": 2,
+        "fps": 8,
+        "toque": 1
+      }
+    }
   },
   "headset": {
     "pasta": "objetos",
@@ -6083,5 +6352,45 @@
         -21
       ]
     }
+  },
+  "tablet": {
+    "pasta": "objetos",
+    "ancora": [
+      9,
+      6
+    ],
+    "direcoes": [
+      "frente-esq",
+      "frente-dir"
+    ],
+    "no_personagem": {
+      "mesa": [
+        -11,
+        -10
+      ],
+      "balcao": [
+        11,
+        -21
+      ]
+    }
+  },
+  "envelope": {
+    "pasta": "objetos",
+    "ancora": [
+      1,
+      1
+    ]
+  },
+  "selo_tablet": {
+    "pasta": "objetos",
+    "ancora": [
+      3,
+      3
+    ],
+    "estados": [
+      "verde",
+      "amarelo",
+      "vermelho"
+    ]
   }
 }

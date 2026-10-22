@@ -7,7 +7,9 @@ nas linhas 0 e 1) e acrescenta as do manual:
 - fase 3 (§4): a vida à mesa (respirar, teclar, assentir, olhar para o
   lado), cada uma com a sua camada do tampo, e as sobreposições do rosto
   (piscar e falar);
-- fase 4 (§4.7 e §4.8): levantar da cadeira e sentar nela.
+- fase 4 (§4.7 e §4.8): levantar da cadeira e sentar nela;
+- fase 5 (§5): as ações especiais, só de quem tem (especiais.py), nas
+  linhas depois dessas.
 
 Todos os quadros ficam na tela de 40 × 70 com a sola na linha anim.PE, então
 a âncora é a mesma em todos: (20, anim.PE).
@@ -24,13 +26,18 @@ Campos que o manifesto ganha por animação (além de linha, quadros e fps):
 - desloca: em levantar e sentar, quanto o personagem anda em cada quadro,
   na tela, a partir do centro do tile da cadeira (para quem olha +A;
   espelhado, o x troca de sinal). Em pé, ele fica meio tile à frente da
-  cadeira, pisando no chão.
+  cadeira, pisando no chão;
+- envelope: na caminhada de quem leva o envelope (Gabriel e Saldanha) e na
+  entrega, onde o jogo cola a âncora do envelope em cada quadro;
+- os campos das ações especiais (direcao, solta, tela, selo, dedo, flash,
+  no_lugar_do_teclado) estão em especiais.py.
 """
 import anim
 import cadeira
 import chars
 import costas
 import escritorio
+import especiais
 
 ANCORA = (20, anim.PE)
 
@@ -60,6 +67,18 @@ ESCRITORIO = list(escritorio.CICLOS)
 SOBREPOSICOES = ('piscando_frente', 'falando_frente')
 
 
+def nomes(cid):
+    """As linhas da folha de cid: as de todo humano e as especiais dele."""
+    return list(ANIMACOES) + list(especiais.ESPECIAIS.get(cid, {}))
+
+
+def tempo(cid, nome):
+    """(quadros por segundo, repete?) de uma linha de cid."""
+    if nome in ANIMACOES:
+        return ANIMACOES[nome]
+    return especiais.ESPECIAIS[cid][nome][:2]
+
+
 def quadros(cid):
     """{animação: [quadros]} de um humano, pelo id do assets/."""
     frente, _ = costas.HUMANOS[cid]
@@ -81,12 +100,17 @@ def quadros(cid):
     out['falando_frente'] = escritorio.falando(cid)
     for nome, roteiro in cadeira.ROTEIROS.items():
         out[nome] = cadeira.quadros(cid, roteiro)
+    out.update(especiais.quadros(cid))
     return out
 
 
 def campos(cid, nome, nquadros):
     """Os campos extras da animação no manifesto (ver o começo do arquivo)."""
     e = {}
+    if nome in especiais.ESPECIAIS.get(cid, {}):
+        return especiais.campos(cid, nome, nquadros)
+    if nome.startswith('andando') and cid in especiais.CARREGA_ENVELOPE:
+        e['envelope'] = especiais.envelope_na_caminhada(cid, nome)
     if nome == 'parado_frente':
         e['rosto'] = [[0, 0]]
     elif nome == 'sentado_frente':

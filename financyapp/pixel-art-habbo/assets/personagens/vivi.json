@@ -466,6 +466,27 @@
           0
         ]
       ]
+    },
+    "tirando_foto": {
+      "linha": 18,
+      "quadros": 2,
+      "fps": 6,
+      "direcao": "frente",
+      "rosto": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -1
+        ]
+      ],
+      "flash": [
+        36,
+        21
+      ],
+      "flash_no_quadro": 1
     }
   }
 }

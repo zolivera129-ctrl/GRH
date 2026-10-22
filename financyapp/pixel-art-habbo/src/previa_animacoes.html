@@ -112,6 +112,18 @@ input[type=range] { accent-color: var(--foco); width: 120px; }
 .quadro img { width: 100%; max-width: 160px; height: auto; }
 .quadro span { font-size: 12px; color: var(--suave); text-align: center; }
 
+/* ações especiais */
+.cenas { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.cena { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 10px 10px 12px; display: grid; gap: 8px; justify-items: center; align-content: start; min-width: 0; }
+.cena canvas { width: 100%; height: auto; }
+.cena .legenda { justify-self: stretch; }
+.cena .controles { gap: 6px 8px; }
+.cena .controles button { padding: 4px 10px; font-size: 13px; }
+.cena .controles button[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--noite); }
+.cena .controles button.sec2[aria-pressed="true"] { background: var(--foco); color: var(--noite); }
+.quadros.dois { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.quadro.objeto img { max-width: 120px; }
+
 ul.decidir { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 70ch; }
 ul.decidir li::marker { color: var(--foco); }
 @media (max-width: 520px) { h1 { font-size: 24px; } .quadros { gap: 4px; } }
@@ -120,7 +132,7 @@ ul.decidir li::marker { color: var(--foco); }
 <div class="pagina">
   <header>
     <h1>Caminhada do elenco</h1>
-    <p>Fases 2 a 4 do manual de animações para os 12: costas, caminhada, a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar) e levantar e sentar na cadeira, em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
+    <p>Fases 2 a 5 do manual de animações para os 12: costas, caminhada, a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar), levantar e sentar na cadeira e as ações especiais, em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
     <div class="elenco" id="elenco" aria-label="Personagem"></div>
   </header>
 
@@ -140,6 +152,7 @@ ul.decidir li::marker { color: var(--foco); }
           <span class="vel" id="vel-v">1 tile/s</span>
         </label>
         <label for="grade"><input id="grade" type="checkbox"> Grade</label>
+        <label for="envelope" id="rot-envelope" hidden><input id="envelope" type="checkbox" checked> Com envelope</label>
       </div>
     </div>
   </section>
@@ -176,6 +189,13 @@ ul.decidir li::marker { color: var(--foco); }
     <div class="tira" id="tira-sentar"></div>
   </section>
 
+  <section class="sec" aria-labelledby="t-especiais">
+    <h2 id="t-especiais">Ações especiais</h2>
+    <p>Fase 5 do manual: o gesto de cada um no seu lugar da planta. Envelope, selo, tablet na mesa e sineta são peças à parte, que o jogo cola nos marcadores do manifesto; aqui eles entram do mesmo jeito.</p>
+    <div class="cenas" id="cenas"></div>
+    <div class="tira" id="tiras-especiais"></div>
+  </section>
+
   <section class="sec" aria-labelledby="t-lugar">
     <h2 id="t-lugar">No lugar</h2>
     <div class="grade" id="lugar"></div>
@@ -196,6 +216,15 @@ ul.decidir li::marker { color: var(--foco); }
   <section class="sec" aria-labelledby="t-decidir">
     <h2 id="t-decidir">Para conferir</h2>
     <ul class="decidir">
+      <li><strong>O gesto é da mão da direita da tela.</strong> O manual põe as mãos do gesto em x 32 a 38, à direita, que é para onde o personagem olha. No nosso desenho de frente esse é o braço de trás (o da frente fica à esquerda, perto da câmera). Estender o da frente até lá faria o braço cruzar o peito, então quem entrega, aponta e leva a mão à testa é o braço da direita. Os pontos do manual valem; os nomes dos braços, não. A Vivi usa as duas mãos.</li>
+      <li><strong>Gabriel deixa o envelope de costas.</strong> A abertura do malote olha para +A e os pontos de uso da planta ficam em +A e +B dele, então o Gabriel chega de costas para a câmera. Fiz a entrega de frente, que o manual pede, e uma variante de costas, que é a da cena. O manifesto diz onde fica a abertura no malote (<code>abertura</code>); o jogo põe o Gabriel onde a mão do Q2 encosta nela.</li>
+      <li><strong>Caio mostra o tablet do desenho original.</strong> O manual estima a tela à direita, em (26, 28)–(36, 42), mas manda conferir a imagem original: nela o tablet fica erguido ao lado do rosto. Usei a pose original com a tela em branco; a área útil ficou em (1, 18)–(9, 27), com o centro do selo em (5, 22), e está no manifesto.</li>
+      <li><strong>Selos com desenho.</strong> Além da cor, cada selo tem um sinal: check no verde, exclamação no amarelo e x no vermelho, para não depender só da cor.</li>
+      <li><strong>Saldanha digita no tablet deitado na mesa.</strong> "Braços apoiados, tablet firme": é a pose da mesa com o tablet no tampo, no lugar do teclado. O tablet é um objeto, como o teclado, e a linha avisa o jogo (<code>no_lugar_do_teclado</code>).</li>
+      <li><strong>O tablet atrás do monitor.</strong> Na mesa do Saldanha o tablet fica onde fica o teclado, e os dois ficam atrás do monitor, que é o encaixe único da mesa de trabalho (ponto 4 da passagem do corte 1). Na cena, a caixa "Sem o monitor" mostra o tablet.</li>
+      <li><strong>Malote com envelope.</strong> Desenhei só o envelope saindo da abertura. A bandeirinha levantada é outro estado da lista do corte 2 e ficou para lá.</li>
+      <li><strong>Envelope na caminhada.</strong> Ele segue a mão da direita da tela em cada passo (Gabriel e Saldanha, que busca no malote). De frente, no Q3 a mão vai para trás do quadril e o envelope vai junto, encostado na borda do corpo.</li>
+      <li><strong>Relógios e pulseiras à mesa.</strong> Na vida à mesa (fase 3), o relógio do Saldanha, a pulseira azul do Guilherme e as pulseiras e relógios de mais seis personagens tinham sumido dos antebraços. Voltaram.</li>
       <li><strong>Mãos calibradas pela planta.</strong> Na mesa (24 px), quem senta olhando +B tem a borda do tampo passando por (20, 58) no sprite; as mãos ficam em torno de (27, 56) e (34, 52). As coordenadas do manual, (28, 44), só batem com o balcão da Vivi (34 px), e é assim que ela ficou.</li>
       <li><strong>Camada do tampo.</strong> A mesa fica mais perto da câmera e é desenhada depois do personagem, então cobriria as mãos. Cada animação à mesa tem uma linha a mais só com antebraços e mãos, para o jogo colar depois da mesa e antes do monitor. Desligue a caixa "Camada do tampo" para ver a diferença.</li>
       <li><strong>Levantar e sentar em 3 px.</strong> No nosso desenho o sentado fica só 3 px abaixo do em pé, como no Habbo; o manual fala em 9 px. Os 3 px se distribuem pelos quadros do meio, e as pernas passam por duas poses meio dobradas.</li>
@@ -222,6 +251,7 @@ const FASES = __FASES__;
 const ANCORA = __ANCORA__;
 const MESA = __MESA__;
 const CADEIRA = __CADEIRA__;
+const ESP = __ESPECIAIS__;
 
 const carregar = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = src; });
 
@@ -309,6 +339,48 @@ function cartao(pai, cv, titulo, sub, cls = '') {
   pai.append(c);
 }
 
+// os adereços e as cenas das ações especiais
+async function carregarEsp() {
+  const camadas = async (st) => ({ ...st, fundo: await carregar(st.fundo), mesa: await carregar(st.mesa),
+    teclado: await carregar(st.teclado), objetos: await carregar(st.objetos) });
+  return {
+    envelope: await carregar(ESP.envelope.img),
+    malote: { vazio: await carregar(ESP.malote.vazio), com: await carregar(ESP.malote.com) },
+    selos: Object.fromEntries(await Promise.all(Object.entries(ESP.selos).map(async ([k, v]) => [k, await carregar(v)]))),
+    sineta: await Promise.all(ESP.sineta.quadros.map(carregar)),
+    quadro: await carregar(ESP.quadro.img),
+    estSaldanha: { ...await camadas(ESP.est_saldanha), semMonitor: await carregar(ESP.est_saldanha.sem_monitor) },
+    estCaio: await camadas(ESP.est_caio),
+  };
+}
+
+// um quadro do personagem com um adereço colado (âncora do adereço no
+// ponto dado, na tela de 40 × 70): espelha junto com o personagem
+const memoAdereco = new WeakMap();
+function comAdereco(img, prop, ancora, ponto) {
+  if (!prop || !ponto) return img;
+  const chave = `${ponto[0]},${ponto[1]},${prop.src.length}`;
+  let m = memoAdereco.get(img);
+  if (!m) { m = new Map(); memoAdereco.set(img, m); }
+  if (m.has(chave)) return m.get(chave);
+  const cv = document.createElement('canvas');
+  cv.width = img.width; cv.height = img.height;
+  const c = cv.getContext('2d');
+  c.imageSmoothingEnabled = false;
+  c.drawImage(img, 0, 0);
+  c.drawImage(prop, ponto[0] - ancora[0], ponto[1] - ancora[1]);
+  m.set(chave, cv);
+  return cv;
+}
+
+// "uma vez": toca os n quadros e descansa na pose de base; devolve o
+// quadro, ou -1 no descanso
+function umaVez(t, n, fps, descanso) {
+  const ciclo = n / fps + descanso;
+  const u = t % ciclo;
+  return u < n / fps ? Math.min(n - 1, Math.floor(u * fps)) : -1;
+}
+
 Promise.all([
   carregar(CADEIRA.img),
   Promise.all(MESA.estacoes.map(async (s) => ({ ...s, fundo: await carregar(s.fundo), mesa: await carregar(s.mesa),
@@ -316,7 +388,8 @@ Promise.all([
   Promise.all(PISO.map(carregar)),
   Promise.all(Object.entries(DADOS).map(async ([cid, a]) => [cid, Object.fromEntries(
     await Promise.all(Object.entries(a).map(async ([k, v]) => [k, await Promise.all(v.map(carregar))])))])),
-]).then(([cadeiraImg, estacoes, pisoImg, lista]) => {
+  carregarEsp(),
+]).then(([cadeiraImg, estacoes, pisoImg, lista, esp]) => {
   const elenco = Object.fromEntries(lista);
   const anims = () => elenco[estado.quem];
 
@@ -474,12 +547,286 @@ Promise.all([
     return { ctx, k };
   });
 
+  // ---------------------------------------------------- ações especiais
+  const cenasEl = document.getElementById('cenas');
+  const FUNDO = '#222a46';
+  function novaCena(titulo, sub, w, h, rotulo) {
+    const c = document.createElement('div');
+    c.className = 'cena';
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    cv.style.maxWidth = `${w * 2}px`;
+    cv.setAttribute('aria-label', rotulo);
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    c.append(cv);
+    const lg = document.createElement('div');
+    lg.className = 'legenda';
+    const st = document.createElement('strong');
+    st.textContent = titulo;
+    const sp = document.createElement('span');
+    sp.textContent = sub;
+    lg.append(st, sp);
+    c.append(lg);
+    cenasEl.append(c);
+    return { ctx, cv, el: c };
+  }
+  const Q = (cid) => elenco[cid];
+  const CP = ESP.campos;
+  function limpar(cena, cor = FUNDO) { cena.ctx.fillStyle = cor; cena.ctx.fillRect(0, 0, cena.cv.width, cena.cv.height); }
+  function pisoRet(ctx, X0, Y0, na, nb) {
+    for (let s = 0; s <= na + nb - 2; s++)
+      for (let a = 0; a < na; a++) {
+        const b = s - a;
+        if (b < 0 || b >= nb) continue;
+        const [x, y] = tela(X0, Y0, a + 1, b + 1);
+        ctx.drawImage(pisoImg[(a * 7 + b * 3) % 3], x - 32, y - 32);
+      }
+  }
+  // espelhado, a coluna c da tela de 40 cai em X + (âncora - 1) - c
+  const espX = (X, c) => X + (ANCORA[0] - 1) - c;
+
+  // Gabriel no malote, como na planta: chega andando em -A (costas,
+  // espelhado) com o envelope na mão, do tile (2, 0) ao (1, 0), e para 0,4
+  // tile mais perto do malote, com a mão do Q2 na abertura; daí em diante o
+  // malote mostra o envelope
+  const cMalote = novaCena('Gabriel deixa o envelope no malote',
+    'Chega de costas, como na planta · deixando_envelope_no_malote_costas · 2 quadros · 6 FPS · solta no Q2',
+    200, 124, 'Gabriel chega de costas com o envelope e o deixa no malote');
+  function desenharMalote(t) {
+    const { ctx } = cMalote;
+    limpar(cMalote);
+    const X0 = 72, Y0 = 40;
+    pisoRet(ctx, X0, Y0, 3, 2);
+    const [bx, by] = tela(X0, Y0, 1, 1);
+    const g = Q('gabriel'), nome = 'deixando_envelope_no_malote_costas', cp = CP.gabriel[nome];
+    const [cx, cy] = tela(X0, Y0, 1.5, 0.5);
+    const alvo = [Math.round(cx - 0.4 * 32), Math.round(cy - 0.4 * 16)];
+    const ini = [alvo[0] + 64, alvo[1] + 32];
+    const u = t % 4.6;
+    let img, X, Y, com = false;
+    if (u < 2) {
+      const k = u / 2, f = Math.floor(u * 8) % 4;
+      X = Math.round(ini[0] + (alvo[0] - ini[0]) * k);
+      Y = Math.round(ini[1] + (alvo[1] - ini[1]) * k);
+      img = comAdereco(g.andando_costas[f], esp.envelope, ESP.envelope.ancora, ESP.envelope_andando.gabriel.andando_costas[f]);
+    } else {
+      [X, Y] = alvo;
+      const q = Math.floor((u - 2) * 6);
+      if (q < 2) {
+        img = q < cp.solta ? comAdereco(g[nome][q], esp.envelope, ESP.envelope.ancora, cp.envelope[q]) : g[nome][q];
+        com = q >= cp.solta;
+      } else {
+        img = g.parado_costas[0];
+        com = true;
+      }
+    }
+    ctx.drawImage(com ? esp.malote.com : esp.malote.vazio, bx - ESP.malote.ancora[0], by - ESP.malote.ancora[1]);
+    colar(ctx, img, X, Y, true);
+  }
+
+  // a mesma entrega de frente, a do manual, com o envelope no ponto de cada quadro
+  const cGabFrente = novaCena('Gabriel, de frente', 'deixando_envelope_no_malote · a do manual · o envelope no ponto de cada quadro',
+    88, 100, 'Gabriel estende o braço com o envelope, de frente');
+  function desenharGabFrente(t) {
+    limpar(cGabFrente);
+    piso(cGabFrente.ctx, pisoImg, 44, 62, 1, false);
+    const nome = 'deixando_envelope_no_malote', cp = CP.gabriel[nome];
+    const f = umaVez(t, 2, 6, 1.2);
+    const img = f < 0 ? Q('gabriel').parado_frente[0] : comAdereco(Q('gabriel')[nome][f], esp.envelope, ESP.envelope.ancora, cp.envelope[f]);
+    colar(cGabFrente.ctx, img, 44, 78, false);
+  }
+
+  // Saldanha à mesa, com o tablet no lugar do teclado
+  const cDig = novaCena('Saldanha digita no tablet', 'digitando_sentado · 2 quadros · 6 FPS · loop · tablet deitado no lugar do teclado',
+    200, 130, 'Saldanha sentado à mesa digitando no tablet');
+  // como o teclado, o tablet fica atrás do monitor, que é o encaixe único da
+  // mesa de trabalho (ponto 4 da passagem do corte 1); a caixa tira o monitor
+  estado.semMonitor = false;
+  const rotMon = document.createElement('label');
+  rotMon.innerHTML = '<input type="checkbox"> Sem o monitor';
+  rotMon.querySelector('input').addEventListener('change', (e) => { estado.semMonitor = e.target.checked; });
+  const barraMon = document.createElement('div');
+  barraMon.className = 'controles';
+  barraMon.append(rotMon);
+  cDig.el.insertBefore(barraMon, cDig.el.lastChild);
+  function desenharDig(t) {
+    const { ctx } = cDig, st = esp.estSaldanha, [ax, ay] = st.ancora, s = Q('saldanha');
+    const f = Math.floor(t * 6) % 2;
+    limpar(cDig, '#181e34');
+    ctx.drawImage(st.fundo, 0, 0);
+    colar(ctx, s.digitando_sentado[f], ax, ay, st.espelhar);
+    ctx.drawImage(st.mesa, 0, 0);
+    ctx.drawImage(st.teclado, 0, 0);
+    colar(ctx, s.digitando_sentado_tampo[f], ax, ay, st.espelhar);
+    ctx.drawImage(estado.semMonitor ? st.semMonitor : st.objetos, 0, 0);
+  }
+
+  // gestos em pé, num tile do piso
+  function cenaEmPe(titulo, sub, rotulo, cid, nome, base) {
+    const c = novaCena(titulo, sub, 88, 100, rotulo);
+    return (t) => {
+      limpar(c);
+      piso(c.ctx, pisoImg, 44, 62, 1, false);
+      const [fps, loop] = ESP.tempo[cid][nome];
+      const n = Q(cid)[nome].length;
+      const f = loop ? Math.floor(t * fps) % n : umaVez(t, n, fps, 1.2);
+      const img = f < 0 ? Q(cid)[base][0] : Q(cid)[nome][f];
+      if (cid === 'vivi' && f === CP.vivi.tirando_foto.flash_no_quadro) {
+        // o flash é de um quadro só: um clarão de leve na cena
+        c.ctx.fillStyle = 'rgba(255, 246, 214, 0.18)';
+        c.ctx.fillRect(0, 0, c.cv.width, c.cv.height);
+      }
+      colar(c.ctx, img, 44, 78, false);
+    };
+  }
+  const desenharAlerta = cenaEmPe('Saldanha em alerta', 'alerta · 2 quadros · 5 FPS · uma vez · mão na testa',
+    'Saldanha leva a mão à testa', 'saldanha', 'alerta', 'parado_frente');
+
+  // apresentando no quadro: a parede da direita com o quadro em A1–A2 e o
+  // Saldanha no ponto de uso (1, 0), olhando +A
+  const cQuadro = novaCena('Saldanha apresenta no quadro', 'apresentando_quadro · 2 quadros · 5 FPS · loop · no ponto de uso do quadro',
+    180, 188, 'Saldanha aponta para o quadro branco');
+  function desenharQuadro(t) {
+    const { ctx } = cQuadro;
+    limpar(cQuadro);
+    const X0 = 62, Y0 = 104;
+    pisoRet(ctx, X0, Y0, 3, 2);
+    const H = 100, [x0, y0] = tela(X0, Y0, 0, 0), [x1, y1] = tela(X0, Y0, 3, 0);
+    const faixa = (cor, de, ate) => {
+      ctx.fillStyle = cor;
+      ctx.beginPath(); ctx.moveTo(x0, y0 - de); ctx.lineTo(x1, y1 - de); ctx.lineTo(x1, y1 - ate); ctx.lineTo(x0, y0 - ate); ctx.closePath(); ctx.fill();
+    };
+    faixa(ESP.parede.direita, 0, H);
+    faixa(ESP.parede.rodape_direita, 0, 6);
+    const [qx, qy] = tela(X0, Y0, 1, 0);
+    ctx.drawImage(esp.quadro, qx - ESP.quadro.ancora[0], qy - ESP.quadro.altura[0] - ESP.quadro.ancora[1]);
+    const f = Math.floor(t * 5) % 2;
+    const [px_, py] = tela(X0, Y0, 1.5, 0.5);
+    colar(ctx, Q('saldanha').apresentando_quadro[f], px_, py, false);
+  }
+
+  const desenharComemora = cenaEmPe('Saldanha comemora', 'comemorando_tablet · 2 quadros · 5 FPS · uma vez · tablet erguido',
+    'Saldanha ergue o tablet acima da cabeça', 'saldanha', 'comemorando_tablet', 'parado_frente');
+
+  // Caio mostra o tablet; o selo é colado pelo jogo no ponto "selo"
+  const cCaio = novaCena('Caio mostra o tablet', 'mostrando_tablet · pose · o selo é colado pelo jogo',
+    88, 100, 'Caio mostra o tablet com o selo na tela');
+  estado.selo = 'trocando';
+  const barraSelo = document.createElement('div');
+  barraSelo.className = 'controles';
+  const botoesSelo = {};
+  for (const [k, rot] of [['trocando', 'Trocando'], ['verde', 'Verde'], ['amarelo', 'Amarelo'], ['vermelho', 'Vermelho'], ['nenhum', 'Sem selo']]) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'sec2';
+    b.textContent = rot;
+    b.setAttribute('aria-pressed', String(k === estado.selo));
+    b.addEventListener('click', () => {
+      estado.selo = k;
+      for (const [j, bb] of Object.entries(botoesSelo)) bb.setAttribute('aria-pressed', String(j === k));
+    });
+    botoesSelo[k] = b;
+    barraSelo.append(b);
+  }
+  cCaio.el.insertBefore(barraSelo, cCaio.el.lastChild);
+  function desenharCaio(t) {
+    limpar(cCaio);
+    piso(cCaio.ctx, pisoImg, 44, 62, 1, false);
+    const cores = Object.keys(ESP.selos);
+    const cor = estado.selo === 'trocando' ? cores[Math.floor(t / 1.2) % cores.length] : estado.selo;
+    const img = Q('caio').mostrando_tablet[0];
+    const pronto = cor === 'nenhum' ? img : comAdereco(img, esp.selos[cor], ESP.selo_ancora, CP.caio.mostrando_tablet.selo);
+    colar(cCaio.ctx, pronto, 44, 78, false);
+  }
+
+  const desenharVivi = cenaEmPe('Vivi tira a foto', 'tirando_foto · 2 quadros · 6 FPS · uma vez · flash no Q2',
+    'Vivi tira uma foto com o celular e o flash dispara', 'vivi', 'tirando_foto', 'parado_frente');
+
+  // a sineta na mesa do Caio, tocando de vez em quando; ele respira à mesa
+  const cSineta = novaCena('Sineta tocando', 'Na mesa do Caio · 2 quadros · 8 FPS · uma vez · vibra no Q2',
+    200, 130, 'A sineta toca na mesa do Caio');
+  function desenharSineta(t) {
+    const { ctx } = cSineta, st = esp.estCaio, [ax, ay] = st.ancora, c = Q('caio');
+    const f = Math.floor(t * 2) % 2;
+    limpar(cSineta, '#181e34');
+    ctx.drawImage(st.fundo, 0, 0);
+    colar(ctx, c.sentado_frente_idle[f], ax, ay, st.espelhar);
+    ctx.drawImage(st.mesa, 0, 0);
+    ctx.drawImage(st.teclado, 0, 0);
+    colar(ctx, c.sentado_frente_idle_tampo[f], ax, ay, st.espelhar);
+    ctx.drawImage(st.objetos, 0, 0);
+    const q = Math.max(0, umaVez(t, 2, ESP.sineta.fps, 1.35));
+    ctx.drawImage(esp.sineta[q], st.sineta[0] - ESP.sineta.ancora[0], st.sineta[1] - ESP.sineta.ancora[1]);
+  }
+
+  function desenharCenas(t) {
+    desenharMalote(t);
+    desenharGabFrente(t);
+    desenharDig(t);
+    desenharAlerta(t);
+    desenharQuadro(t);
+    desenharComemora(t);
+    desenharCaio(t);
+    desenharVivi(t);
+    desenharSineta(t);
+  }
+
+  // quadro a quadro das ações especiais
+  (function tirasEspeciais() {
+    const el = document.getElementById('tiras-especiais');
+    const lista = [];
+    for (const [cid, nomes] of Object.entries(ESP.tempo))
+      for (const [nome, [fps, loop]] of Object.entries(nomes))
+        if (!nome.endsWith('_tampo')) lista.push([cid, nome, fps, loop]);
+    for (const [cid, nome, fps, loop] of lista) {
+      const h = document.createElement('h3');
+      const n = DADOS[cid][nome].length;
+      h.textContent = `${NOMES[cid]} · ${nome} · ${n} ${n > 1 ? 'quadros' : 'quadro'} · ${fps ? `${fps} FPS · ${loop ? 'loop' : 'uma vez'}` : 'pose'}`;
+      const q = document.createElement('div');
+      q.className = 'quadros dois';
+      DADOS[cid][nome].forEach((src, i) => {
+        const f = document.createElement('div');
+        f.className = 'quadro';
+        const im = document.createElement('img');
+        im.className = 'px';
+        im.src = src;
+        im.alt = `${NOMES[cid]}, ${nome}, quadro ${i + 1}`;
+        im.width = 160; im.height = 280;
+        const s = document.createElement('span');
+        s.textContent = `Q${i + 1}`;
+        f.append(im, s);
+        q.append(f);
+      });
+      el.append(h, q);
+    }
+    const h = document.createElement('h3');
+    h.textContent = 'sineta · tocando · 2 quadros · 8 FPS · uma vez';
+    const q = document.createElement('div');
+    q.className = 'quadros dois';
+    ESP.sineta.quadros.forEach((src, i) => {
+      const f = document.createElement('div');
+      f.className = 'quadro objeto';
+      const im = document.createElement('img');
+      im.className = 'px';
+      im.src = src;
+      im.alt = `Sineta, quadro ${i + 1}`;
+      im.width = 120; im.height = 48;
+      const s = document.createElement('span');
+      s.textContent = `Q${i + 1}`;
+      f.append(im, s);
+      q.append(f);
+    });
+    el.append(h, q);
+  })();
+
   function escolher(cid) {
     estado.quem = cid;
     for (const [k, b] of Object.entries(botoes)) b.setAttribute('aria-pressed', String(k === cid));
     document.getElementById('nome-sala').textContent = NOMES[cid];
     document.getElementById('nome-mesa').textContent = NOMES[cid];
     document.getElementById('nome-cadeira').textContent = NOMES[cid];
+    document.getElementById('rot-envelope').hidden = !ESP.envelope_andando[cid];
     tiraMesa();
     tirasCadeira();
     for (const { ctx, k } of poses) {
@@ -513,21 +860,29 @@ Promise.all([
   }
   escolher(estado.quem);
 
+  // na sala, quem leva o envelope pode andar com ele na mão
+  function andando(anim, f) {
+    const env = estado.envelope && ESP.envelope_andando[estado.quem];
+    const img = anims()[anim][f];
+    return env ? comAdereco(img, esp.envelope, ESP.envelope.ancora, env[anim][f]) : img;
+  }
+
   function desenhar() {
     desenharMesa();
     desenharCadeira();
+    desenharCenas(estado.t);
     const f = Math.floor(estado.t * estado.fps) % 4;
     sctx.fillStyle = '#181e34';
     sctx.fillRect(0, 0, sala.width, sala.height);
     piso(sctx, pisoImg, SX0, SY0, 3, estado.grade);
     const pos = naVolta(estado.d % 8);
     const [x, y] = tela(SX0, SY0, pos.a, pos.b);
-    colar(sctx, anims()[pos.dir.anim][f], Math.round(x), Math.round(y), pos.dir.esp);
+    colar(sctx, andando(pos.dir.anim, f), Math.round(x), Math.round(y), pos.dir.esp);
     for (const { ctx, dir } of telas) {
       ctx.fillStyle = '#222a46';
       ctx.fillRect(0, 0, 72, 98);
       piso(ctx, pisoImg, 36, 62, 1, false);
-      colar(ctx, anims()[dir.anim][f], 36, 78, dir.esp);
+      colar(ctx, andando(dir.anim, f), 36, 78, dir.esp);
     }
   }
 
@@ -560,6 +915,8 @@ Promise.all([
     document.getElementById('vel-v').textContent = `${String(estado.vel).replace('.', ',')} tile/s`;
   });
   document.getElementById('grade').addEventListener('change', (e) => { estado.grade = e.target.checked; });
+  estado.envelope = true;
+  document.getElementById('envelope').addEventListener('change', (e) => { estado.envelope = e.target.checked; });
   document.getElementById('mesa-anim').addEventListener('change', (e) => { estado.mesaAnim = e.target.value; tiraMesa(); });
   document.getElementById('piscar').addEventListener('change', (e) => { estado.piscar = e.target.checked; });
   document.getElementById('falar').addEventListener('change', (e) => { estado.falar = e.target.checked; });

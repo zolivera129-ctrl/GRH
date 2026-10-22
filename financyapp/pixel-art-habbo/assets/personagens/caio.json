@@ -466,6 +466,28 @@
           0
         ]
       ]
+    },
+    "mostrando_tablet": {
+      "linha": 18,
+      "quadros": 1,
+      "fps": 0,
+      "direcao": "frente",
+      "rosto": [
+        [
+          0,
+          0
+        ]
+      ],
+      "tela": [
+        1,
+        18,
+        9,
+        27
+      ],
+      "selo": [
+        5,
+        22
+      ]
     }
   }
 }

@@ -47,6 +47,24 @@
       "quadros": 4,
       "fps": 8,
       "loop": true,
+      "envelope": [
+        [
+          31,
+          50
+        ],
+        [
+          30,
+          49
+        ],
+        [
+          28,
+          50
+        ],
+        [
+          28,
+          49
+        ]
+      ],
       "rosto": [
         [
           0,
@@ -70,7 +88,25 @@
       "linha": 5,
       "quadros": 4,
       "fps": 8,
-      "loop": true
+      "loop": true,
+      "envelope": [
+        [
+          27,
+          51
+        ],
+        [
+          28,
+          50
+        ],
+        [
+          31,
+          51
+        ],
+        [
+          30,
+          50
+        ]
+      ]
     },
     "sentado_frente_idle": {
       "linha": 6,
@@ -466,6 +502,95 @@
           0
         ]
       ]
+    },
+    "digitando_sentado": {
+      "linha": 18,
+      "quadros": 2,
+      "fps": 6,
+      "loop": true,
+      "direcao": "frente",
+      "rosto": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "tampo": "digitando_sentado_tampo",
+      "maos": [
+        [
+          [
+            27,
+            54
+          ],
+          [
+            34,
+            50
+          ]
+        ],
+        [
+          [
+            27,
+            53
+          ],
+          [
+            34,
+            51
+          ]
+        ]
+      ],
+      "mesa": "mesa",
+      "no_lugar_do_teclado": "tablet"
+    },
+    "digitando_sentado_tampo": {
+      "linha": 19,
+      "quadros": 2,
+      "fps": 6,
+      "loop": true,
+      "direcao": "frente",
+      "camada_de": "digitando_sentado"
+    },
+    "alerta": {
+      "linha": 20,
+      "quadros": 2,
+      "fps": 5,
+      "direcao": "frente"
+    },
+    "apresentando_quadro": {
+      "linha": 21,
+      "quadros": 2,
+      "fps": 5,
+      "loop": true,
+      "direcao": "frente",
+      "rosto": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "dedo": [
+        [
+          37,
+          31
+        ],
+        [
+          39,
+          27
+        ]
+      ]
+    },
+    "comemorando_tablet": {
+      "linha": 22,
+      "quadros": 2,
+      "fps": 5,
+      "direcao": "frente"
     }
   }
 }

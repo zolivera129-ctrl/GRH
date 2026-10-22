@@ -67,6 +67,47 @@ def estacoes(ids):
     return list(por_chave.values()), de_quem
 
 
+def especiais_dados(todos, man):
+    """O que a seção das ações especiais precisa além dos quadros: os
+    campos do manifesto, os adereços e as cenas (a estação do Saldanha com o
+    tablet no lugar do teclado, a do Caio sem a sineta, que toca à parte)."""
+    import especiais
+    A = os.path.join(AQUI, '..', 'assets')
+
+    def arq(rel):
+        return png64(Image.open(os.path.join(A, rel)).convert('RGBA'))
+    campos = {cid: {n: animacoes.campos(cid, n, len(todos[cid][n])) for n in nomes}
+              for cid, nomes in especiais.ESPECIAIS.items()}
+    tempo = {cid: {n: list(animacoes.tempo(cid, n)) for n in nomes} for cid, nomes in especiais.ESPECIAIS.items()}
+    envelope = {cid: {n: animacoes.campos(cid, n, 4)['envelope'] for n in ('andando_frente', 'andando_costas')}
+                for cid in especiais.CARREGA_ENVELOPE}
+    fundo, mesa, tablet, objs, esp = escritorio.camadas_da_estacao('saldanha', no_teclado='tablet')
+    sem_monitor = escritorio.camadas_da_estacao('saldanha', no_teclado='tablet', sem=('monitor',))[3]
+    est_saldanha = {'fundo': png64(fundo), 'mesa': png64(mesa), 'teclado': png64(tablet),
+                    'objetos': png64(objs), 'sem_monitor': png64(sem_monitor), 'espelhar': esp, 'ancora': [100, 84]}
+    pos = {}
+    fundo, mesa, teclado, objs, esp = escritorio.camadas_da_estacao('caio', sem=('sineta',), posicoes=pos)
+    est_caio = {'fundo': png64(fundo), 'mesa': png64(mesa), 'teclado': png64(teclado),
+                'objetos': png64(objs), 'espelhar': esp, 'ancora': [100, 84], 'sineta': list(pos['sineta'])}
+    sin = man['sineta']['animacoes']['tocando']
+    tira = Image.open(os.path.join(A, sin['folha'])).convert('RGBA')
+    w, h = sin['tela']
+    return {
+        'campos': campos, 'tempo': tempo, 'envelope_andando': envelope,
+        'envelope': {'img': arq('objetos/envelope.png'), 'ancora': man['envelope']['ancora']},
+        'malote': {'vazio': arq('moveis/malote__vazio.png'), 'com': arq('moveis/malote__com-envelope.png'),
+                   'ancora': man['malote']['ancora'], 'abertura': man['malote']['abertura']},
+        'selos': {c: arq(f'objetos/selo_tablet__{c}.png') for c in man['selo_tablet']['estados']},
+        'selo_ancora': man['selo_tablet']['ancora'],
+        'sineta': {'quadros': [png64(tira.crop((w * k, 0, w * (k + 1), h))) for k in range(sin['quadros'])],
+                   'ancora': sin['ancora'], 'fps': sin['fps'], 'toque': sin['toque']},
+        'quadro': {'img': arq('parede/quadro_branco__limpo.png'), 'ancora': man['quadro_branco']['ancora'],
+                   'altura': man['quadro_branco']['altura']},
+        'parede': man['parede']['cores'],
+        'est_saldanha': est_saldanha, 'est_caio': est_caio,
+    }
+
+
 def pagina(todos):
     dados = {cid: {k: [png64(f) for f in v] for k, v in a.items()} for cid, a in todos.items()}
     lista, de_quem = estacoes(list(todos))
@@ -84,6 +125,7 @@ def pagina(todos):
     piso = [png64(Image.open(os.path.join(PISO, f'piso_madeira__{i}.png'))) for i in (1, 2, 3)]
     modelo = open(os.path.join(AQUI, 'previa_animacoes.html'), encoding='utf-8').read()
     return (modelo.replace('__DADOS__', json.dumps(dados))
+            .replace('__ESPECIAIS__', json.dumps(especiais_dados(todos, man), ensure_ascii=False))
             .replace('__MESA__', json.dumps(mesa))
             .replace('__CADEIRA__', json.dumps(cadeira_))
             .replace('__NOMES__', json.dumps(nomes, ensure_ascii=False))

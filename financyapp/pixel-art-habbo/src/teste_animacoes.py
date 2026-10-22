@@ -1,5 +1,5 @@
 """Testes do manual de animações (§9.2) que valem para o que já existe,
-para os 12 humanos.
+para os 12 humanos, e os das ações especiais (itens 9 a 11).
 
     python3 src/teste_animacoes.py
 """
@@ -9,10 +9,12 @@ from collections import Counter
 import anim
 import animacoes
 import costas
+import especiais
 from anim import PE    # a linha do chão, a âncora (o bbox termina aqui)
 
 CACHE = {}
-CAMADAS = {n for n in animacoes.ANIMACOES if n.endswith('_tampo')} | set(animacoes.SOBREPOSICOES)
+CAMADAS = ({n for n in animacoes.ANIMACOES if n.endswith('_tampo')} | set(animacoes.SOBREPOSICOES)
+           | {n for e in especiais.ESPECIAIS.values() for n in e if n.endswith('_tampo')})
 
 
 def todos():
@@ -29,7 +31,7 @@ class Humanos(unittest.TestCase):
 
     def test_lista_de_animacoes(self):
         for cid, a in self.t.items():
-            self.assertEqual(list(a), list(animacoes.ANIMACOES), cid)
+            self.assertEqual(list(a), animacoes.nomes(cid), cid)
 
     def test_tela_40x70_sem_meio_tom(self):
         # 1. 40 × 70, pixels inteiros e transparência sem meio-termo
@@ -70,7 +72,10 @@ class Humanos(unittest.TestCase):
                     if im.getbbox() is None:
                         continue            # quadro vazio de sobreposição
                     x0, y0, x1, y1 = im.getbbox()
-                    self.assertTrue(x0 > 0 and y0 > 0 and x1 <= 40, (cid, nome, i))
+                    # o tablet do desenho original do Caio encosta na
+                    # coluna 0 (encosta, não corta)
+                    esq = 0 if (cid, nome) == ('caio', 'mostrando_tablet') else 1
+                    self.assertTrue(x0 >= esq and y0 > 0 and x1 <= 40, (cid, nome, i))
 
     def test_caminhada_quatro_poses_distintas(self):
         # 6. quatro poses visualmente distintas
@@ -255,6 +260,159 @@ class Humanos(unittest.TestCase):
                 q = a[nome]
                 for k in range(1, len(q)):
                     self.assertNotEqual(q[k].tobytes(), q[k - 1].tobytes(), (cid, nome, k))
+
+
+
+# ------------------------------------------------------------ fase 5
+def pixels(im, cor=None):
+    return {(x, y) for y in range(im.height) for x in range(im.width)
+            if im.getpixel((x, y))[3] and (cor is None or im.getpixel((x, y))[:3] == cor)}
+
+
+def da_mao(cid, im):
+    """Os pixels de pele (base, sombra e contorno) de um quadro."""
+    P = costas.Costas(costas.HUMANOS[cid][0]).P
+    return set().union(*(pixels(im, P[k]) for k in ('sk', 'sks', 'skline')))
+
+
+def perto(p, pts, r=2):
+    return any(abs(p[0] - q[0]) <= r and abs(p[1] - q[1]) <= r for q in pts)
+
+
+class Especiais(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.t = todos()
+
+    def test_resumo_8_2(self):
+        # 13. id, quadros, FPS e modo de cada ação, como no resumo 8.2
+        esperado = {
+            ('gabriel', 'deixando_envelope_no_malote'): (2, 6, False),
+            ('saldanha', 'digitando_sentado'): (2, 6, True),
+            ('saldanha', 'alerta'): (2, 5, False),
+            ('saldanha', 'apresentando_quadro'): (2, 5, True),
+            ('saldanha', 'comemorando_tablet'): (2, 5, False),
+            ('caio', 'mostrando_tablet'): (1, 0, False),
+            ('vivi', 'tirando_foto'): (2, 6, False),
+        }
+        for (cid, nome), (n, fps, loop) in esperado.items():
+            self.assertEqual(len(self.t[cid][nome]), n, (cid, nome))
+            self.assertEqual(animacoes.tempo(cid, nome), (fps, loop), (cid, nome))
+            self.assertEqual(especiais.ESPECIAIS[cid][nome][2], 'frente', (cid, nome))
+
+    def test_so_quem_tem(self):
+        # as ações especiais ficam só na folha de quem faz
+        for cid, a in self.t.items():
+            extras = set(a) - set(animacoes.ANIMACOES)
+            self.assertEqual(extras, set(especiais.ESPECIAIS.get(cid, {})), cid)
+
+    def test_envelope_na_mao_andando(self):
+        # 9. o envelope fica na mão nos quatro passos: o ponto de cada quadro
+        # encosta na mão daquele quadro (pele a até 2 px)
+        for cid in especiais.CARREGA_ENVELOPE:
+            for nome in ('andando_frente', 'andando_costas'):
+                marcas = animacoes.campos(cid, nome, 4)['envelope']
+                self.assertEqual(len(marcas), 4, (cid, nome))
+                for k, (im, p) in enumerate(zip(self.t[cid][nome], marcas)):
+                    self.assertTrue(perto(tuple(p), da_mao(cid, im)), (cid, nome, k, p))
+                # acompanha a mão: o ponto muda entre os quadros
+                self.assertGreater(len({tuple(p) for p in marcas}), 1, (cid, nome))
+
+    def test_envelope_sai_no_q2(self):
+        # 9. a entrega: envelope na mão no Q1, solto no Q2, com a mão perto
+        # do ponto em cada quadro
+        for nome in ('deixando_envelope_no_malote', 'deixando_envelope_no_malote_costas'):
+            c = animacoes.campos('gabriel', nome, 2)
+            self.assertEqual(c['solta'], 1, nome)
+            for k, (im, p) in enumerate(zip(self.t['gabriel'][nome], c['envelope'])):
+                self.assertTrue(perto(tuple(p), da_mao('gabriel', im), 1), (nome, k, p))
+        # de frente, a mão vai para onde o manual diz, com até 2 px de ajuste
+        c = animacoes.campos('gabriel', 'deixando_envelope_no_malote', 2)
+        for (x, y), (mx, my) in zip(c['envelope'], ((36, 36), (38, 42))):
+            self.assertLessEqual(max(abs(x - mx), abs(y - my)), 2)
+
+    def test_selo_dentro_da_tela_do_caio(self):
+        # 10. o selo cabe na tela, sem cobrir moldura nem mão; um selo por cor
+        from PIL import Image
+        c = animacoes.campos('caio', 'mostrando_tablet', 1)
+        x0, y0, x1, y1 = c['tela']
+        im = self.t['caio']['mostrando_tablet'][0]
+        branco = (0xF5, 0xF7, 0xF8)
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                self.assertEqual(im.getpixel((x, y))[:3], branco, (x, y))
+        for cor in especiais.SELOS:
+            s, (ax, ay) = especiais.selo(cor)
+            sx, sy = c['selo'][0] - ax, c['selo'][1] - ay
+            self.assertTrue(x0 <= sx and sx + s.width - 1 <= x1 and y0 <= sy and sy + s.height - 1 <= y1, cor)
+        # e a tela do Saldanha não tem selo: nenhum dos verdes do check
+        for nome in especiais.ESPECIAIS['saldanha']:
+            for im in self.t['saldanha'][nome]:
+                for cor in especiais.VERDES:
+                    self.assertFalse(pixels(im, cor), nome)
+
+    def test_flash_so_no_q2(self):
+        # 11. o flash aparece no Q2 e não fica resíduo no Q1
+        q = self.t['vivi']['tirando_foto']
+        clarao = especiais.flash(*especiais.FLASH)
+        self.assertTrue(all(q[1].getpixel(p)[:3] == c for p, c in clarao.items()))
+        self.assertFalse(any(q[0].getpixel(p)[:3] == c for p, c in clarao.items()))
+        self.assertEqual(animacoes.campos('vivi', 'tirando_foto', 2)['flash_no_quadro'], 1)
+
+    def test_sineta_vibra_no_q2(self):
+        # 11. a sineta vibra no Q2 e volta ao normal: o Q1 é a parada, a base
+        # não mexe e o tamanho não muda
+        import office
+        quadros, (ax, ay) = office.bell_ringing()
+        parada, (px_, py) = office.bell()
+        m = office.SINETA_MARGEM
+        self.assertEqual((ax, ay), (px_ + m, py))
+        q1 = quadros[0].crop((m, 0, m + parada.width, parada.height))
+        self.assertEqual(q1.tobytes(), parada.tobytes())
+        self.assertNotEqual(quadros[1].tobytes(), quadros[0].tobytes())
+        base = (0, parada.height - 1, quadros[0].width, parada.height)
+        self.assertEqual(quadros[1].crop(base).tobytes(), quadros[0].crop(base).tobytes())
+
+    def test_relogio_do_saldanha_fica_no_braco(self):
+        # 5. o smartwatch não some nem troca de braço nos gestos: fica no
+        # braço da direita da tela (o de trás, de frente)
+        preto = (20, 20, 22)
+        for nome in ('alerta', 'apresentando_quadro', 'comemorando_tablet', 'digitando_sentado'):
+            for k, im in enumerate(self.t['saldanha'][nome]):
+                rel = pixels(im, preto)
+                self.assertTrue(rel, (nome, k))
+                self.assertTrue(all(x >= 20 for x, _ in rel), (nome, k, rel))
+
+    def test_digitando_so_mexe_cabeca_e_maos(self):
+        # 5.2: tronco e pernas parados, o tablet (objeto) não trepida
+        a = self.t['saldanha']
+        tampo = set()
+        for im in a['digitando_sentado_tampo']:
+            tampo |= pixels(im)
+        q0, q1 = a['digitando_sentado']
+        for y in range(PE - 12, 70):
+            for x in range(40):
+                if (x, y) not in tampo:
+                    self.assertEqual(q0.getpixel((x, y)), q1.getpixel((x, y)), (x, y))
+
+    def test_comemorando_tablet_no_alto(self):
+        # 5.5: o tablet acima da cabeça, sem cortar: topo em y 2 no Q1 e 1 no Q2
+        for k, topo in enumerate((2, 1)):
+            im = self.t['saldanha']['comemorando_tablet'][k]
+            self.assertEqual(im.getbbox()[1], topo, k)
+
+    def test_rosto_das_acoes(self):
+        # o "rosto" leva a pupila do parado até a pupila do quadro, para
+        # piscar e falar irem no lugar certo
+        for cid, nomes in especiais.ESPECIAIS.items():
+            n = anim.folga(costas.HUMANOS[cid][0])
+            pupila = self.t[cid]['parado_frente'][0].getpixel((19, 17 + n))
+            for nome in nomes:
+                marcas = animacoes.campos(cid, nome, len(self.t[cid][nome])).get('rosto')
+                if not marcas:
+                    continue
+                for k, (im, (dx, dy)) in enumerate(zip(self.t[cid][nome], marcas)):
+                    self.assertEqual(im.getpixel((19 + dx, 17 + n + dy)), pupila, (cid, nome, k))
 
 
 if __name__ == '__main__':

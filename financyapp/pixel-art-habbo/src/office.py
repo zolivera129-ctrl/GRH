@@ -752,20 +752,46 @@ def tray(state='vazia'):
     return iso.image(anchor_at=(0.5, 0.5, 0))
 
 
-def bell(state='parada'):
-    """Sineta de balcão, parada."""
+def bell(state='parada', dx=0):
+    """Sineta de balcão, parada. dx desloca a cúpula e o botão (o toque)."""
     iso = Iso(1, 1, 30)
     bx, by = iso.scr(0.5, 0.5, 0)
-    for dx in range(-4, 5):
-        iso.put(bx + dx, by, rgb('#2A2A2E'))
+    for k in range(-4, 5):
+        iso.put(bx + k, by, rgb('#2A2A2E'))
     dome = {-1: range(-3, 4), -2: range(-3, 4), -3: range(-2, 3), -4: range(-1, 2)}
     for dy, xs in dome.items():
-        for dx in xs:
-            iso.put(bx + dx, by + dy, rgb('#E2B648') if dx < 1 else rgb('#C7972F'))
-    iso.put(bx - 2, by - 3, rgb('#FFF0B0'))
-    iso.put(bx - 1, by - 3, rgb('#FFE08A'))
-    iso.put(bx, by - 5, rgb('#8A6A20'))
+        for k in xs:
+            iso.put(bx + dx + k, by + dy, rgb('#E2B648') if k < 1 else rgb('#C7972F'))
+    iso.put(bx + dx - 2, by - 3, rgb('#FFF0B0'))
+    iso.put(bx + dx - 1, by - 3, rgb('#FFE08A'))
+    iso.put(bx + dx, by - 5, rgb('#8A6A20'))
     return iso.image(anchor_at=(0.5, 0.5, 0))
+
+
+# sineta tocando (manual §7): 2 quadros, 8 FPS, uma vez. A tela ganha 3 px
+# de cada lado para as linhas de vibração; a sineta não muda de tamanho nem
+# de cor. Q1 é a sineta parada; no Q2 a cúpula e o botão andam 1 px e
+# aparecem duas linhas curtas de cada lado. A base não mexe.
+SINETA_MARGEM = 3
+
+
+def bell_ringing():
+    """Os dois quadros do toque, na mesma tela, e a âncora (a da parada,
+    somada a margem)."""
+    linha = (0x8A, 0x6A, 0x20, 255)
+    # duas linhas curtas de cada lado, abrindo para fora, na altura da cúpula
+    vibra = [(2, 1), (1, 2), (2, 3), (1, 4), (13, 1), (14, 2), (13, 3), (14, 4)]
+    quadros = []
+    for dx in (0, 1):
+        im, _ = bell(dx=dx)
+        tela = Image.new('RGBA', (im.width + 2 * SINETA_MARGEM, im.height), (0, 0, 0, 0))
+        tela.alpha_composite(im, (SINETA_MARGEM, 0))
+        if dx:
+            for p in vibra:
+                tela.putpixel(p, linha)
+        quadros.append(tela)
+    ax, ay = bell()[1]
+    return quadros, [ax + SINETA_MARGEM, ay]
 
 
 def headset(state=None):
@@ -817,6 +843,30 @@ def keyboard(direcao='frente-esq'):
     return iso.image(anchor_at=((s0 + s1) / 2, (t0 + t1) / 2, 0))
 
 
+def tablet_lying(direcao='frente-esq'):
+    """O tablet do Saldanha deitado no tampo, na frente de quem senta, no
+    lugar do teclado (digitando_sentado): borda prateada e a tela acesa,
+    virada para cima. direcao como no teclado; móvel não espelha. A âncora
+    é o centro da base, no tampo."""
+    iso = Iso(1, 1, 30)
+    prata, prata_s, prata_e = rgb('#C3C7CF'), rgb('#A3A8B2'), rgb('#7C818C')
+    tela, tela_l = rgb('#8FD0F4'), rgb('#CDEBFA')
+    if direcao == 'frente-esq':
+        s0, s1, t0, t1 = 0.33, 0.67, 0.38, 0.62
+    else:
+        s0, s1, t0, t1 = 0.38, 0.62, 0.33, 0.67
+
+    def face(f, s, t, z, c):
+        if f != 'top':
+            return c
+        u, v = (s - s0) / (s1 - s0), (t - t0) / (t1 - t0)
+        if 0.14 < u < 0.86 and 0.16 < v < 0.84:
+            return tela_l if abs(u - v) < 0.12 else tela
+        return c
+    iso.box(s0, s1, t0, t1, 0, 1, prata, prata_s, prata_e, tex=face)
+    return iso.image(anchor_at=((s0 + s1) / 2, (t0 + t1) / 2, 0))
+
+
 # onde vai o teclado: a âncora dele em relação ao pé do personagem, na tela,
 # por móvel; fica embaixo das mãos da pose da mesa (escritorio.maos), um
 # pouco à frente dos dedos
@@ -840,9 +890,14 @@ def reception_counter():
     return iso.image()
 
 
+ENVELOPE = (rgb('#F3EFE2'), rgb('#DCD5C2'), rgb('#B5AD98'))
+
+
 def mailbox(state='vazio'):
     """Malote: caixa de correio azul num pé, 30 px, encostada na parede
-    esquerda. A abertura olha para +A; a bandeirinha fica do lado +B."""
+    esquerda. A abertura olha para +A; a bandeirinha fica do lado +B.
+    state='com-envelope': o envelope que o Gabriel deixou, com a ponta para
+    fora da abertura."""
     iso = Iso(1, 1, 40)
     blue = (rgb('#5B7EAA'), rgb('#4A6C98'), rgb('#36527A'))
     iso.box(0.28, 0.42, 0.42, 0.56, 0, 10, *METAL)
@@ -860,7 +915,20 @@ def mailbox(state='vazio'):
         return None
     iso.face_paint('right', 0.62, 0.24, 0.76, 10, 28, front)
     iso.box(0.38, 0.58, 0.76, 0.79, 14, 17, rgb('#E24A40'), rgb('#D7352E'), rgb('#A82620'))
+    if state == 'com-envelope':
+        # o envelope deitado na abertura, com a ponta para fora (para +A)
+        iso.box(0.6, 0.7, 0.34, 0.6, 23, 24, *ENVELOPE, hi=False)
     return iso.image()
+
+
+def mailbox_slot():
+    """A abertura do malote na imagem: o meio dos pixels escuros da fenda.
+    É onde a mão do Gabriel solta o envelope (o marcador do Q2)."""
+    im, _ = mailbox()
+    escuro = (0x14, 0x1A, 0x26, 255)
+    pts = [(x, y) for y in range(im.height) for x in range(im.width) if im.getpixel((x, y)) == escuro]
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    return [round(sum(xs) / len(xs)), round(sum(ys) / len(ys))]
 
 
 def plant(state='viva'):
@@ -958,7 +1026,7 @@ def _humano(cid):
     tela de 40 × 70, com a sola na linha da âncora."""
     def quadros(nome):
         return lambda: _QUADROS.setdefault(cid, animacoes.quadros(cid))[nome]
-    return {nome: quadros(nome) for nome in animacoes.ANIMACOES}
+    return {nome: quadros(nome) for nome in animacoes.nomes(cid)}
 
 
 _QUADROS = {}
@@ -1035,7 +1103,7 @@ def character(cid, anims):
             sheet.alpha_composite(f, (w * k + dx, h * i + dy))
     animacoes_ = {}
     for i, (name, fs) in enumerate(frames.items()):
-        fps, loop = animacoes.ANIMACOES.get(name, (0, False))
+        fps, loop = animacoes.tempo(cid, name) if cid in animacoes.HUMANOS else (0, False)
         animacoes_[name] = {'linha': i, 'quadros': len(fs), 'fps': fps, **({'loop': True} if loop else {})}
         if cid in animacoes.HUMANOS:
             animacoes_[name].update(animacoes.campos(cid, name, len(fs)))
@@ -1093,6 +1161,10 @@ def check(man):
             assert e['ancora'][0] == 0 and 0 < e['ancora'][1] <= h, modelo
         else:
             assert 0 <= e['ancora'][0] < w and 0 <= e['ancora'][1] <= h, modelo
+        for nome, a in e.get('animacoes', {}).items():
+            tira = Image.open(os.path.join(ROOT, a['folha']))
+            assert tira.size == (a['tela'][0] * a['quadros'], a['tela'][1]), (modelo, nome)
+            assert 0 <= a['ancora'][0] < a['tela'][0] and 0 <= a['ancora'][1] <= a['tela'][1], (modelo, nome)
 
 
 def check_layout(man):
@@ -1171,6 +1243,11 @@ def build():
     movel('mesa_reuniao', round_table(), [2, 2])
     movel('balcao_recepcao', reception_counter(), [1, 3])
     movel('malote', mailbox(), [1, 1], 'vazio')
+    # fase 5: o envelope que o Gabriel deixou, na abertura; e onde fica a
+    # abertura, para o jogo encostar a mão do Q2 da entrega nela
+    save(mailbox('com-envelope')[0], 'moveis/malote__com-envelope.png')
+    man['malote']['estados'].append('com-envelope')
+    man['malote']['abertura'] = mailbox_slot()
     movel('planta', plant(), [1, 1], 'viva')
     movel('manta_flora', flora_blanket(), [1, 1])
     movel('caminha_lupin', lupin_bed(), [1, 1])
@@ -1192,6 +1269,33 @@ def build():
         save(im, f'objetos/teclado__{d}.png')
     man['teclado'] = {'pasta': 'objetos', 'ancora': anchor, 'direcoes': ['frente-esq', 'frente-dir'],
                       'no_personagem': TECLADO_NO_PERSONAGEM}
+
+    # fase 5 (ações especiais): adereços que o jogo cola, fora da planta
+    import especiais
+    # o tablet do Saldanha deitado no tampo, no lugar do teclado
+    for d in ('frente-esq', 'frente-dir'):
+        im, anchor = tablet_lying(d)
+        save(im, f'objetos/tablet__{d}.png')
+    man['tablet'] = {'pasta': 'objetos', 'ancora': anchor, 'direcoes': ['frente-esq', 'frente-dir'],
+                     'no_personagem': TECLADO_NO_PERSONAGEM}
+    # o envelope na mão (marcador "envelope" de cada quadro)
+    im, anchor = especiais.envelope()
+    man['envelope'] = {'pasta': 'objetos', 'ancora': anchor}
+    save(im, 'objetos/envelope.png')
+    # os selos da tela do tablet do Caio (marcador "selo" do mostrando_tablet)
+    for cor in especiais.SELOS:
+        im, anchor = especiais.selo(cor)
+        save(im, f'objetos/selo_tablet__{cor}.png')
+    man['selo_tablet'] = {'pasta': 'objetos', 'ancora': anchor, 'estados': list(especiais.SELOS)}
+    # a sineta tocando: 2 quadros lado a lado, na tela com margem
+    quadros, anchor = bell_ringing()
+    w, h = quadros[0].size
+    tira = Image.new('RGBA', (w * len(quadros), h), (0, 0, 0, 0))
+    for k, q in enumerate(quadros):
+        tira.alpha_composite(q, (w * k, 0))
+    man['sineta']['animacoes'] = {'tocando': {
+        'folha': save(tira, 'objetos/sineta__tocando.png'), 'tela': [w, h], 'ancora': anchor,
+        'quadros': len(quadros), 'fps': 8, 'toque': 1}}
 
     check(man)
     layout = check_layout(man)

@@ -72,12 +72,12 @@ def _cores(pts):
     return base, sombra, linha
 
 
-def pele_do_rosto(ops, n):
+def pele_do_rosto(ops, n, sentado=True):
     """A pele de verdade, tirada da cabeça (a camada do _neck_head, na pose
-    sentada e já descida n px): base, sombra, contorno e luz. No braço solto,
-    de 4 px, o contorno aparece tanto quanto a pele, e a cor mais frequente
-    pode ser o contorno."""
-    d = chars.SIT_DY + n
+    sentada, ou em pé, e já descida n px): base, sombra, contorno e luz. No
+    braço solto, de 4 px, o contorno aparece tanto quanto a pele, e a cor
+    mais frequente pode ser o contorno."""
+    d = (chars.SIT_DY if sentado else 0) + n
     cabeca = next(op for op in ops if op[0] == 'camada' and anim._caixa(op[1]) == (10, 9 + d, 28, 25 + d))
     pts = cabeca[1]
     base = Counter(pts.values()).most_common(1)[0][0]
@@ -112,14 +112,29 @@ def braco_de_frente(F, grupo, pele):
     punho = punho.most_common(1)[0] if punho else None
     punho = punho[0] if punho and punho[1] >= 3 else None
     # faixas do pulso: cores da camada de pele que não são pele nem
-    # contorno de pele, em ordem de cima para baixo
+    # contorno de pele, em ordem de cima para baixo. As cores do próprio
+    # braço (pele, sombra e contorno, que podem não ser as do rosto) são as
+    # das três linhas de cima da camada, onde nunca há faixa; o relógio e a
+    # pulseira podem estar pintados dentro da camada ou soltos por cima.
     sk, sks, skl, _ = pele
-    pele_solta = set(pele_op[1].values())       # inclui o contorno e a sombra do braço
-    faixas = {}
     topo_pele = min(y for _, y in pele_op[1])
+    do_braco = {c for (x, y), c in pele_op[1].items() if y <= topo_pele + 2}
+    faixas = {}
+    # um pixel só na borda do lado do tronco (o fim do cinto que caiu em
+    # cima do contorno do braço) não é pulseira
+    borda = {}
+    for (x, y) in pele_op[1]:
+        a, b = borda.get(y, (x, x))
+        borda[y] = (min(a, x), max(b, x))
     for (x, y), c in pts_pele.items():
-        if c not in pele_solta and c not in (sk, sks, skl):
+        if c not in do_braco and c not in (sk, sks, skl):
             faixas.setdefault(y - topo_pele, Counter())[c] += 1
+    for k in list(faixas):
+        y = k + topo_pele
+        lado_tronco = borda[y][0] if grupo == 'braco_tras' else borda[y][1]
+        dentro = [x for (x, yy), c in pts_pele.items() if yy == y and c in faixas[k] and x != lado_tronco]
+        if not dentro:
+            del faixas[k]
     faixas = [v.most_common(1)[0][0] for k, v in sorted(faixas.items())]
     return {'manga': (mb, ms, ml), 'fim_manga': fim, 'topo_manga': min(y for _, y in manga[1]),
             'punho': punho, 'faixas': faixas}
@@ -216,10 +231,14 @@ def braco_mesa(info, pele, lado, tampo):
         if (x, my - 1) in P.px and P.px[(x, my - 1)] != skl:
             P.px[(x, my - 1)] = luz
     # faixas do pulso (relógio, pulseira, munhequeira): listras de pé no
-    # antebraço, logo antes da mão, na ordem em que estão no braço solto
+    # antebraço, logo antes da mão, na ordem em que estão no braço solto.
+    # No braço de trás, o antebraço que aparece (fora do tronco) é só a
+    # coluna logo antes da mão; a listra vai nela, e só abaixo do cotovelo
+    # (no braço de cima, a mesma coluna é pele do braço, não do pulso).
+    recuo = 3 if lado == 'frente' else 2
     for k, cor in enumerate(info['faixas']):
-        x = xw - 3 - len(info['faixas']) + 1 + k
-        for y in range(0, 70):
+        x = xw - recuo - len(info['faixas']) + 1 + k
+        for y in range(E + 1, 70):
             if (x, y) in P.px and P.px[(x, y)] not in (skl,):
                 P.px[(x, y)] = cor
 
@@ -318,14 +337,17 @@ def so_tampo(ops, mov=None):
     return anim.montar(ops, mov or {}, so_grupos=TAMPO_GRUPOS)
 
 
-def camadas_da_estacao(cid, W=200, H=130, ax=100, ay=84):
+def camadas_da_estacao(cid, W=200, H=130, ax=100, ay=84, sem=(), no_teclado='teclado', posicoes=None):
     """A estação de trabalho de cid em camadas, como o jogo monta, lidas do
     layout e do manifesto: fundo (piso e cadeira), mesa e objetos sobre ela.
     O personagem vai entre o fundo e a mesa, com o pé em (ax, ay); a camada
     do tampo vai entre a mesa e os objetos. Quem não tem estação própria usa
     a estação flexível; a Vivi, o balcão da recepção.
     Devolve (fundo, mesa, teclado, objetos, espelhar); o teclado vai entre
-    a mesa e a camada do tampo."""
+    a mesa e a camada do tampo. sem: objetos da mesa que ficam de fora (o
+    jogo anima: a sineta tocando); no_teclado: o que vai no lugar do
+    teclado ('tablet' no digitando_sentado); posicoes: se der um dict, ele
+    recebe onde cada objeto da mesa foi colado (a âncora, na tela)."""
     import json
     import os
     from PIL import Image
@@ -364,12 +386,17 @@ def camadas_da_estacao(cid, W=200, H=130, ax=100, ay=84):
     mx, my = P(ma + mda, mb + mdb)
     colar(frente, arq(f"moveis/{mesa['modelo']}.png"), e['ancora'], mx, my)
     for obj in mesa.get('objetos', []):
+        pos = (mx + e['encaixes'][obj][0], my + e['encaixes'][obj][1])
+        if posicoes is not None:
+            posicoes[obj] = pos
+        if obj in sem:
+            continue
         o = man[obj]
         nomeobj = f"objetos/{obj}__{o['estados'][0]}.png" if o.get('estados') else f'objetos/{obj}.png'
-        colar(objs, arq(nomeobj), o['ancora'], mx + e['encaixes'][obj][0], my + e['encaixes'][obj][1])
-    t = man['teclado']
+        colar(objs, arq(nomeobj), o['ancora'], *pos)
+    t = man[no_teclado]
     dx, dy = t['no_personagem'][TAMPO.get(cid, 'mesa')]
-    colar(teclado, arq(f'objetos/teclado__{direcao}.png'), t['ancora'], ax + dx, ay + dy)
+    colar(teclado, arq(f'objetos/{no_teclado}__{direcao}.png'), t['ancora'], ax + dx, ay + dy)
     return fundo, frente, teclado, objs, espelhar
 
 

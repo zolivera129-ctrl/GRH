@@ -47,6 +47,24 @@
       "quadros": 4,
       "fps": 8,
       "loop": true,
+      "envelope": [
+        [
+          31,
+          50
+        ],
+        [
+          30,
+          49
+        ],
+        [
+          28,
+          50
+        ],
+        [
+          28,
+          49
+        ]
+      ],
       "rosto": [
         [
           0,
@@ -70,7 +88,25 @@
       "linha": 5,
       "quadros": 4,
       "fps": 8,
-      "loop": true
+      "loop": true,
+      "envelope": [
+        [
+          27,
+          51
+        ],
+        [
+          28,
+          50
+        ],
+        [
+          31,
+          51
+        ],
+        [
+          30,
+          50
+        ]
+      ]
     },
     "sentado_frente_idle": {
       "linha": 6,
@@ -466,6 +502,50 @@
           0
         ]
       ]
+    },
+    "deixando_envelope_no_malote": {
+      "linha": 18,
+      "quadros": 2,
+      "fps": 6,
+      "direcao": "frente",
+      "rosto": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "envelope": [
+        [
+          36,
+          37
+        ],
+        [
+          37,
+          42
+        ]
+      ],
+      "solta": 1
+    },
+    "deixando_envelope_no_malote_costas": {
+      "linha": 19,
+      "quadros": 2,
+      "fps": 6,
+      "direcao": "costas",
+      "envelope": [
+        [
+          35,
+          36
+        ],
+        [
+          37,
+          38
+        ]
+      ],
+      "solta": 1
     }
   }
 }
