@@ -67,6 +67,7 @@ canvas, .px { image-rendering: pixelated; image-rendering: crisp-edges; display:
 }
 #sala { width: 100%; max-width: 624px; height: auto; }
 #mesa { width: 100%; max-width: 600px; height: auto; }
+#cadeira { width: 100%; max-width: 384px; height: auto; }
 .controles { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: center; }
 .controles button, select {
   font: 700 14px var(--fonte-texto);
@@ -106,6 +107,7 @@ input[type=range] { accent-color: var(--foco); width: 120px; }
 .tira { display: grid; gap: 8px; }
 .tira h3 { margin: 0; font: 600 14px var(--fonte-dado); color: var(--texto); }
 .quadros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.quadros.seis { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .quadro { background: var(--painel); border-radius: 6px; padding: 6px; display: grid; gap: 4px; justify-items: center; }
 .quadro img { width: 100%; max-width: 160px; height: auto; }
 .quadro span { font-size: 12px; color: var(--suave); text-align: center; }
@@ -118,7 +120,7 @@ ul.decidir li::marker { color: var(--foco); }
 <div class="pagina">
   <header>
     <h1>Caminhada do elenco</h1>
-    <p>Fases 2 e 3 do manual de animações para os 12: costas, caminhada e a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar), em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
+    <p>Fases 2 a 4 do manual de animações para os 12: costas, caminhada, a vida à mesa (respirar, teclar, assentir, olhar para o lado, piscar e falar) e levantar e sentar na cadeira, em 40 × 70 px, saídas dos sprites originais. Os espelhados são o mesmo desenho virado, como no jogo.</p>
     <div class="elenco" id="elenco" aria-label="Personagem"></div>
   </header>
 
@@ -164,6 +166,16 @@ ul.decidir li::marker { color: var(--foco); }
     <div class="tira" id="tira-mesa"></div>
   </section>
 
+  <section class="sec" aria-labelledby="t-cadeira">
+    <h2 id="t-cadeira">Na cadeira</h2>
+    <p><span id="nome-cadeira">Guilherme</span> levanta e senta na cadeira do jogo: 6 quadros a 8 FPS em cada sentido, com 1 s parado entre um e outro. O primeiro e o último quadro são o sentado e o parado de frente, então a troca para qualquer outra animação não pula.</p>
+    <div class="palco">
+      <canvas id="cadeira" width="96" height="96" aria-label="Personagem levantando e sentando na cadeira"></canvas>
+    </div>
+    <div class="tira" id="tira-levantar"></div>
+    <div class="tira" id="tira-sentar"></div>
+  </section>
+
   <section class="sec" aria-labelledby="t-lugar">
     <h2 id="t-lugar">No lugar</h2>
     <div class="grade" id="lugar"></div>
@@ -186,6 +198,8 @@ ul.decidir li::marker { color: var(--foco); }
     <ul class="decidir">
       <li><strong>Mãos calibradas pela planta.</strong> Na mesa (24 px), quem senta olhando +B tem a borda do tampo passando por (20, 58) no sprite; as mãos ficam em torno de (27, 56) e (34, 52). As coordenadas do manual, (28, 44), só batem com o balcão da Vivi (34 px), e é assim que ela ficou.</li>
       <li><strong>Camada do tampo.</strong> A mesa fica mais perto da câmera e é desenhada depois do personagem, então cobriria as mãos. Cada animação à mesa tem uma linha a mais só com antebraços e mãos, para o jogo colar depois da mesa e antes do monitor. Desligue a caixa "Camada do tampo" para ver a diferença.</li>
+      <li><strong>Levantar e sentar em 3 px.</strong> No nosso desenho o sentado fica só 3 px abaixo do em pé, como no Habbo; o manual fala em 9 px. Os 3 px se distribuem pelos quadros do meio, e as pernas passam por duas poses meio dobradas.</li>
+      <li><strong>Da mesa para a cadeira.</strong> O sentar termina no sentado de braços soltos, como o manual pede; à mesa, o jogo emenda o "respirando", que já começa com as mãos no tampo.</li>
       <li><strong>Teclando só com as mãos.</strong> Tirei a cabeça e os ombros do ciclo do manual (4.2): só os punhos alternam 1 px.</li>
       <li><strong>Dentes ao falar.</strong> Guilherme, Caio, Vivi e Gabriel mostram os dentes na boca de repouso. Falando, os dentes diminuem para a metade do meio na abertura de 1 px e somem na de 2 px.</li>
       <li><strong>Teclado.</strong> A planta ainda não tem o teclado nos objetos das mesas, então ele vai pela âncora de quem senta, embaixo das mãos, entre a mesa e a camada do tampo. No Saldanha ele fica atrás do monitor, que é o encaixe único da mesa de trabalho (ponto 4 da passagem do corte 1).</li>
@@ -206,6 +220,7 @@ const PISO = __PISO__;
 const FASES = __FASES__;
 const ANCORA = __ANCORA__;
 const MESA = __MESA__;
+const CADEIRA = __CADEIRA__;
 
 const carregar = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = src; });
 
@@ -294,12 +309,13 @@ function cartao(pai, cv, titulo, sub, cls = '') {
 }
 
 Promise.all([
+  carregar(CADEIRA.img),
   Promise.all(MESA.estacoes.map(async (s) => ({ ...s, fundo: await carregar(s.fundo), mesa: await carregar(s.mesa),
     teclado: await carregar(s.teclado), objetos: await carregar(s.objetos) }))),
   Promise.all(PISO.map(carregar)),
   Promise.all(Object.entries(DADOS).map(async ([cid, a]) => [cid, Object.fromEntries(
     await Promise.all(Object.entries(a).map(async ([k, v]) => [k, await Promise.all(v.map(carregar))])))])),
-]).then(([estacoes, pisoImg, lista]) => {
+]).then(([cadeiraImg, estacoes, pisoImg, lista]) => {
   const elenco = Object.fromEntries(lista);
   const anims = () => elenco[estado.quem];
 
@@ -394,6 +410,51 @@ Promise.all([
     mctx.drawImage(st.objetos, 0, 0);
   }
 
+  // na cadeira: sentado 1 s, levanta, parado 1 s, senta
+  const cadCv = document.getElementById('cadeira');
+  const cctx = cadCv.getContext('2d');
+  cctx.imageSmoothingEnabled = false;
+  function desenharCadeira() {
+    const A = anims();
+    const sobe = A.levantando_da_cadeira_frente, desce = A.sentando_na_cadeira_frente;
+    const t = estado.t % 3.5;
+    let img;
+    if (t < 1) img = sobe[0];
+    else if (t < 1.75) img = sobe[Math.min(5, Math.floor((t - 1) * 8))];
+    else if (t < 2.75) img = sobe[5];
+    else img = desce[Math.min(5, Math.floor((t - 2.75) * 8))];
+    cctx.fillStyle = '#222a46';
+    cctx.fillRect(0, 0, cadCv.width, cadCv.height);
+    piso(cctx, pisoImg, 48, 62, 1, false);
+    cctx.drawImage(cadeiraImg, 48 - CADEIRA.ancora[0], 94 - CADEIRA.ancora[1]);
+    colar(cctx, img, 48, 78, false);
+  }
+  function tirasCadeira() {
+    const cid = estado.quem;
+    for (const [id, k] of [['tira-levantar', 'levantando_da_cadeira_frente'], ['tira-sentar', 'sentando_na_cadeira_frente']]) {
+      const el = document.getElementById(id);
+      el.replaceChildren();
+      const h = document.createElement('h3');
+      h.textContent = `${k} · 6 quadros · 8 FPS · uma vez`;
+      const q = document.createElement('div');
+      q.className = 'quadros seis';
+      DADOS[cid][k].forEach((src, i) => {
+        const f = document.createElement('div');
+        f.className = 'quadro';
+        const im = document.createElement('img');
+        im.className = 'px';
+        im.src = src;
+        im.alt = `${NOMES[cid]}, ${k}, quadro ${i + 1}`;
+        im.width = 160; im.height = 280;
+        const s = document.createElement('span');
+        s.textContent = `Q${i + 1}`;
+        f.append(im, s);
+        q.append(f);
+      });
+      el.append(h, q);
+    }
+  }
+
   // no lugar
   const lugar = document.getElementById('lugar');
   const telas = DIRECOES.map((dir) => {
@@ -415,7 +476,9 @@ Promise.all([
     for (const [k, b] of Object.entries(botoes)) b.setAttribute('aria-pressed', String(k === cid));
     document.getElementById('nome-sala').textContent = NOMES[cid];
     document.getElementById('nome-mesa').textContent = NOMES[cid];
+    document.getElementById('nome-cadeira').textContent = NOMES[cid];
     tiraMesa();
+    tirasCadeira();
     for (const { ctx, k } of poses) {
       ctx.fillStyle = '#222a46';
       ctx.fillRect(0, 0, 72, 98);
@@ -449,6 +512,7 @@ Promise.all([
 
   function desenhar() {
     desenharMesa();
+    desenharCadeira();
     const f = Math.floor(estado.t * estado.fps) % 4;
     sctx.fillStyle = '#181e34';
     sctx.fillRect(0, 0, sala.width, sala.height);

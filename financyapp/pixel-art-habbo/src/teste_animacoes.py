@@ -214,12 +214,34 @@ class Humanos(unittest.TestCase):
         for cid, a in self.t.items():
             n = anim.folga(costas.HUMANOS[cid][0])
             pupila = a['parado_frente'][0].getpixel((19, 17 + n))
-            for nome in ['sentado_frente', 'andando_frente'] + animacoes.ESCRITORIO:
+            for nome in ['sentado_frente', 'andando_frente'] + animacoes.ESCRITORIO + animacoes.CADEIRA:
                 marcas = animacoes.campos(cid, nome, len(a[nome]))['rosto']
                 for k, (im, (dx, dy)) in enumerate(zip(a[nome], marcas)):
                     if nome == 'olhando_para_o_lado_frente' and k in (1, 2):
                         continue
                     self.assertEqual(im.getpixel((19 + dx, 17 + n + dy)), pupila, (cid, nome, k))
+
+
+    # ------------------------------------------------------------ fase 4
+    def test_cadeira_comeca_e_termina_nas_poses(self):
+        # 8. sentando termina exatamente na pose sentada; levantando, na pose
+        # em pé; e cada um começa na outra
+        for cid, a in self.t.items():
+            sob, sen = a['levantando_da_cadeira_frente'], a['sentando_na_cadeira_frente']
+            self.assertEqual(len(sob), 6, cid)
+            self.assertEqual(len(sen), 6, cid)
+            self.assertEqual(sob[0].tobytes(), a['sentado_frente'][0].tobytes(), cid)
+            self.assertEqual(sob[-1].tobytes(), a['parado_frente'][0].tobytes(), cid)
+            self.assertEqual(sen[0].tobytes(), a['parado_frente'][0].tobytes(), cid)
+            self.assertEqual(sen[-1].tobytes(), a['sentado_frente'][0].tobytes(), cid)
+
+    def test_cadeira_sem_quadro_congelado(self):
+        # 8. nenhum quadro repete o anterior
+        for cid, a in self.t.items():
+            for nome in animacoes.CADEIRA:
+                q = a[nome]
+                for k in range(1, len(q)):
+                    self.assertNotEqual(q[k].tobytes(), q[k - 1].tobytes(), (cid, nome, k))
 
 
 if __name__ == '__main__':

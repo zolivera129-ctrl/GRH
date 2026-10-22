@@ -93,6 +93,9 @@ Detalhes:
   manifesto, cada quadro com rosto traz `rosto` (onde colar olhos e boca),
   e as animações à mesa trazem `tampo`, `maos` e `mesa` (`mesa` ou
   `balcao`).
+- Humanos, fase 4, linhas 16 e 17: `levantando_da_cadeira_frente` e
+  `sentando_na_cadeira_frente`, 6 quadros a 8 FPS, uma vez. O primeiro e o
+  último quadro são o sentado e o parado de frente.
 - Móveis não são espelhados: a cadeira tem as quatro direções desenhadas.
 - A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
   (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
@@ -150,6 +153,8 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
   do tampo (calibrados pela planta), os ciclos da fase 3, as pupilas de
   lado, piscar e falar, e as estações de trabalho montadas com as peças
   do jogo, para conferir.
+- `cadeira.py`: levantar e sentar, com as pernas meio dobradas desenhadas
+  com as cores e os sapatos de cada um.
 - `animacoes.py`: a lista de animações de cada humano, com quadros por
   segundo e os campos do manifesto, na ordem das linhas da folha.
 - `previa_animacoes.py`: a página de prévia (`previa/animacoes/`), com os

@@ -76,11 +76,15 @@ def pagina(todos):
         'tempo': {n: list(animacoes.ANIMACOES[n]) for n in animacoes.ANIMACOES},
         'tampo': {cid: escritorio.TAMPO.get(cid, 'mesa') for cid in todos},
     }
+    man = json.load(open(os.path.join(AQUI, '..', 'assets', 'manifest.json')))
+    cadeira_ = {'img': png64(Image.open(os.path.join(AQUI, '..', 'assets', 'moveis', 'cadeira__frente-dir.png'))),
+                'ancora': man['cadeira']['ancora']}
     nomes = {cid: office.PERSONAGENS[cid][0] for cid in todos}
     piso = [png64(Image.open(os.path.join(PISO, f'piso_madeira__{i}.png'))) for i in (1, 2, 3)]
     modelo = open(os.path.join(AQUI, 'previa_animacoes.html'), encoding='utf-8').read()
     return (modelo.replace('__DADOS__', json.dumps(dados))
             .replace('__MESA__', json.dumps(mesa))
+            .replace('__CADEIRA__', json.dumps(cadeira_))
             .replace('__NOMES__', json.dumps(nomes, ensure_ascii=False))
             .replace('__PISO__', json.dumps(piso))
             .replace('__ANCORA__', json.dumps(list(animacoes.ANCORA)))

@@ -6,7 +6,8 @@ nas linhas 0 e 1) e acrescenta as do manual:
 - fase 2 (§3): parado e sentado de costas e as duas caminhadas;
 - fase 3 (§4): a vida à mesa (respirar, teclar, assentir, olhar para o
   lado), cada uma com a sua camada do tampo, e as sobreposições do rosto
-  (piscar e falar).
+  (piscar e falar);
+- fase 4 (§4.7 e §4.8): levantar da cadeira e sentar nela.
 
 Todos os quadros ficam na tela de 40 × 70 com a sola na linha anim.PE, então
 a âncora é a mesma em todos: (20, anim.PE).
@@ -22,6 +23,7 @@ Campos que o manifesto ganha por animação (além de linha, quadros e fps):
 - sobreposicao: true nas linhas do rosto, que não são um corpo inteiro.
 """
 import anim
+import cadeira
 import chars
 import costas
 import escritorio
@@ -46,7 +48,10 @@ ANIMACOES = {
     'olhando_para_o_lado_frente_tampo': (5, False),
     'piscando_frente': (12, False),
     'falando_frente': (8, True),
+    'levantando_da_cadeira_frente': (8, False),
+    'sentando_na_cadeira_frente': (8, False),
 }
+CADEIRA = list(cadeira.ROTEIROS)
 ESCRITORIO = list(escritorio.CICLOS)
 SOBREPOSICOES = ('piscando_frente', 'falando_frente')
 
@@ -70,6 +75,8 @@ def quadros(cid):
         out[f'{nome}_tampo'] = escritorio.quadros(cid, nome, so_tampo_=True)
     out['piscando_frente'] = escritorio.piscando(cid)
     out['falando_frente'] = escritorio.falando(cid)
+    for nome, roteiro in cadeira.ROTEIROS.items():
+        out[nome] = cadeira.quadros(cid, roteiro)
     return out
 
 
@@ -82,6 +89,8 @@ def campos(cid, nome, nquadros):
         e['rosto'] = [[0, chars.SIT_DY]]
     elif nome == 'andando_frente':
         e['rosto'] = [[0, q.get('corpo', {}).get('dy', 0)] for q in anim.ANDANDO]
+    elif nome in CADEIRA:
+        e['rosto'] = cadeira.rosto(nome)
     elif nome in ESCRITORIO:
         e['rosto'] = escritorio.rosto(nome)
         e['tampo'] = f'{nome}_tampo'

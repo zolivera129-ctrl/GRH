@@ -352,6 +352,68 @@
       "fps": 8,
       "loop": true,
       "sobreposicao": true
+    },
+    "levantando_da_cadeira_frente": {
+      "linha": 16,
+      "quadros": 6,
+      "fps": 8,
+      "rosto": [
+        [
+          0,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    "sentando_na_cadeira_frente": {
+      "linha": 17,
+      "quadros": 6,
+      "fps": 8,
+      "rosto": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          0,
+          3
+        ]
+      ]
     }
   }
 }

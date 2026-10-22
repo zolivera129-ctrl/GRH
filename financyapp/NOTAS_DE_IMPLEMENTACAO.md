@@ -91,6 +91,14 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
   - **Teclado:** novo objeto `teclado`, em duas direções (`frente-esq` para quem olha +B nas mesas; `frente-dir` para o balcão). O campo `objetos` da planta não tem teclado, então ele vai pela âncora de quem senta: `no_personagem` traz o deslocamento por móvel. A ordem fica: mesa, teclado, camada do tampo, objetos. No Saldanha, o monitor (encaixe único da mesa de trabalho, ponto 4 da passagem do corte 1) cobre o teclado.
 - **Sugestão:** registrar no manual as mãos por móvel (mesa e balcão), a camada do tampo com a ordem de desenho e os dois ajustes de teclar e falar; registrar na Assets os campos `rosto`, `tampo`, `maos`, `mesa`, `camada_de` e `sobreposicao` e o teclado (se entra no `objetos` da planta, com encaixe por metade da mesa, ou se fica preso ao personagem). Quem usa a vida à mesa no jogo continua sendo regra do GDD (o manual pede para não transformar o Gabriel em funcionário).
 
+### 12. Levantar e sentar (fase 4) na escala do nosso sentado
+
+- **O que foi:** a pedido do Guilherme, os 12 humanos ganharam `levantando_da_cadeira_frente` e `sentando_na_cadeira_frente`, com 6 quadros a 8 FPS, uma vez. Dois pontos não fecham com o manual:
+  - **Altura:** o manual descreve o quadril e a cabeça subindo 9 px. No nosso desenho, o sentado fica só 3 px abaixo do em pé (`SIT_DY`, no estilo do Habbo). Os 3 px se distribuem pelos quadros do meio; o tronco inclina 1 px e a cabeça 2 px para a frente, e as pernas passam por duas poses meio dobradas, desenhadas com as cores da calça e os sapatos de cada um. O primeiro e o último quadro são exatamente o sentado e o parado de frente, e a âncora não mexe.
+  - **À mesa:** o sentar termina no sentado de braços soltos, como o manual pede. À mesa, o jogo emenda o `sentado_frente_idle`, que já começa com as mãos no tampo (decisão do Guilherme).
+- **Onde:** manual de sprites e animações v1.0, §4.7, §4.8 e §9.2 (teste 8).
+- **Sugestão:** registrar no manual a escala de 3 px entre sentado e em pé e a emenda com a vida à mesa.
+
 ## Resolvidas
 
 - **Na v2.2:** a escala dos cachorros foi fechada em 34 e 24 px; o Caio está em verde-sálvia; os cachorros parados em pé entraram no corte 2.
