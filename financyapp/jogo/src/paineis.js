@@ -5,6 +5,11 @@
 
 import { brl } from './dados.js';
 import { nomeDoMes } from './calendario.js';
+import { partesDoCartao, conferencia } from './planilha.js';
+
+// Com a planilha como fonte, os painéis não levam o selo de sintético.
+let real = false;
+export const usarDadosReais = (v) => { real = Boolean(v); };
 
 const el = (tag, attrs = {}, ...filhos) => {
   const e = document.createElement(tag);
@@ -49,6 +54,7 @@ export function relatorio(ui, r, { privado }) {
     ], privado) },
   ];
   return ui.painel({
+    sintetico: !real,
     titulo: `Reunião de ${Mes(r.competencia)}`,
     rotuloFechar: 'Fechar o quadro',
     montar: (corpo, fechar) => {
@@ -76,6 +82,7 @@ export function relatorio(ui, r, { privado }) {
 
 export function conciliacao(ui, c, { privado }) {
   return ui.painel({
+    sintetico: !real,
     titulo: 'Conferência do lote',
     montar: (corpo) => {
       corpo.append(linhas([
@@ -97,6 +104,7 @@ export function consulta(ui) {
     insuficiente: '',
   };
   return ui.painel({
+    sintetico: true,
     titulo: 'Consulta ao Caio',
     montar: (corpo, fechar) => {
       const form = el('form', { class: 'form' });
@@ -131,6 +139,7 @@ export function consulta(ui) {
 
 export function card(ui, c) {
   return ui.painel({
+    sintetico: !real,
     titulo: 'Explicação de 30 segundos',
     montar: (corpo) => {
       corpo.append(linhas([
@@ -145,13 +154,16 @@ export function card(ui, c) {
 /** O livro do mês do Saldanha: só o que está registrado. */
 export function livro(ui, perfil, dados) {
   return ui.painel({
+    sintetico: !real,
     titulo: 'Livro do mês',
     rotuloFechar: 'Fechar o livro',
     montar: (corpo) => {
       const hist = perfil.primeiro_acesso ? dados.historico(perfil.primeiro_acesso) : [];
+      const privado = dados.privado;
       const lista = (titulo, itens, vazio) => el('section', {}, el('h4', { text: titulo }),
         itens.length ? el('ul', {}, ...itens.map((t) => el('li', { text: t }))) : el('p', { class: 'ausente', text: vazio }));
       const rotuloLote = { recebido: 'recebido, não conferido', conferido: 'conferido', sinalizado: 'divergente, sinalizado', parcial: 'parcial: falta fonte' };
+      if (dados.nome === 'planilha') corpo.append(...daPlanilha(dados, privado));
       corpo.append(
         lista('Períodos do histórico', hist.map((m) => `${Mes(m.competencia)}: ${m.conferido ? 'conferido' : `pendente (falta ${m.falta})`}`), 'Nenhum histórico importado.'),
         lista('Lotes do cartão', Object.entries(perfil.lotes).map(([id, l]) => `${id}: ${rotuloLote[l.estado] ?? l.estado}`), 'Nenhum lote recebido.'),
@@ -161,4 +173,36 @@ export function livro(ui, perfil, dados) {
       );
     },
   });
+}
+
+/** O que o Saldanha leu da planilha: um bloco por aba de mês e a reserva. */
+function daPlanilha(fonte, privado) {
+  const v = (x) => valor(x, privado);
+  if (fonte.estado !== 'lida') {
+    return [el('section', {}, el('h4', { text: 'Planilha' }),
+      el('p', { class: 'ausente', text: fonte.estado === 'lendo' ? 'Lendo a planilha…' : (fonte.erro?.texto ?? 'A planilha ainda não foi lida.') }))];
+  }
+  const rotulo = { conciliado: 'confere com a conta', divergente: 'não bate com a conta', sem_fontes: 'incompleta' };
+  const blocos = fonte.meses.map((m) => {
+    const titulo = m.competencia ? `${Mes(m.competencia)} (aba ${m.aba})` : `Aba ${m.aba}`;
+    if (!m.legivel) return el('section', {}, el('h4', { text: titulo }), el('p', { class: 'ausente', text: 'As tabelas desta aba não estão no lugar esperado.' }));
+    const c = conferencia(m);
+    const partes = partesDoCartao(m.cartao);
+    const comDebito = m.conta.filter((r) => r.debito > 0);
+    const pagas = comDebito.filter((r) => r.pago).length;
+    const entradas = m.conta.filter((r) => r.credito > 0).reduce((s, r) => s + r.credito, 0);
+    const saidas = comDebito.reduce((s, r) => s + r.debito, 0);
+    return el('section', {}, el('h4', { text: titulo }), linhas([
+      ['Fatura do cartão', `${m.cartao.length} lançamentos, ${rotulo[c.estado]}`,
+        c.estado === 'divergente' ? `diferença de ${v(c.diferenca)}` : (c.falta ?? null)],
+      ['Sua parte no cartão', partes.guilherme, 'seus lançamentos mais metade dos "2 X"'],
+      ['Entradas previstas na conta', entradas],
+      ['Saídas previstas na conta', saidas],
+      ['Contas pagas', `${pagas} de ${comDebito.length}`],
+    ], privado));
+  });
+  blocos.push(el('section', {}, el('h4', { text: 'Reserva' }), linhas([['Saldo da reserva (Config)', fonte.config?.reserva ?? null]], privado)));
+  const hora = fonte.lidaEm?.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+  blocos.unshift(el('p', { class: 'nota', text: `Lido da planilha às ${hora}. Só leitura: nada é escrito nela.` }));
+  return blocos;
 }

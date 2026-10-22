@@ -122,7 +122,18 @@ async function iniciar() {
   const naPlanilha = opcoes.fonte === 'planilha';
   const dados = naPlanilha ? criarFontePlanilha() : sinteticos;
   dados.privado = opcoes.privado;
-  const perfilId = naPlanilha ? 'guilherme' : 'guilherme-teste';
+  // O perfil real começa limpo: até a v3 o perfil "guilherme" guardava o
+  // progresso dos dados sintéticos, então ele vira o perfil de teste.
+  const perfilId = naPlanilha ? 'guilherme-planilha' : 'guilherme-teste';
+  try {
+    const velho = armazem.getItem('financyapp:perfil:guilherme');
+    if (velho && !armazem.getItem('financyapp:perfil:guilherme-teste')) {
+      const p = JSON.parse(velho); p.perfil = 'guilherme-teste';
+      armazem.setItem('financyapp:perfil:guilherme-teste', JSON.stringify(p));
+    }
+    if (velho) armazem.removeItem('financyapp:perfil:guilherme');
+  } catch { /* sem armazém: nada a migrar */ }
+  paineis.usarDadosReais(naPlanilha);
   // o conector só existe dentro do claude.ai; fora dele, use() devolve null
   const mcpPronto = naPlanilha ? Promise.resolve(window.claude?.use?.('mcp') ?? null).catch(() => null) : Promise.resolve(null);
 
@@ -611,7 +622,7 @@ async function iniciar() {
   requestAnimationFrame(quadro);
   abrirVisitaAgora();
   document.body.dataset.pronto = 'sim';
-  window.financy = { jogo, perfil: () => perfil, sessao: () => sessao, elenco, opcoes, clicar: noEscritorio,
+  window.financy = { jogo, dados, perfil: () => perfil, sessao: () => sessao, elenco, opcoes, clicar: noEscritorio,
     ocupado: () => Boolean(sessao?.atual || sessao?.fila.length || [...elenco.values()].some((a) => a.caminho)) };
 }
 
