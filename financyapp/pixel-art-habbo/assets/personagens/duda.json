@@ -7,7 +7,7 @@
   ],
   "ancora": [
     20,
-    62
+    66
   ],
   "animacoes": {
     "parado_frente": {
@@ -19,6 +19,28 @@
       "linha": 1,
       "quadros": 1,
       "fps": 0
+    },
+    "parado_costas": {
+      "linha": 2,
+      "quadros": 1,
+      "fps": 0
+    },
+    "sentado_costas": {
+      "linha": 3,
+      "quadros": 1,
+      "fps": 0
+    },
+    "andando_frente": {
+      "linha": 4,
+      "quadros": 4,
+      "fps": 8,
+      "loop": true
+    },
+    "andando_costas": {
+      "linha": 5,
+      "quadros": 4,
+      "fps": 8,
+      "loop": true
     }
   }
 }

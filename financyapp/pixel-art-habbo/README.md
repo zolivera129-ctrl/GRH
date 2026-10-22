@@ -67,7 +67,9 @@ assets/
 - Objetos de mesa: o centro da base, no tampo. O objeto vai em
   `âncora da mesa + encaixe - âncora do objeto`.
 - Personagens: o meio dos pés (cachorros: das patas). No sentado, é o chão
-  embaixo do quadril, no mesmo ponto da tela do parado.
+  embaixo do quadril, no mesmo ponto da tela do parado. Nos 12 humanos é
+  (20, 66) em todos os quadros: cada um desce até a sola cair na linha 66,
+  o que deixa folga em cima para o corpo subir na caminhada.
 
 Detalhes:
 
@@ -75,6 +77,10 @@ Detalhes:
   direita. Todos têm `parado_frente` (linha 0) e `sentado_frente`
   (linha 1); nos cachorros, o parado é em pé, nas quatro patas. Os quadros
   de uma folha ficam numa tela comum, alinhados pela âncora.
+- Humanos, fase 2 do manual de animações: `parado_costas` (linha 2),
+  `sentado_costas` (3), `andando_frente` (4) e `andando_costas` (5), as
+  caminhadas com 4 quadros a 8 FPS e `loop`. As direções que faltam são o
+  espelho destas, como no jogo.
 - Móveis não são espelhados: a cadeira tem as quatro direções desenhadas.
 - A pose sentada sai do mesmo desenho do parado: o corpo desce 3 px
   (`SIT_DY`, no `chars.py`) até o assento, a 14 px do chão, e as pernas
@@ -122,6 +128,18 @@ Tudo é desenhado pixel a pixel em Python, só com Pillow.
 - `scene16.py`: as salas em tiles 16x16, os tilesets e as exportações.
 - `office.py`: as peças do FinancyApp: pintor isométrico, peças, a
   exportação do `assets/`, a conferência contra o layout e as prévias.
+- `anim.py`: grava o desenho de um personagem camada por camada e remonta
+  com pernas e braços deslocados; é daí que saem as caminhadas, sem
+  redesenhar ninguém.
+- `costas.py`: os 12 humanos de costas. Braços, pernas, tronco e pescoço
+  vêm do desenho de frente; a nuca, o cabelo e os detalhes de trás de cada
+  um são desenhados ali.
+- `animacoes.py`: a lista de animações de cada humano, com quadros por
+  segundo, na ordem das linhas da folha.
+- `previa_animacoes.py`: a página de prévia (`previa/animacoes/`), com os
+  ciclos tocando nas quatro direções, e as faixas ampliadas.
+- `teste_animacoes.py`: os testes do manual (§9.2) para os 12:
+  `python3 src/teste_animacoes.py`.
 
 Para gerar tudo de novo (o `build.py` também gera o `assets/` e as prévias):
 

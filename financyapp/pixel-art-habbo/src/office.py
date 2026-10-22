@@ -20,6 +20,7 @@ from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, os.path.dirname(__file__))
 from px import Layer, rgb, mul, mix, up  # noqa: E402
 import chars  # noqa: E402
+import animacoes  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'assets')
 LAYOUT = os.path.join(os.path.dirname(__file__), '..', '..', 'docs', 'FinancyApp_Layout_12x10_v1.json')
@@ -916,8 +917,16 @@ def dog(im):
     return pad(im, 2, 2, 2, 2)
 
 
-def _humano(fn):
-    return {'parado_frente': lambda: fn('parado'), 'sentado_frente': lambda: fn('sentado')}
+def _humano(cid):
+    """As animações de um humano (animacoes.py): parado e sentado de frente
+    e de costas e as duas caminhadas, cada uma uma lista de quadros já na
+    tela de 40 × 70, com a sola na linha da âncora."""
+    def quadros(nome):
+        return lambda: _QUADROS.setdefault(cid, animacoes.quadros(cid))[nome]
+    return {nome: quadros(nome) for nome in animacoes.ANIMACOES}
+
+
+_QUADROS = {}
 
 
 def _cachorro(fn, k):
@@ -928,20 +937,20 @@ def _cachorro(fn, k):
 # id -> (nome, {animação: desenho}). Todos vão para o assets/; a folha tem
 # uma animação por linha, nesta ordem.
 PERSONAGENS = {
-    'guilherme': ('Guilherme', _humano(chars.guilherme)),
-    'saldanha': ('Saldanha', _humano(chars.saldanha)),
-    'caio': ('Caio', _humano(chars.caio)),
-    'vivi': ('Vivi', _humano(chars.vivi)),
+    'guilherme': ('Guilherme', _humano('guilherme')),
+    'saldanha': ('Saldanha', _humano('saldanha')),
+    'caio': ('Caio', _humano('caio')),
+    'vivi': ('Vivi', _humano('vivi')),
     'flora': ('Flora', _cachorro(chars.flora, FLORA_K)),
     'lupin': ('Lupin', _cachorro(chars.lupin, LUPIN_K)),
-    'gabriel': ('Gabriel', _humano(chars.gabriel)),
-    'nina': ('Nina', _humano(chars.nina)),
-    'otto': ('Otto', _humano(chars.otto)),
-    'sr_pra_ontem': ('Sr. Pra Ontem', _humano(chars.pra_ontem)),
-    'iris': ('Íris', _humano(chars.iris)),
-    'joana': ('Joana', _humano(chars.joana)),
-    'malu': ('Malu', _humano(chars.malu)),
-    'duda': ('Duda', _humano(chars.duda)),
+    'gabriel': ('Gabriel', _humano('gabriel')),
+    'nina': ('Nina', _humano('nina')),
+    'otto': ('Otto', _humano('otto')),
+    'sr_pra_ontem': ('Sr. Pra Ontem', _humano('sr_pra_ontem')),
+    'iris': ('Íris', _humano('iris')),
+    'joana': ('Joana', _humano('joana')),
+    'malu': ('Malu', _humano('malu')),
+    'duda': ('Duda', _humano('duda')),
 }
 
 
@@ -964,20 +973,37 @@ def save(im, rel):
 def character(cid, anims):
     """Folha de sprites (uma animação por linha, quadros da esquerda para a
     direita) e a entrada do manifesto, que também vai no JSON do personagem.
-    Os quadros entram numa tela comum, alinhados pela âncora (o cachorro em
-    pé é mais largo que o sentado)."""
-    frames = [fn() for fn in anims.values()]
-    anchors = [anchor_of(cid, f) for f in frames]
-    ax, ay = max(a[0] for a in anchors), max(a[1] for a in anchors)
-    w = ax + max(f.width - a[0] for f, a in zip(frames, anchors))
-    h = ay + max(f.height - a[1] for f, a in zip(frames, anchors))
-    sheet = Image.new('RGBA', (w, h * len(frames)), (0, 0, 0, 0))
-    for i, (f, a) in enumerate(zip(frames, anchors)):
-        sheet.alpha_composite(f, (ax - a[0], h * i + ay - a[1]))
+
+    Humanos: todos os quadros já vêm na tela de 40 × 70 com a sola na linha
+    da âncora, então a âncora é a mesma, (20, 66), em todos (manual de
+    animações §1; ver a nota 9 de NOTAS_DE_IMPLEMENTACAO.md).
+    Cachorros: um quadro por animação; os quadros entram numa tela comum,
+    alinhados pela âncora (o em pé é mais largo que o sentado)."""
+    frames = {name: fn() for name, fn in anims.items()}
+    frames = {name: f if isinstance(f, list) else [f] for name, f in frames.items()}
+    if cid in animacoes.HUMANOS:
+        w, h = frames['parado_frente'][0].size
+        ax, ay = animacoes.ANCORA
+        placed = {name: [(f, (0, 0)) for f in fs] for name, fs in frames.items()}
+    else:
+        firsts = [fs[0] for fs in frames.values()]
+        anchors = [anchor_of(cid, f) for f in firsts]
+        ax, ay = max(a[0] for a in anchors), max(a[1] for a in anchors)
+        w = ax + max(f.width - a[0] for f, a in zip(firsts, anchors))
+        h = ay + max(f.height - a[1] for f, a in zip(firsts, anchors))
+        placed = {name: [(f, (ax - a[0], ay - a[1])) for f in fs]
+                  for (name, fs), a in zip(frames.items(), anchors)}
+    ncol = max(len(fs) for fs in frames.values())
+    sheet = Image.new('RGBA', (w * ncol, h * len(frames)), (0, 0, 0, 0))
+    for i, fs in enumerate(placed.values()):
+        for k, (f, (dx, dy)) in enumerate(fs):
+            sheet.alpha_composite(f, (w * k + dx, h * i + dy))
+    animacoes_ = {}
+    for i, (name, fs) in enumerate(frames.items()):
+        fps, loop = animacoes.ANIMACOES.get(name, (0, False))
+        animacoes_[name] = {'linha': i, 'quadros': len(fs), 'fps': fps, **({'loop': True} if loop else {})}
     entry = {'pasta': 'personagens', 'folha': save(sheet, f'personagens/{cid}.png'),
-             'tela': [w, h], 'ancora': [ax, ay],
-             'animacoes': {name: {'linha': i, 'quadros': 1, 'fps': 0}
-                           for i, name in enumerate(anims)}}
+             'tela': [w, h], 'ancora': [ax, ay], 'animacoes': animacoes_}
     with open(os.path.join(ROOT, 'personagens', f'{cid}.json'), 'w', encoding='utf-8') as f:
         json.dump(entry, f, ensure_ascii=False, indent=2)
     return entry
@@ -1000,7 +1026,8 @@ def check(man):
     """Confere o que o manifesto promete: os arquivos existem e as âncoras
     estão onde a regra diz.
     - personagens: a âncora cai no pé de todos os quadros (o sentado pisa
-      onde o parado pisa);
+      onde o parado pisa); na caminhada, no quadro em que o pé da frente
+      está no ar o mais baixo é o de trás, 1 px acima (a profundidade);
     - piso e móveis: no vértice de baixo da base, x = 32 × tiles em A;
     - objetos: dentro da imagem;
     - parede: na ponta esquerda da base, e as camadas no mesmo recorte."""
@@ -1009,8 +1036,11 @@ def check(man):
             sheet = Image.open(os.path.join(ROOT, e['folha']))
             w, h = e['tela']
             for name, a in e['animacoes'].items():
-                frame = sheet.crop((0, h * a['linha'], w * a['quadros'], h * (a['linha'] + 1)))
-                assert frame.getbbox()[3] == e['ancora'][1], (modelo, name)
+                for k in range(a['quadros']):
+                    frame = sheet.crop((w * k, h * a['linha'], w * (k + 1), h * (a['linha'] + 1)))
+                    pe = frame.getbbox()[3]
+                    no_ar = name.startswith('andando') and pe == e['ancora'][1] - 1
+                    assert pe == e['ancora'][1] or no_ar, (modelo, name, k)
             continue
         if 'pasta' not in e:
             continue                    # cores da parede: o jogo desenha

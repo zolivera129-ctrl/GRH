@@ -68,7 +68,14 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 
 - **O que foi:** os humanos pisam em y 62 ou 63 da tela de 40×70, e cinco (Guilherme, Nina, Sr. Pra Ontem, Íris e Duda) encostam o cabelo na linha 0. Na caminhada o corpo sobe 1 px nas passagens e cortaria a primeira linha do cabelo; o `comemorando_tablet` do Saldanha também precisa de espaço acima da cabeça. Além disso, de frente o pé de trás fica 1 px acima do da frente, então, no quadro em que o da frente levanta, o ponto mais baixo do quadro sobe 1 px sem a âncora mexer.
 - **Onde:** Manual de sprites e animações v1.0, §1 (âncora "(20,66) provisoriamente") e §9.2 (testes 2 e 6); `office.py`, `anchor_of` e `check`, que hoje pegam a âncora do pé de cada quadro e exigem o pé na linha da âncora em todos.
-- **Sugestão:** fechar a âncora dos humanos em (20, 66): cada personagem desce até a sola cair em 66 (3 ou 4 px), em todas as animações, e o manifesto troca a âncora (o jogo já lê de lá). A conferência do build passa a exigir o pé na âncora nas poses e nos contatos, e aceitar 1 px acima no quadro em que o pé da frente está no ar. O piloto do Guilherme (`pixel-art-habbo/previa/animacoes/`) já está assim.
+- **Como ficou:** a âncora dos 12 humanos é (20, 66): cada um desce até a sola cair em 66 (3 ou 4 px), em todas as animações, e o manifesto traz a âncora nova (o jogo já lê de lá; a sala ficou idêntica, pixel por pixel). A conferência do build exige o pé na âncora em todo quadro, com uma exceção: na caminhada, o quadro em que o pé da frente está no ar pode terminar 1 px acima.
+- **Sugestão:** registrar a âncora (20, 66) dos humanos no "Como entregar" da Assets e no manual, e a exceção do pé no ar nos testes do §9.2.
+
+### 10. Animações da fase 2 já no assets/
+
+- **O que foi:** a pedido do Guilherme, os 12 humanos ganharam `parado_costas`, `sentado_costas`, `andando_frente` e `andando_costas` (4 quadros, 8 FPS, `loop`), nas linhas 2 a 5 da folha. As linhas 0 e 1 continuam o parado e o sentado de frente. No manifesto, cada animação animada traz `quadros`, `fps` e `loop: true`. Isso adianta o andar dos cortes 2 a 4, como a passagem do corte 1 já registrava ("pedido para já"). O jogo ainda não usa nada disso.
+- **Onde:** `FinancyApp_Assets_v2.md`, "Animações de todo humano" (a tabela tem só frente-dir e costas-dir; o manual tem as mesmas) e "Lotes seguintes"; manual de sprites e animações v1.0, §3 e §10 (fase 2).
+- **Sugestão:** na Assets, marcar as quatro animações como entregues para os 12 e tirar o andar dos lotes dos cortes 2 a 4; registrar o formato do manifesto (`quadros`, `fps`, `loop`).
 
 ## Resolvidas
 

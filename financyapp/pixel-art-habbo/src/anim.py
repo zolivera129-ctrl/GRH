@@ -91,7 +91,7 @@ def regra_humano(caixa):
     à direita."""
     x0, y0, x1, y1 = caixa
     cx = (x0 + x1) / 2
-    if y0 >= 43 and y1 >= 55:
+    if y0 >= 40 and y1 >= 55:
         return 'perna_frente' if cx < 19 else 'perna_tras'
     if y0 >= 28 and y1 <= 52:
         if cx <= 11.5:
