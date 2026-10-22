@@ -67,7 +67,7 @@ canvas, .px { image-rendering: pixelated; image-rendering: crisp-edges; display:
 }
 #sala { width: 100%; max-width: 624px; height: auto; }
 #mesa { width: 100%; max-width: 600px; height: auto; }
-#cadeira { width: 100%; max-width: 384px; height: auto; }
+#cadeira { width: 100%; max-width: 448px; height: auto; }
 .controles { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: center; }
 .controles button, select {
   font: 700 14px var(--fonte-texto);
@@ -168,9 +168,9 @@ ul.decidir li::marker { color: var(--foco); }
 
   <section class="sec" aria-labelledby="t-cadeira">
     <h2 id="t-cadeira">Na cadeira</h2>
-    <p><span id="nome-cadeira">Guilherme</span> levanta e senta na cadeira do jogo: 6 quadros a 8 FPS em cada sentido, com 1 s parado entre um e outro. O primeiro e o último quadro são o sentado e o parado de frente, então a troca para qualquer outra animação não pula.</p>
+    <p><span id="nome-cadeira">Guilherme</span> levanta e senta na cadeira do jogo: 6 quadros a 8 FPS em cada sentido, com 1 s parado entre um e outro. Ao levantar, o corpo vai para a frente por cima dos pés e termina em pé no chão, meio tile à frente da cadeira; ao sentar, o caminho de volta. O primeiro e o último quadro são o sentado e o parado de frente.</p>
     <div class="palco">
-      <canvas id="cadeira" width="96" height="96" aria-label="Personagem levantando e sentando na cadeira"></canvas>
+      <canvas id="cadeira" width="112" height="112" aria-label="Personagem levantando e sentando na cadeira"></canvas>
     </div>
     <div class="tira" id="tira-levantar"></div>
     <div class="tira" id="tira-sentar"></div>
@@ -199,6 +199,7 @@ ul.decidir li::marker { color: var(--foco); }
       <li><strong>Mãos calibradas pela planta.</strong> Na mesa (24 px), quem senta olhando +B tem a borda do tampo passando por (20, 58) no sprite; as mãos ficam em torno de (27, 56) e (34, 52). As coordenadas do manual, (28, 44), só batem com o balcão da Vivi (34 px), e é assim que ela ficou.</li>
       <li><strong>Camada do tampo.</strong> A mesa fica mais perto da câmera e é desenhada depois do personagem, então cobriria as mãos. Cada animação à mesa tem uma linha a mais só com antebraços e mãos, para o jogo colar depois da mesa e antes do monitor. Desligue a caixa "Camada do tampo" para ver a diferença.</li>
       <li><strong>Levantar e sentar em 3 px.</strong> No nosso desenho o sentado fica só 3 px abaixo do em pé, como no Habbo; o manual fala em 9 px. Os 3 px se distribuem pelos quadros do meio, e as pernas passam por duas poses meio dobradas.</li>
+      <li><strong>Sair da cadeira.</strong> Em pé, o personagem fica meio tile à frente da cadeira, pisando no chão. O manifesto diz, em cada quadro, quanto ele anda (<code>desloca</code>); o jogo move o personagem junto. Nas estações, a frente é a mesa: ele levanta entre a cadeira e a mesa e o jogo o leva andando para um vizinho livre.</li>
       <li><strong>Da mesa para a cadeira.</strong> O sentar termina no sentado de braços soltos, como o manual pede; à mesa, o jogo emenda o "respirando", que já começa com as mãos no tampo.</li>
       <li><strong>Teclando só com as mãos.</strong> Tirei a cabeça e os ombros do ciclo do manual (4.2): só os punhos alternam 1 px.</li>
       <li><strong>Dentes ao falar.</strong> Guilherme, Caio, Vivi e Gabriel mostram os dentes na boca de repouso. Falando, os dentes diminuem para a metade do meio na abertura de 1 px e somem na de 2 px.</li>
@@ -418,16 +419,18 @@ Promise.all([
     const A = anims();
     const sobe = A.levantando_da_cadeira_frente, desce = A.sentando_na_cadeira_frente;
     const t = estado.t % 3.5;
-    let img;
-    if (t < 1) img = sobe[0];
-    else if (t < 1.75) img = sobe[Math.min(5, Math.floor((t - 1) * 8))];
-    else if (t < 2.75) img = sobe[5];
-    else img = desce[Math.min(5, Math.floor((t - 2.75) * 8))];
+    const DS = CADEIRA.desloca.levantando_da_cadeira_frente, DD = CADEIRA.desloca.sentando_na_cadeira_frente;
+    let img, d;
+    if (t < 1) { img = sobe[0]; d = DS[0]; }
+    else if (t < 1.75) { const k = Math.min(5, Math.floor((t - 1) * 8)); img = sobe[k]; d = DS[k]; }
+    else if (t < 2.75) { img = sobe[5]; d = DS[5]; }
+    else { const k = Math.min(5, Math.floor((t - 2.75) * 8)); img = desce[k]; d = DD[k]; }
     cctx.fillStyle = '#222a46';
     cctx.fillRect(0, 0, cadCv.width, cadCv.height);
-    piso(cctx, pisoImg, 48, 62, 1, false);
-    cctx.drawImage(cadeiraImg, 48 - CADEIRA.ancora[0], 94 - CADEIRA.ancora[1]);
-    colar(cctx, img, 48, 78, false);
+    // o tile da cadeira e o da frente, para onde ele sai
+    piso(cctx, pisoImg, 48, 46, 2, false);
+    cctx.drawImage(cadeiraImg, 48 - CADEIRA.ancora[0], 78 - CADEIRA.ancora[1]);
+    colar(cctx, img, 48 + d[0], 62 + d[1], false);
   }
   function tirasCadeira() {
     const cid = estado.quem;

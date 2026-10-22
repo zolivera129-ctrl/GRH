@@ -201,6 +201,22 @@ def quadros(cid, roteiro):
 
 ROTEIROS = {'levantando_da_cadeira_frente': LEVANTANDO, 'sentando_na_cadeira_frente': SENTANDO}
 
+# Quanto o personagem anda em cada quadro, na tela, em relação ao centro do
+# tile da cadeira (para quem olha +A; espelhado, o x troca de sinal). Ao
+# levantar, o corpo vai para a frente por cima dos pés, que no sentado já
+# estão à frente do assento, e termina em pé meio tile adiante (16, 8),
+# fora da cadeira, pisando no chão. Ao sentar, o caminho de volta. Os pés
+# quase não saem do lugar: o que o quadro aproxima, o deslocamento afasta.
+FRENTE_DA_CADEIRA = (16, 8)
+DESLOCA = {
+    'levantando_da_cadeira_frente': [(0, 0), (2, 1), (6, 3), (10, 5), (14, 7), (16, 8)],
+    'sentando_na_cadeira_frente': [(16, 8), (14, 7), (10, 5), (6, 3), (2, 1), (0, 0)],
+}
+
+
+def desloca(nome):
+    return [list(p) for p in DESLOCA[nome]]
+
 
 def rosto(nome):
     """Onde está o rosto em cada quadro, em relação ao parado de frente."""

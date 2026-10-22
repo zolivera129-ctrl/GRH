@@ -235,6 +235,19 @@ class Humanos(unittest.TestCase):
             self.assertEqual(sen[0].tobytes(), a['parado_frente'][0].tobytes(), cid)
             self.assertEqual(sen[-1].tobytes(), a['sentado_frente'][0].tobytes(), cid)
 
+    def test_cadeira_sai_para_o_chao(self):
+        # pedido do Guilherme: em pé, fora da cadeira; levantar anda até meio
+        # tile à frente e sentar volta para o centro do tile, sempre para a
+        # frente e sem pulo maior que 4 px por quadro
+        import cadeira
+        for nome, (ini, fim) in (('levantando_da_cadeira_frente', ((0, 0), (16, 8))),
+                                 ('sentando_na_cadeira_frente', ((16, 8), (0, 0)))):
+            d = [tuple(p) for p in animacoes.campos('guilherme', nome, 6)['desloca']]
+            self.assertEqual((d[0], d[-1]), (ini, fim), nome)
+            for a_, b_ in zip(d, d[1:]):
+                self.assertLessEqual(abs(b_[0] - a_[0]), 4, nome)
+                self.assertEqual(b_[1] - a_[1], (b_[0] - a_[0]) // 2, nome)   # na direção do iso, 2:1
+
     def test_cadeira_sem_quadro_congelado(self):
         # 8. nenhum quadro repete o anterior
         for cid, a in self.t.items():

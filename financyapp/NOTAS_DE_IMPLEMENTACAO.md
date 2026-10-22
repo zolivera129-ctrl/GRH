@@ -96,8 +96,9 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
 - **O que foi:** a pedido do Guilherme, os 12 humanos ganharam `levantando_da_cadeira_frente` e `sentando_na_cadeira_frente`, com 6 quadros a 8 FPS, uma vez. Dois pontos não fecham com o manual:
   - **Altura:** o manual descreve o quadril e a cabeça subindo 9 px. No nosso desenho, o sentado fica só 3 px abaixo do em pé (`SIT_DY`, no estilo do Habbo). Os 3 px se distribuem pelos quadros do meio; o tronco inclina 1 px e a cabeça 2 px para a frente, e as pernas passam por duas poses meio dobradas, desenhadas com as cores da calça e os sapatos de cada um. O primeiro e o último quadro são exatamente o sentado e o parado de frente, e a âncora não mexe.
   - **À mesa:** o sentar termina no sentado de braços soltos, como o manual pede. À mesa, o jogo emenda o `sentado_frente_idle`, que já começa com as mãos no tampo (decisão do Guilherme).
+  - **Sair da cadeira:** em pé no mesmo ponto do assento, o personagem parecia flutuar dentro da cadeira (apontado pelo Guilherme). Ao levantar, o corpo vai para a frente por cima dos pés e termina meio tile à frente do centro da cadeira, pisando no chão; ao sentar, o caminho de volta. O manifesto traz `desloca`, quanto o personagem anda em cada quadro, na tela, a partir do centro do tile da cadeira, para quem olha +A (espelhado, o x troca de sinal): de (0, 0) a (16, 8). A planta não diz por onde se sai de cada cadeira (a regra 5 só pede um vizinho livre), e nas estações a frente é a mesa: ali ele fica em pé entre a cadeira e a mesa, e o jogo o leva andando até um vizinho livre.
 - **Onde:** manual de sprites e animações v1.0, §4.7, §4.8 e §9.2 (teste 8).
-- **Sugestão:** registrar no manual a escala de 3 px entre sentado e em pé e a emenda com a vida à mesa.
+- **Sugestão:** registrar no manual a escala de 3 px entre sentado e em pé, a emenda com a vida à mesa e o `desloca`; decidir na planta por onde se sai de cada cadeira.
 
 ## Resolvidas
 

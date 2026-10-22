@@ -20,7 +20,11 @@ Campos que o manifesto ganha por animação (além de linha, quadros e fps):
   o jogo cola depois da mesa e antes dos objetos sobre ela;
 - maos: os pontos das duas mãos em cada quadro, [frente, trás];
 - mesa: em que móvel as mãos pousam ('mesa', 24 px, ou 'balcao', 34 px);
-- sobreposicao: true nas linhas do rosto, que não são um corpo inteiro.
+- sobreposicao: true nas linhas do rosto, que não são um corpo inteiro;
+- desloca: em levantar e sentar, quanto o personagem anda em cada quadro,
+  na tela, a partir do centro do tile da cadeira (para quem olha +A;
+  espelhado, o x troca de sinal). Em pé, ele fica meio tile à frente da
+  cadeira, pisando no chão.
 """
 import anim
 import cadeira
@@ -91,6 +95,7 @@ def campos(cid, nome, nquadros):
         e['rosto'] = [[0, q.get('corpo', {}).get('dy', 0)] for q in anim.ANDANDO]
     elif nome in CADEIRA:
         e['rosto'] = cadeira.rosto(nome)
+        e['desloca'] = cadeira.desloca(nome)
     elif nome in ESCRITORIO:
         e['rosto'] = escritorio.rosto(nome)
         e['tampo'] = f'{nome}_tampo'

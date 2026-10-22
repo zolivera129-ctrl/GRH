@@ -77,8 +77,9 @@ def pagina(todos):
         'tampo': {cid: escritorio.TAMPO.get(cid, 'mesa') for cid in todos},
     }
     man = json.load(open(os.path.join(AQUI, '..', 'assets', 'manifest.json')))
+    import cadeira
     cadeira_ = {'img': png64(Image.open(os.path.join(AQUI, '..', 'assets', 'moveis', 'cadeira__frente-dir.png'))),
-                'ancora': man['cadeira']['ancora']}
+                'ancora': man['cadeira']['ancora'], 'desloca': {n: cadeira.desloca(n) for n in cadeira.ROTEIROS}}
     nomes = {cid: office.PERSONAGENS[cid][0] for cid in todos}
     piso = [png64(Image.open(os.path.join(PISO, f'piso_madeira__{i}.png'))) for i in (1, 2, 3)]
     modelo = open(os.path.join(AQUI, 'previa_animacoes.html'), encoding='utf-8').read()
