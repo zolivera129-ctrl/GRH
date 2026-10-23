@@ -4,7 +4,7 @@
 // marco). Pular uma cena encena tudo na hora, sem falas, com a escolha
 // segura de cada pergunta: os estados e os registros continuam valendo.
 
-import { irAte, levantar, config } from './atores.js';
+import { irAte, levantar, config, sentarJa } from './atores.js';
 import { deFrente } from './caminho.js';
 
 // a escolha que vale quando a pessoa pula a cena (nunca grava categoria
@@ -83,6 +83,27 @@ export function criarExecutor(jogo) {
       case 'move':
         await mover(cmd);
         return;
+      case 'corte': {
+        // transição de cena: a tela escurece, quem está na lista aparece no
+        // lugar (sentado na cadeira do destino) e a tela volta
+        const trocar = () => {
+          for (const id of cmd.actors) {
+            const b = ator(id);
+            if (!b) continue;
+            b.emCena = true;
+            b.viagem = (b.viagem ?? 0) + 1;
+            b.caminho?.resolve();
+            b.caminho = null;
+            b.umaVez = null;
+            const dest = destinoDo(b, cmd.target);
+            if (dest.cadeira) sentarJa(b, dest.cadeira, agora());
+            ex.movimentos.delete(id);
+          }
+        };
+        if (ex.pulando || config.reduzido || !jogo.cortina) trocar();
+        else await jogo.cortina(trocar);
+        return;
+      }
       case 'aguardar':
         await Promise.all(cmd.actors.map((id) => ex.movimentos.get(id)).filter(Boolean));
         return;

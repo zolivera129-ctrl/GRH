@@ -84,6 +84,8 @@ export function criarFontePlanilha() {
     });
   };
 
+  /** As competências que têm aba legível, em ordem. */
+  f.competencias = () => f.meses.filter((m) => m.legivel && m.competencia).map((m) => m.competencia).sort();
   f.relatorio = (comp) => relatorioDoMes(mesDa(comp) ?? null, f.config, comp);
   f.situacaoDe = (comp) => f.relatorio(comp).situacao;
 

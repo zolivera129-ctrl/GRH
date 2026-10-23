@@ -39,15 +39,19 @@ export class Ator {
     this.envelope = false;   // envelope na mão
     this.selo = null;        // cor do selo na tela do tablet
     this.emCena = false;     // o executor está no controle
+    this.foraDaCama = false; // cachorro andando pela sala
+    this.rotina = 0;         // ficha da rotina de ambiente (uma nova cancela a anterior)
   }
 
   animacao(nome = this.anim) { return this.e.animacoes[nome]; }
-  get espelhar() { return this.cao ? true : ESPELHA[this.dir]; }
+  // o cachorro na cama olha para a sala (espelhado); andando, o desenho
+  // sem espelhar olha para a direita da tela, como o dos humanos
+  get espelhar() { return this.cao && !this.foraDaCama ? true : ESPELHA[this.dir]; }
   get sentado() { return Boolean(this.cadeira); }
 
   /** Repouso: sentado (com a vida à mesa, se houver), em pé ou na cama. */
   repouso() {
-    if (this.cao) return this.base ?? 'sentado_frente';
+    if (this.cao) return this.foraDaCama ? 'parado_frente' : (this.base ?? 'sentado_frente');
     if (this.cadeira) {
       if (!deFrente(this.cadeira.olha_para)) return 'sentado_costas';
       return this.base && this.animacao(this.base) ? this.base : 'sentado_frente';
@@ -125,7 +129,7 @@ export class Ator {
           passo = 0;
         }
       }
-      if (this.caminho) this.definir(`andando_${LADO[this.dir]}`, t);
+      if (this.caminho) this.definir(this.cao ? 'andando' : `andando_${LADO[this.dir]}`, t);
     }
     if (this.umaVez && t >= this.umaVez.fim) {
       const { resolve } = this.umaVez;

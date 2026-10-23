@@ -172,6 +172,12 @@ export function relatorioDoMes(mes, config, competencia) {
   return {
     competencia, situacao: completa ? 'completa' : 'parcial', sintetico: false,
     entradas, saidasConta, saidasCartao, saidas: saidasConta + saidasCartao,
+    // o previsto é tudo o que está na conta, pago ou não: o jogo distingue os dois
+    previsto: {
+      entradas: mes.conta.filter((r) => r.credito > 0).reduce((s, r) => s + r.credito, 0),
+      saidasConta: mes.conta.filter((r) => r.debito > 0 && !ehCartao(r)).reduce((s, r) => s + r.debito, 0),
+      saidasCartao: mes.conta.filter((r) => r.debito > 0 && ehCartao(r)).reduce((s, r) => s + r.debito, 0),
+    },
     resultado: completa ? entradas - saidasConta - saidasCartao : null,
     compromissos: abertas.map((r) => ({ item: r.historico, valor: r.debito })),
     reserva: config?.reserva ?? null, faltando,

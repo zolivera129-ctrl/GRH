@@ -373,7 +373,7 @@ export function criarSala({ manifesto, layout, imagens }) {
     const sentados = new Map();
     const emPe = [];
     for (const at of atores) {
-      if (!at.visivel || at.cao) continue;
+      if (!at.visivel || (at.cao && !at.foraDaCama)) continue;
       if (at.cadeira) sentados.set(at.cadeira.id, at);
       else {
         const [a, b] = [Math.floor(at.pos[0] - 1e-3), Math.floor(at.pos[1] - 1e-3)];
@@ -387,7 +387,8 @@ export function criarSala({ manifesto, layout, imagens }) {
       if (it.ator) {
         const [x, y] = P(...it.ator.pos);
         desenharAtor(ctx, it.ator, t, { x, y });
-        areas.push({ id: `ator:${it.ator.id}`, x: x - 14, y: y - 66, w: 28, h: 66 });
+        areas.push(it.ator.cao ? { id: `ator:${it.ator.id}`, x: x - 20, y: y - 34, w: 40, h: 36 }
+          : { id: `ator:${it.ator.id}`, x: x - 14, y: y - 66, w: 28, h: 66 });
         continue;
       }
       const { p } = it;
@@ -441,7 +442,7 @@ export function criarSala({ manifesto, layout, imagens }) {
       }
       if (CAMA[p.modelo]) {
         const cao = caes.get(CAMA[p.modelo]);
-        if (cao?.visivel) {
+        if (cao?.visivel && !cao.foraDaCama) {
           const [x, y] = P(a + 0.5, b + 0.5);
           const nome = cao.animacao() ? cao.anim : 'sentado_frente';
           colar(ctx, arquivo(cao.e.folha), cao.e.ancora, x, y,
@@ -462,7 +463,7 @@ export function criarSala({ manifesto, layout, imagens }) {
 
   /** Ponto da cabeça de um ator na tela (para o balão). */
   function cabeca(ator) {
-    if (ator.cao) {
+    if (ator.cao && !ator.foraDaCama) {
       const p = layout.pecas_piso.find((q) => CAMA[q.modelo] === ator.id);
       const [x, y] = P(p.tile[0] + 0.5, p.tile[1] + 0.5);
       return [x, y - 30];
@@ -475,7 +476,17 @@ export function criarSala({ manifesto, layout, imagens }) {
     return [x, y - 70];
   }
 
-  return { geo, P, desenhar, cabeca, pecas, caixaDaParede };
+  /** O tile do piso embaixo de um ponto da tela (1x), ou null fora da sala. */
+  function tileNaTela(x, y) {
+    const u = (x - cx) / 32;
+    const v = (y - cy) / 16;
+    const a = Math.floor((u + v) / 2);
+    const b = Math.floor((v - u) / 2);
+    const [A, B] = layout.sala.tiles;
+    return a >= 0 && b >= 0 && a < A && b < B ? [a, b] : null;
+  }
+
+  return { geo, P, desenhar, cabeca, pecas, caixaDaParede, tileNaTela };
 }
 
 // marcas da planta no piso: entrada, pontos de uso e frentes de porta em

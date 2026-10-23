@@ -123,7 +123,7 @@ export function criarPainelDeTeste(api) {
     h('input', { type: 'checkbox', checked: Boolean(opcoes[chave]), onchange: (e) => { opcoes[chave] = e.target.checked; salvarOpcoes(); api.aplicar(); } }),
     h('span', { text: rotulo }));
 
-  raiz.replaceChildren(
+  raiz.replaceChildren(...[
     h('h2', { text: 'Bancada de teste' }),
     h('p', { class: 'aviso-sintetico', text: api.naPlanilha
       ? 'Lendo a planilha real pelo conector Google Sheets, só leitura. Cada fonte tem o seu perfil salvo.'
@@ -170,7 +170,7 @@ export function criarPainelDeTeste(api) {
     secao('Registro do diretor', true, registro),
     secao('Validação da planta', false,
       h('p', { id: 'veredito' }), h('ol', { id: 'regras' }), h('ul', { id: 'resumo' })),
-  );
+  ].filter(Boolean));;
   horaSel.value = String(opcoes.hora ?? 15);
 
   function atualizar() {

@@ -13,7 +13,8 @@ import { carregarTudo } from './carregar.js';
 import { criarSala, tamanhoDaSala } from './sala.js';
 import { validar, resumo } from './validacao.js';
 import { criarGrade } from './caminho.js';
-import { Ator, sentarJa, config } from './atores.js';
+import { Ator, sentarJa, config, irAte } from './atores.js';
+import { falasDoSaldanha, falaDoQuadro } from './falas.js';
 import { criarExecutor } from './executor.js';
 import { criarUI } from './ui.js';
 import { CENAS, ROTEIRO_URL } from './roteiro.js';
@@ -159,6 +160,8 @@ async function iniciar() {
       a.envelope = false;
       a.selo = null;
       a.base = null;
+      a.foraDaCama = false;
+      a.rotina += 1;
       if (a.cao) {
         a.cama = pecas[CAES[a.id]];
         a.visivel = true;
@@ -190,8 +193,19 @@ async function iniciar() {
     brilhar(ids, ms) {
       for (const id of [].concat(ids)) brilhos.set(id, agora() + ms / 1000);
     },
+    // transição: escurece, troca o que precisa trocar, clareia
+    async cortina(trocar) {
+      const c = palco.querySelector('.cortina') ?? palco.appendChild(Object.assign(document.createElement('div'), { className: 'cortina' }));
+      c.classList.add('fechada');
+      await new Promise((r) => setTimeout(r, 320));
+      trocar();
+      await new Promise((r) => setTimeout(r, 180));
+      c.classList.remove('fechada');
+      await new Promise((r) => setTimeout(r, 280));
+    },
     abrirPainel: async (nome, ctx) => {
-      if (nome === 'relatorio') await paineis.relatorio(jogo.ui, ctx.relatorio, ctx);
+      if (nome === 'relatorio') await paineis.relatorio(jogo.ui, ctx.relatorios ?? ctx.relatorio, ctx);
+      if (nome === 'livro') await paineis.livro(jogo.ui, perfil, dados);
       if (nome === 'conciliacao') await paineis.conciliacao(jogo.ui, ctx, ctx);
       if (nome === 'card') await paineis.card(jogo.ui, ctx);
       if (nome === 'consulta') {
@@ -262,9 +276,17 @@ async function iniciar() {
           .filter(([id, e]) => !id.startsWith('historico:') && id !== 'lote:historico-inicial' && (e.recebido_em ?? '') > desde).length;
         break;
       }
+      case 'SALDANHA':
+        c.falas = falasDoSaldanha(dados, perfil, hoje);
+        break;
       case 'C4S1':
       case 'REUNIAO': {
         c.relatorio = dados.relatorio(c.competencia, perfil);
+        // primeira reunião: retrospectiva com os meses que existem, até dois (GDD §7.2.5)
+        c.primeira = !Object.values(perfil.reunioes).some((r) => r.concluida_em);
+        const comps = dados.competencias?.().filter((k) => k <= c.competencia) ?? [];
+        if (c.primeira && comps.length > 1) c.relatorios = comps.slice(-2).map((k) => dados.relatorio(k, perfil));
+        c.falaDoQuadro = falaDoQuadro(c.relatorio);
         c.situacao = c.relatorio.situacao;
         c.foco = c.relatorio.foco;
         c.diferenca = null;
@@ -344,8 +366,10 @@ async function iniciar() {
       return;
     }
     painel?.registrar(`▶ ${inv.cena} · ${def.titulo}${inv.motivo ? ` · ${inv.motivo}` : ''}`);
-    perfil = registrarInicio(perfil, inv, quando);
-    salvar();
+    if (!def.efemera) {
+      perfil = registrarInicio(perfil, inv, quando);
+      salvar();
+    }
     s.atual = inv;
     palco.classList.toggle('bloqueado', inv.bloqueia);
     await executor.executar(inv, cmds, ctx, { pulavel: def.pulavel });
@@ -357,6 +381,8 @@ async function iniciar() {
     s.atual = null;
     if (!s.aberta || s !== sessao) return;
 
+    if (inv.cena === 'C2' && elenco.get('gabriel').visivel) gabrielFica();
+    if (def.efemera) { painel?.atualizar(); return; }
     const fim = carimbo(relogio());
     const extra = {};
     if (inv.cena === 'C4S1' && ctx.escolhas.c4s1 === 'defer_once_and_persist') extra.adiada = true;
@@ -492,9 +518,80 @@ async function iniciar() {
   }
 
   // ---- cliques no escritório
-  function noEscritorio(id) {
+  // ---- o Guilherme anda quando a pessoa clica (movimento híbrido, GDD §2)
+  const APROXIMAR = {
+    mesa_saldanha: { tile: [5, 2], olhar: '-B' }, 'ator:saldanha': { tile: [5, 2], olhar: '-B' },
+    mesa_caio: { tile: [6, 5], olhar: '-B' }, 'ator:caio': { tile: [6, 5], olhar: '-B' },
+    'ator:flora': { tile: [10, 4], olhar: '+A' }, 'ator:lupin': { tile: [10, 4], olhar: '+A' },
+    mesa_guilherme: { cadeira: true }, 'ator:guilherme': { cadeira: true },
+  };
+  function andarGuilherme(destino) {
+    const g = elenco.get('guilherme');
+    if (!g.visivel || g.emCena) return;
+    const dest = destino.cadeira ? { cadeira: cadeiraDe('guilherme') } : destino;
+    if (dest.tile && !jogo.grade.livre(...dest.tile)) return;
+    irAte(g, dest, { grade: jogo.grade, layout, agora });
+  }
+
+  // ---- o Gabriel fica um pouco com os cachorros depois da entrega e sai.
+  // Não há animação de brincar: é andar, olhar e o "inquieto" dos cachorros.
+  const CAMAS = { flora: [11.5, 3.5], lupin: [11.5, 4.5] };
+  async function gabrielFica() {
+    const g = elenco.get('gabriel');
+    const caes = ['flora', 'lupin'].map((id) => elenco.get(id));
+    const ficha = (g.rotina += 1);
+    const s = sessao;
+    const vale = () => g.rotina === ficha && s === sessao && s?.aberta && g.visivel && !g.emCena;
+    const ir = (a, dest) => irAte(a, dest, { grade: jogo.grade, layout, agora });
+    const pausa = (ms) => new Promise((r) => setTimeout(r, config.reduzido ? 0 : ms));
+    const voltarParaCama = async (c) => {
+      if (!c.foraDaCama) return;
+      await ir(c, { tile: [10, 4] });
+      await c.andar([CAMAS[c.id]]);
+      c.foraDaCama = false;
+      c.base = 'dormindo_na_cama';
+      c.definir(c.base, agora());
+    };
+    try {
+      await ir(g, { tile: [8, 4], olhar: '+A' });
+      if (!vale()) return;
+      const [flora, lupin] = caes;
+      for (const c of caes) {
+        if (c.emCena) return;
+        c.pos = [...CAMAS[c.id]];
+        c.foraDaCama = true;
+        c.base = null;
+      }
+      await Promise.all([ir(flora, { tile: [10, 4], olhar: '-A' }), ir(lupin, { tile: [9, 4], olhar: '-A' })]);
+      if (!vale()) return;
+      flora.definir('sentado_frente', agora());
+      g.falando = true;
+      g.tocar('olhando_para_o_lado_frente', agora());
+      for (let k = 0; k < 2 && vale(); k += 1) {
+        lupin.definir('inquieto', agora());
+        await pausa(1400);
+        await ir(lupin, { tile: [9, 5], olhar: '-B' });
+        await ir(lupin, { tile: [9, 4], olhar: '-A' });
+        g.falando = k === 0;
+      }
+      g.falando = false;
+      lupin.definir('sentado_frente', agora());
+      await pausa(2500);
+    } finally {
+      g.falando = false;
+      if (s === sessao && s?.aberta) {
+        await Promise.all(caes.map(voltarParaCama));
+        if (g.rotina === ficha && g.visivel && !g.emCena) await ir(g, { fora: true });
+      }
+    }
+  }
+
+  function noEscritorio(id, tile = null) {
     if (!sessao?.aberta || palco.classList.contains('bloqueado')) return;
     const { data: hoje } = relogio();
+    // o Guilherme vai até onde a pessoa clicou; a interação abre na hora, sem esperar a caminhada (GDD §2)
+    const perto = APROXIMAR[id] ?? (id === 'piso' && tile ? { tile } : null);
+    if (perto) andarGuilherme(perto);
     const fila = [];
     // C1S3: a primeira exploração voluntária depois da recepção
     if (!sessao.explorou && perfil.cenas[CHAVES.onboarding(perfil.perfil)]?.concluida_em
@@ -517,7 +614,8 @@ async function iniciar() {
         fila.push({ cena: 'C2S3', chave: `category_question:${perfil.perfil}:${ev.id}:${Date.now()}`, prioridade: PRIORIDADE.MICROCENA,
           bloqueia: false, contexto: { transacao: ev }, motivo: 'categoria deixada para depois, retomada pela pessoa' });
       } else {
-        paineis.livro(ui, perfil, dados);
+        fila.push({ cena: 'SALDANHA', chave: `saldanha:${Date.now()}`, prioridade: PRIORIDADE.MICROCENA, bloqueia: false,
+          contexto: {}, motivo: 'a pessoa falou com o Saldanha' });
       }
     } else if (id === 'quadro') {
       if (perfil.resumo_disponivel) {
@@ -528,7 +626,7 @@ async function iniciar() {
       }
     } else if (id === 'ator:flora' || id === 'ator:lupin') {
       const cao = elenco.get(id.slice(5));
-      if (!cao.emCena) {
+      if (!cao.emCena && !cao.foraDaCama) {
         cao.definir('inquieto', agora());
         setTimeout(() => { if (!cao.emCena) cao.definir(cao.base ?? 'dormindo_na_cama', agora()); }, 2200);
       }
@@ -539,12 +637,13 @@ async function iniciar() {
   palco.addEventListener('click', (ev) => {
     if (ev.target.closest('.painel-fundo, .escolhas, button')) return;
     if (ui.avancar()) return;
-    if ([...elenco.values()].some((a) => a.caminho)) { config.acelerar = 4; return; }
+    // durante uma cena, clicar acelera quem está andando nela
+    if (sessao?.atual && [...elenco.values()].some((a) => a.emCena && a.caminho)) { config.acelerar = 4; return; }
     const r = canvas.getBoundingClientRect();
     const x = (ev.clientX - r.left) / escala;
     const y = (ev.clientY - r.top) / escala;
     const alvo = [...areas].reverse().find((a) => x >= a.x && x <= a.x + a.w && y >= a.y && y <= a.y + a.h);
-    noEscritorio(alvo?.id ?? 'piso');
+    noEscritorio(alvo?.id ?? 'piso', sala.tileNaTela(x, y));
   });
   canvas.addEventListener('mousemove', (ev) => {
     const r = canvas.getBoundingClientRect();

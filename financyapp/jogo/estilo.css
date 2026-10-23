@@ -336,3 +336,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .status-planilha { margin: 0 0 8px; font-size: 13px; }
 .status-planilha.erro { color: var(--falha); }
 .status-planilha.lida { color: var(--ok); }
+.painel .meses { display: flex; gap: 6px; margin-bottom: 8px; }
+.painel .meses button[aria-pressed="true"] { background: var(--tinta, #1f2333); color: #fff; }
+.cortina { position: absolute; inset: 0; background: #0d0f16; opacity: 0; pointer-events: none; transition: opacity .28s ease; z-index: 5; }
+.cortina.fechada { opacity: 1; }

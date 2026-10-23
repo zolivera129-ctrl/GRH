@@ -328,11 +328,10 @@ export function comandosDaCena(json, sceneId, c) {
 // As cenas como o diretor as chama: algumas são uma cena do JSON, outras
 // juntam várias (o arco do envelope, a reunião).
 
-const reunir = (atores) => [
-  ...atores.map((a) => ({ op: 'move', actor: a, target: 'reuniao', wait: false })),
-  { op: 'aguardar', actors: atores },
-];
-const dispersar = (atores) => atores.map((a) => ({ op: 'move', actor: a, target: 'posto', wait: false, fundo: true }));
+// a ida até a mesa de reunião e a volta são um corte (a tela escurece e
+// todos aparecem sentados): andar a sala inteira a 1 tile/s levava ~15 s
+const reunir = (atores) => [{ op: 'corte', actors: atores, target: 'reuniao' }];
+const dispersar = (atores) => [{ op: 'corte', actors: atores, target: 'posto' }];
 
 export const CENAS = {
   C1S1: { titulo: 'Vivi abre a porta', pulavel: false,
@@ -353,7 +352,9 @@ export const CENAS = {
         const s3 = comandosDaCena(j, 'c2s3', { ...c, ...t.campos, transacao: t });
         if (s3) out.push({ op: 'contexto', transacao: t }, ...s3, { op: 'resultado', chave: 'categoria', transacao: t.id });
       }
-      out.push(...(comandosDaCena(j, 'c2s4', c) ?? []));
+      // depois da entrega o Gabriel fica um pouco com os cachorros (GDD §9:
+      // "pode permanecer por um tempo"); a saída é da rotina de ambiente
+      out.push(...(comandosDaCena(j, 'c2s4', c) ?? []).filter((x) => !(x.op === 'move' && x.actor === 'gabriel' && x.target === 'fora')));
       out.push({ op: 'cao', actor: 'flora', animation: 'dormindo_na_cama' });
       return out;
     } },
@@ -399,18 +400,24 @@ export const CENAS = {
         { op: 'move', actor: 'saldanha', target: 'posto', se: (x) => x.escolhas?.c4s1 === 'defer_once_and_persist' },
         { op: 'resultado', chave: 'convite' }];
     } },
+  SALDANHA: { titulo: 'Uma palavra com o Saldanha', pulavel: true, ambiente: true, efemera: true,
+    montar: (j, c) => [
+      ...c.falas.map((texto) => ({ op: 'speak', actor: 'saldanha', texto, origem: 'new_provisional_not_author_approved' })),
+      { op: 'choice', actor: 'saldanha', cena: 'saldanha', choices: [
+        { id: 'livro', texto: 'Abrir o livro', origem: 'new_provisional_not_author_approved' },
+        { id: 'depois', texto: 'Agora não', origem: 'new_provisional_not_author_approved' }] },
+      { op: 'panel', panel: 'livro', se: (x) => x.escolhas.saldanha === 'livro' },
+    ] },
   REUNIAO: { titulo: 'A reunião mensal', pulavel: false, reuniao: true,
     montar: (j, c) => {
-      const mesa = ['guilherme', 'vivi', 'caio'];
+      const mesa = ['guilherme', 'vivi', 'caio', 'saldanha'];
       const out = [];
-      if (c.motivo !== 'aceita') {
-        // vencida, adiada ou retomada: entra direto na mesa e só a fala da variante toca
-        out.push(...reunir([...mesa, 'saldanha']));
-        out.push(...comandosDaCena(j, 'c4s1', { ...c, convite: false }).filter((x) => x.op !== 'move'));
-      } else {
-        out.push(...reunir(mesa));
-      }
-      out.push(...comandosDaCena(j, 'c4s2', c));
+      // vencida, adiada ou retomada: só a fala da variante do convite toca
+      if (c.motivo !== 'aceita') out.push(...reunir(mesa), ...comandosDaCena(j, 'c4s1', { ...c, convite: false }).filter((x) => x.op !== 'move'));
+      else out.push(...reunir(mesa));
+      out.push(...comandosDaCena(j, 'c4s2', c).filter((x) => !(x.op === 'move' && x.actor === 'saldanha')));
+      // o mês e o que falta, ditos pelo Saldanha a partir do relatório (texto novo, provisório)
+      if (c.falaDoQuadro) out.push({ op: 'speak', actor: 'saldanha', texto: c.falaDoQuadro, origem: 'new_provisional_not_author_approved' });
       out.push({ op: 'panel', panel: 'relatorio' });
       out.push(...comandosDaCena(j, 'c4s3', c));
       out.push({ op: 'resultado', chave: 'observacao' });

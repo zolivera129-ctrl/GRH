@@ -181,3 +181,16 @@ O documento não diz como resolver os pontos abaixo. Fiz assim, e vale registrar
   5. Mês só fica "completo" no relatório se a fatura conferir e não houver conta sem "Pago".
 - **Falta na spec / na planilha:** não há tetos de categoria na Config, então a C3S3 (80%/100% do teto) nunca dispara com dados reais. **Sugestão:** um bloco "Tetos" na Config (categoria, valor), quando a regra sair de PENDENTE.
 - **Ajuste (v4):** o livro do Saldanha agora mostra o que foi lido da planilha (um bloco por aba: fatura confere ou não, sua parte no cartão, entradas e saídas previstas, contas pagas; reserva da Config). Painéis com dados reais não levam mais o selo "dados sintéticos". O perfil real passou a ser `guilherme-planilha`, começando limpo; o antigo `guilherme`, que tinha progresso dos dados sintéticos, virou `guilherme-teste`.
+
+## 18. Pedidos de 23/10: clique, Saldanha, reunião, Gabriel
+
+- **Guilherme anda ao clicar** (GDD §2, DEFINIDO: "os cliques do jogador têm prioridade imediata"). Clicar no piso leva o Guilherme até o tile. Clicar no Saldanha, no Caio, nos cachorros ou na mesa dele também o faz andar até lá, mas a interação abre na hora, sem esperar a caminhada ("Interações financeiras abrem imediatamente"). Durante uma cena, o clique continua acelerando quem está andando nela.
+- **Saldanha fala ao ser clicado.** Diz quando leu a planilha, se a fatura do mês confere e quantas contas estão sem Pago, e oferece "Abrir o livro" / "Agora não". As falas são **texto novo, provisório** (fora do roteiro v0.3; marcado como tal no balão) e saem só do que o código calculou. Nenhuma fala diz valor em reais (guardrail da c4s2). Não fica registro no perfil a cada clique.
+- **Reunião mensal:**
+  1. A ida até a mesa e a volta viraram um **corte** (a tela escurece e todos aparecem sentados). Antes era uma caminhada de ~15 s. O GDD §7.1 permite "transições contextualizadas"; a nota 15.4 das animações já dizia que acima de 0,5 tile/s o pé desliza, então acelerar a caminhada não resolvia.
+  2. Antes do quadro, o Saldanha diz o mês e o que falta (texto novo, provisório).
+  3. O quadro separa **pago** de **previsto** (GDD: "distinguir pago, previsto, registrado, conferido e confirmado"). Antes ele só somava o que tinha Pago, então um mês sem Pago marcado aparecia com entradas e saídas em R$ 0,00. **Era isso que deixava a reunião fraca.**
+  4. A primeira reunião mostra os meses que existem até a competência, até dois (GDD §7.2.5), com um seletor de mês.
+  5. **Erro corrigido:** a fala "Nossa primeira reunião terminou" nunca aparecia, porque o motor não marcava a reunião como primeira.
+- **Gabriel fica com os cachorros** depois da entrega (GDD §9: "pode permanecer por um tempo, interagir e sair depois"; rotinas "acariciar Flora, brincar com Lupin"). **Não existe animação de brincar nem de acariciar.** A cena usa o que existe: Gabriel para perto, os dois saem da cama, o Lupin fica inquieto e corre uns passos, e depois todos voltam e o Gabriel sai. Para ficar bom, falta desenhar o Gabriel agachado fazendo carinho e o Lupin pulando, no pacote de arte.
+- **Para decidir:** as falas novas do Saldanha (clique e reunião) precisam de aprovação do autor. As mensagens da porta do Otto continuam só como proposta, sem implementação.

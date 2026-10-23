@@ -35,37 +35,68 @@ function linhas(pares, privado) {
   return dl;
 }
 
-/** O quadro da reunião: fluxo, compromissos e reserva, um cartão por vez. */
-export function relatorio(ui, r, { privado }) {
-  const parcial = r.situacao !== 'completa';
-  const cartoes = [
-    { titulo: '1. O que entrou e saiu?', corpo: () => linhas([
-      ['Entrou', r.entradas],
-      ['Saiu da conta', r.saidasConta],
-      ['Saiu no cartão', r.saidasCartao, r.saidasCartao == null && r.situacao === 'parcial' ? 'o lote do cartão ainda não chegou' : null],
-      ['Resultado do mês', r.resultado, r.resultado == null ? 'só com a base completa' : null],
-    ], privado) },
-    { titulo: '2. O que ainda está comprometido?', corpo: () => (r.compromissos
-      ? linhas(r.compromissos.map((c) => [c.item, c.valor]).concat(parcial ? [['Fatura do cartão', null, 'pendente: falta o lote']] : []), privado)
-      : el('p', { class: 'ausente', text: 'Sem informação suficiente para listar compromissos.' })) },
-    { titulo: '3. Como está a reserva?', corpo: () => linhas([
-      ['Reserva conferida', r.reserva],
-      ['Colchão de caixa (regra aprovada)', 1000],
-    ], privado) },
-  ];
+/**
+ * O quadro da reunião: fluxo, compromissos e reserva, um cartão por vez.
+ * Recebe um relatório ou uma lista deles (a primeira reunião mostra os
+ * meses que existem, até dois). Pago e previsto aparecem separados.
+ */
+export function relatorio(ui, entrada, { privado }) {
+  const lista = [].concat(entrada).filter(Boolean);
+  let r = lista.at(-1);
+  const cartoesDe = (r) => {
+    const parcial = r.situacao !== 'completa';
+    const p = r.previsto;
+    const pares = p
+      ? [
+        ['Entrou (pago)', r.entradas], ['Entrada prevista', p.entradas],
+        ['Saiu da conta (pago)', r.saidasConta], ['Saída prevista na conta', p.saidasConta],
+        ['Fatura do cartão (paga)', r.saidasCartao], ['Fatura prevista', p.saidasCartao],
+        ['Resultado do mês', r.resultado, r.resultado == null ? 'só com a base completa' : null],
+      ]
+      : [
+        ['Entrou', r.entradas],
+        ['Saiu da conta', r.saidasConta],
+        ['Saiu no cartão', r.saidasCartao, r.saidasCartao == null && r.situacao === 'parcial' ? 'o lote do cartão ainda não chegou' : null],
+        ['Resultado do mês', r.resultado, r.resultado == null ? 'só com a base completa' : null],
+      ];
+    return [
+      { titulo: '1. O que entrou e saiu?', corpo: () => linhas(pares, privado) },
+      { titulo: '2. O que ainda está comprometido?', corpo: () => (r.compromissos
+        ? (r.compromissos.length || parcial
+          ? linhas(r.compromissos.map((c) => [c.item, c.valor, p ? 'previsto, sem Pago' : null])
+            .concat(parcial && !p ? [['Fatura do cartão', null, 'pendente: falta o lote']] : []), privado)
+          : el('p', { text: 'Nenhuma conta em aberto neste mês.' }))
+        : el('p', { class: 'ausente', text: 'Sem informação suficiente para listar compromissos.' })) },
+      { titulo: '3. Como está a reserva?', corpo: () => linhas([
+        ['Reserva conferida', r.reserva],
+        ['Colchão de caixa (regra aprovada)', 1000],
+      ], privado) },
+    ];
+  };
+  let cartoes = cartoesDe(r);
   return ui.painel({
     sintetico: !real,
-    titulo: `Reunião de ${Mes(r.competencia)}`,
+    titulo: lista.length > 1 ? 'Reunião: os meses que temos' : `Reunião de ${Mes(r.competencia)}`,
     rotuloFechar: 'Fechar o quadro',
     montar: (corpo, fechar) => {
       let i = 0;
-      const situacao = el('p', { class: `situacao ${r.situacao}`,
-        text: { completa: 'Base completa', parcial: 'Base parcial: o que falta fica marcado como pendente', sem_dados: 'Sem informação suficiente: estado legítimo, sem número inventado' }[r.situacao] });
+      const situacao = el('p', {});
+      const marcarSituacao = () => {
+        situacao.className = `situacao ${r.situacao}`;
+        situacao.textContent = { completa: 'Base completa', parcial: 'Base parcial: o que falta fica marcado como pendente', sem_dados: 'Sem informação suficiente: estado legítimo, sem número inventado' }[r.situacao];
+      };
+      marcarSituacao();
+      const meses = lista.length > 1 ? el('nav', { class: 'meses', 'aria-label': 'Mês' }) : null;
       const area = el('div', { class: 'cartao-quadro', 'aria-live': 'polite' });
       const anterior = el('button', { type: 'button', text: '◀ Anterior' });
       const proximo = el('button', { type: 'button', class: 'primario', text: 'Próximo ▶' });
       const pos = el('span', { class: 'pos' });
       const desenhar = () => {
+        meses?.replaceChildren(...lista.map((x) => {
+          const b = el('button', { type: 'button', text: Mes(x.competencia), 'aria-pressed': String(x === r) });
+          b.addEventListener('click', () => { r = x; cartoes = cartoesDe(r); i = 0; marcarSituacao(); desenhar(); });
+          return b;
+        }));
         area.replaceChildren(el('h4', { text: cartoes[i].titulo }), cartoes[i].corpo());
         anterior.disabled = i === 0;
         pos.textContent = `${i + 1} de ${cartoes.length}`;
@@ -73,7 +104,7 @@ export function relatorio(ui, r, { privado }) {
       };
       anterior.addEventListener('click', () => { i = Math.max(0, i - 1); desenhar(); });
       proximo.addEventListener('click', () => { if (i === cartoes.length - 1) fechar(); else { i += 1; desenhar(); } });
-      corpo.append(situacao, area, el('nav', { class: 'navegar' }, anterior, pos, proximo));
+      corpo.append(...[meses, situacao, area, el('nav', { class: 'navegar' }, anterior, pos, proximo)].filter(Boolean));
       desenhar();
       return false;
     },
