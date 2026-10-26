@@ -6,7 +6,7 @@ BUILD = os.path.join(ROOT, "build")
 FONTS = os.path.join(ROOT, "fonts")
 
 FPS = 24
-DUR = 15.0
+DUR = 20.0
 NFRAMES = int(FPS * DUR)
 
 # Base de layout: 1080x1920. O render final escala tudo por SCALE.

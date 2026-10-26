@@ -1,7 +1,7 @@
 """Relevo das letras: tipografia em mapa de altura (chanfro arredondado).
 
 Gera dois relevos, o do começo (30/11, divisória, 23h) e o do fim
-(ENCERRA AMANHÃ, divisória, A VENDA DE INGRESSOS), na resolução do render
+(ÚLTIMA CHANCE, divisória, PARA GARANTIR SEU INGRESSO), na resolução do render
 e na grade da simulação.
 """
 import os
@@ -88,10 +88,10 @@ def build_bed(s):
         ("23h", 600, 500, 1235, 1.0),
     ]
     end_txt = [
-        ("ENCERRA", 600, 790, 610, 0.82),
-        ("AMANHÃ", 600, 810, 820, 0.82),
-        ("A VENDA DE", 600, 560, 1170, 0.84),
-        ("INGRESSOS", 600, 540, 1300, 0.84),
+        ("ÚLTIMA", 600, 700, 600, 0.84),
+        ("CHANCE", 600, 800, 815, 0.84),
+        ("PARA GARANTIR", 600, 700, 1165, 0.86),
+        ("SEU INGRESSO", 600, 660, 1300, 0.86),
     ]
     b1 = height_from_mask(text_mask(start_txt, w, h, s), s)
     b1 = np.maximum(b1, height_from_mask(divider_mask(w, h, s, 1012, 270), s, bevel=4, low=0.55))

@@ -175,7 +175,7 @@ def run(t_end=C.DUR, t_resume=None):
                              min(R.DT_MAX, t_next - t))
             k = R.retract(t)
             if k > 0:
-                thin = np.clip((2.5 - h) / 1.0, 0, 1)
+                thin = np.clip((3.2 - h) / 1.0, 0, 1)
                 h -= dt * k * h * thin * inside
                 np.maximum(h, C.EPS, out=h)
             sw = R.swell(t)

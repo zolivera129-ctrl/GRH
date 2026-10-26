@@ -100,14 +100,16 @@ def main():
     stretch *= 0.5 * np.clip(A, 0, 1.4) ** 1.3
     # cintilância (agudo muito leve)
     shim = bandnoise(n, 6500, 12000, rng) * 0.035
-    sweep = np.exp(-((t - 1.75) / 0.45) ** 2) + np.exp(-((t - 14.3) / 0.5) ** 2) + 0.25 * Cv
+    sweep = (np.exp(-((t - 1.75) / 0.45) ** 2) + np.exp(-((t - 14.3) / 0.5) ** 2)
+             + 0.6 * np.exp(-((t - 17.8) / 0.8) ** 2) + 0.25 * Cv)
     shim *= sweep * (0.6 + 0.4 * np.sin(2 * np.pi * 7.3 * t) ** 2)
 
     # ressonâncias de prata nos momentos-chave
     bells = np.zeros(n)
     for t0, f0, dur, amp in ((1.05, 880, 3.0, 0.050), (2.05, 660, 2.4, 0.030), (4.6, 990, 2.0, 0.020),
                              (6.3, 740, 2.2, 0.020), (10.3, 554, 2.6, 0.025), (12.3, 440, 3.0, 0.040),
-                             (13.15, 587, 2.4, 0.035), (13.95, 880, 1.05, 0.055), (14.05, 1318, 0.95, 0.025)):
+                             (13.15, 587, 2.4, 0.035), (13.95, 880, 2.6, 0.055), (14.05, 1318, 2.2, 0.025),
+                             (17.2, 880, 2.6, 0.028), (17.3, 1318, 2.2, 0.012)):
         bells += bell(n, t0, f0, dur, amp, rng)
 
     # gotas: onde a frente avança mais rápido (pontas dos lóbulos)
@@ -130,7 +132,7 @@ def main():
     L[dl:] += 0.25 * lowpass(Rr[:-dl], 3000)
     Rr[dl:] += 0.25 * lowpass(L[:-dl], 3000)
     st = np.stack([L, Rr], 1)
-    fade = np.clip(t / 0.4, 0, 1) * np.clip((C.DUR - t) / 0.35, 0, 1)
+    fade = np.clip(t / 0.4, 0, 1) * np.clip((C.DUR - t) / 1.2, 0, 1)
     st *= fade[:, None]
     rms = np.sqrt((st ** 2).mean())
     st *= 10 ** (-24 / 20) / (rms + 1e-9)          # nível médio baixo e elegante

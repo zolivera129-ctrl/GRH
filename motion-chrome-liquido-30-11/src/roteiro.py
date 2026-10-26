@@ -108,7 +108,7 @@ def gate_open(t):
 
 def retract(t):
     """Recolhimento do filme residual dentro da janela (o véu fino se retrai e some)."""
-    return 10.0 * ss(13.05, 13.45, t)
+    return 4.0 * ss(13.0, 13.15, t) + 30.0 * ss(13.15, 13.35, t)
 
 
 def phi_amp(t):

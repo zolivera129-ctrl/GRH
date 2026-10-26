@@ -141,6 +141,9 @@ def sweep_at(t):
     if 13.75 < t < 15.0:
         u = (t - 13.75) / 1.25
         return (-0.9 + 1.8 * u, 3.2 * np.sin(np.pi * min(u, 1.0)))
+    if 16.8 < t < 18.8:  # no quadro final, uma passada lenta e mais suave
+        u = (t - 16.8) / 2.0
+        return (-0.9 + 1.8 * u, 2.2 * np.sin(np.pi * u))
     return None
 
 
@@ -176,7 +179,7 @@ def frame(f):
     hd = np.maximum(h - 0.05, 0)
     a = ss(0.06, 0.14, h)
     # o véu residual dentro da janela termina de se recolher
-    kr = float(ss(13.5, 14.3, t))
+    kr = float(ss(13.25, 13.6, t))
     if kr > 0:
         ins = cv2.resize(G["win_in"], (W, H), interpolation=cv2.INTER_LINEAR)
         lift = kr * ins

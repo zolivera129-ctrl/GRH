@@ -1,7 +1,7 @@
-# Motion: cromo líquido "30/11 23h → Encerra amanhã a venda de ingressos"
+# Motion: cromo líquido "30/11 23h → Última chance para garantir seu ingresso"
 
-Vídeo: `encerra-amanha-cromo-liquido-9x16-4k.mp4` (2160×3840, 9:16, 24 qps, H.264 + AAC, 15 s)
-Versão leve para redes: `encerra-amanha-cromo-liquido-9x16-1080.mp4` (1080×1920)
+Vídeo: `ultima-chance-cromo-liquido-9x16-4k.mp4` (2160×3840, 9:16, 24 qps, H.264 + AAC, 20 s)
+Versão leve para redes: `ultima-chance-cromo-liquido-9x16-1080.mp4` (1080×1920)
 
 Um plano único, com câmera frontal travada. O cromo é uma simulação física de fluido viscoso de verdade:
 nada é interpolação entre imagens, nada é máscara 2D, crossfade ou transição. A passagem da primeira
@@ -18,8 +18,8 @@ mensagem para a segunda acontece dentro da própria simulação.
 | 7,0 – 10,0 | O líquido domina: cortinas laterais chegam ao fundo e escorrem para fora; acima das letras ele represa e abraça o relevo. |
 | 10,0 – 12,0 | O fundo fecha e o cromo acumula: o bolsão carmim embaixo das letras encolhe e o nível sobe até passar por cima das letras, que afundam sob o lençol. |
 | 12,0 – 13,0 | Cobertura total: o lençol de cromo continua respirando com ondas largas. |
-| 13,0 – 13,6 | O cromo se afasta do centro e se acumula numa borda grossa e irregular, abrindo a janela carmim. |
-| 13,6 – 15,0 | "ENCERRA AMANHÃ · A VENDA DE INGRESSOS" em relevo de prata dentro da janela; uma faixa de luz passa pelas letras. |
+| 13,0 – 13,6 | O cromo se afasta do centro de uma vez e se acumula numa borda grossa e irregular, abrindo a janela carmim limpa. |
+| 13,6 – 20,0 | "ÚLTIMA CHANCE · PARA GARANTIR SEU INGRESSO" em relevo de prata dentro da janela. Uma faixa de luz passa pelas letras na chegada e outra, mais lenta, perto de 17 s; a borda de cromo continua respirando até o fim. |
 
 ## Como foi feito
 
@@ -58,4 +58,4 @@ bash mux.sh                                         # junta vídeo e som nos MP4
 ```
 
 `python3 preview_sim.py 0.5` gera uma folha de contato rápida da simulação, e
-`SCALE=1 python3 render.py still 4.0 11.0 14.5` renderiza quadros soltos para conferir.
+`SCALE=1 python3 render.py still 4.0 11.0 17.0` renderiza quadros soltos para conferir.
