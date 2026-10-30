@@ -63,7 +63,6 @@ const makeScroll = (fps: number) => (layout: ChatLayout, frame: number) => {
   follow(t3.thinking, "t3-r1");
   follow(t3.reply2, "t3-r2");
   follow(t3.reco, "t3-reco");
-  follow(t3.suggestion, "t3-sug");
 
   return piecewise(frame, keys, EASE_IN_OUT);
 };

@@ -26,7 +26,12 @@ export const ASSETS = {
 // Se usar um print do story com a interface do Instagram, cubra o topo e a base, por exemplo:
 //   { left: 0, top: 0, width: 100, height: 10 }, // barra de progresso, foto e nome de usuário
 //   { left: 0, top: 91, width: 100, height: 9 },  // campo de resposta
-export const STORY_PRIVACY_MASKS: { left: number; top: number; width: number; height: number }[] = [];
+export const STORY_PRIVACY_MASKS: {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}[] = [];
 
 export const VOLUME = {
   music: 0.65,
@@ -109,16 +114,13 @@ export const TEXTS = {
 
   test3: {
     chapter: "Teste 3 de 3",
-    chapterTitle: "Arte de convite",
-    sidebar: "Arte do encontro",
+    chapterTitle: "Arte do evento",
+    sidebar: "Post do evento",
     user: "e essa arte, o que você acha? ignore o fato de ser IA. é só um mockup",
-    reply1: "A imagem transmite pausa, intimidade e uma experiência reservada.",
-    reply2: "Mas ainda poderia anunciar um retiro de bem-estar.",
-    reco: "A emoção abre a conversa. A linha de apoio precisa provar substância.",
-    recoEmphasis: ["emoção", "substância."],
-    suggestionLabel: "Linha de apoio sugerida",
-    suggestion:
-      "Um encontro reservado entre lideranças de RH para conversas que exigem confiança, repertório e tempo.",
+    reply1: "A arte chama atenção, mas ‘incrível’ é subjetivo.",
+    reply2: "A GRH deve mostrar a relevância do encontro, não se autoelogiar.",
+    reco: "Menos adjetivos, mais evidências.",
+    recoEmphasis: ["evidências."],
   },
 
   closing: {
@@ -178,9 +180,8 @@ export const TIMING = {
     send: 30.85,
     thinking: 31.9,
     reply1: 32.3,
-    reply2: 34.0,
-    reco: 35.7,
-    suggestion: 37.8, // sugestão fica 4,2 s na tela
+    reply2: 34.8,
+    reco: 37.6, // recomendação fica 4,4 s na tela
   },
   closing: {
     start: 42,

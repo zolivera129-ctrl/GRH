@@ -64,7 +64,7 @@ no render, ou `REMOTION_BROWSER=<mesmo caminho>` antes do script de frames.
 | `src/scenes/Scene2WhatSheDoes.tsx` | 3–9 s · o que ela faz + três critérios |
 | `src/scenes/Scene3Palestra.tsx` | 9–19 s · teste 1, slide da palestra |
 | `src/scenes/Scene4Email.tsx` | 19–29,5 s · teste 2, assunto de e-mail |
-| `src/scenes/Scene5Arte.tsx` | 29,5–42 s · teste 3, mockup da arte |
+| `src/scenes/Scene5Arte.tsx` | 29,5–42 s · teste 3, mockup do post do evento |
 | `src/scenes/Scene6Closing.tsx` | 42–45 s · encerramento (estático a partir de 43,5 s) |
 | `src/components/` | Navegador, composer, mensagens, cursor, legendas, medição do chat |
 | `scripts/make_audio.py` | Sintetiza a trilha e os sons de interface (`public/audio/`) |

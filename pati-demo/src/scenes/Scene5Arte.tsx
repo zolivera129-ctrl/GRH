@@ -1,6 +1,6 @@
 import React from "react";
 import { useVideoConfig } from "remotion";
-import { ASSETS, COLORS, LAYOUT, TEXTS, TIMING } from "../config";
+import { ASSETS, LAYOUT, TEXTS, TIMING } from "../config";
 import { nb, sec } from "../anim";
 import { Emphasis } from "../components/Text";
 import {
@@ -11,7 +11,7 @@ import {
   UserMessage,
 } from "../components/Messages";
 
-/** Cena 5 (29,5–42 s): mockup da arte -> emoção abre, linha de apoio prova substância. */
+/** Cena 5 (29,5–42 s): mockup do post do evento -> menos adjetivos, mais evidências. */
 export const Scene5Arte: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = TIMING.test3;
@@ -42,18 +42,8 @@ export const Scene5Arte: React.FC = () => {
         <PatiBlock anchor="t3-r2" at={sec(t.reply2, fps)}>
           {nb(x.reply2)}
         </PatiBlock>
-        <RecoCard anchor="t3-reco" at={sec(t.reco, fps)}>
+        <RecoCard anchor="t3-reco" at={sec(t.reco, fps)} size={34}>
           <Emphasis text={x.reco} words={x.recoEmphasis} />
-        </RecoCard>
-        <RecoCard
-          anchor="t3-sug"
-          at={sec(t.suggestion, fps)}
-          label={x.suggestionLabel}
-          size={24}
-        >
-          <span style={{ fontWeight: 500, color: COLORS.text }}>
-            “{x.suggestion}”
-          </span>
         </RecoCard>
       </PatiMessage>
     </div>
