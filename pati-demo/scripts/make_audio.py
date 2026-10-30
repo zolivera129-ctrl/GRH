@@ -1,9 +1,13 @@
 """Sintetiza a trilha instrumental e os sons de interface usados no vídeo (sem samples externos).
 
-Saída em public/audio/: trilha.wav, clique.wav, envio.wav, revela.wav
-Uso: python3 scripts/make_audio.py
+Saída em public/audio/:
+- trilha.m4a: base longa e sem final (o Remotion corta e controla o volume conforme a duração do vídeo)
+- trilha-final.m4a: acorde de encerramento, posicionado no início do encerramento
+- clique.wav, envio.wav, revela.wav: sons de interface
+Uso: python3 scripts/make_audio.py   (precisa do ffmpeg no PATH para gerar os .m4a)
 """
 from pathlib import Path
+import subprocess
 import wave
 
 import numpy as np
@@ -13,12 +17,13 @@ OUT = Path(__file__).resolve().parent.parent / "public" / "audio"
 OUT.mkdir(parents=True, exist_ok=True)
 rng = np.random.default_rng(3)
 
-DURATION = 46.0  # 45 s de vídeo + cauda (acompanhe VIDEO.durationInSeconds)
 BPM = 92
 BEAT = 60 / BPM
 BAR = 4 * BEAT
-# Marcos do vídeo (s), iguais a TIMING.test1.start e TIMING.closing.start em src/config.ts.
-TESTS_START, CLOSING = 9.0, 42.0
+BODY_BARS = 64  # cerca de 167 s de base; basta ser maior que o vídeo
+TESTS_START = 9.0  # início do teste 1 (TIMING.test1.start), quando entra o pulso
+GROW_FULL = 45.0  # o pulso chega à intensidade máxima por volta daqui
+SHAKER_FROM = 30.0
 
 
 def write(name, x):
@@ -70,9 +75,6 @@ def place(buf, start, sig, pan=0.0):
     buf[i:i + len(sig), 1] += sig * r
 
 
-n = int(DURATION * SR)
-music = np.zeros((n, 2))
-
 # Am9 – Fmaj7 – Cmaj7 – G6, voicings fechados no registro médio
 chords = [
     [57, 60, 64, 67, 71],
@@ -82,47 +84,66 @@ chords = [
 ]
 roots = [45, 41, 48, 43]
 
-t = 0.0
-bar = 0
-while t < CLOSING + BAR:
-    ci = bar % 4
-    final = t >= CLOSING - 0.01
-    length = BAR * (2.2 if final else 1.25)
+
+def chord(buf, t, ci, length, vel=0.11):
     for k, note in enumerate(chords[ci]):
-        place(music, t + k * 0.012, ep_note(midi(note), length, 0.11), pan=(k - 2) * 0.18)
-    # baixo suave
+        place(buf, t + k * 0.012, ep_note(midi(note), length, vel), pan=(k - 2) * 0.18)
     tb = np.arange(int(length * SR)) / SR
     bass = 0.16 * np.sin(2 * np.pi * midi(roots[ci] - 12) * tb) * np.exp(-tb * 0.9) * (1 - np.exp(-tb * 60))
-    place(music, t, bass)
-    if final:
-        break
-    # pulso em colcheias durante os testes, crescendo aos poucos
-    if t + BAR > TESTS_START:
-        for b in range(8):
-            tp = t + b * BEAT / 2
-            if tp < TESTS_START or tp >= CLOSING:
-                continue
-            grow = min(1.0, (tp - TESTS_START) / (CLOSING - TESTS_START) * 1.4)
-            note = chords[ci][[1, 3, 2, 4][b % 4]] + 12
-            tt = np.arange(int(0.25 * SR)) / SR
-            pluck = np.sin(2 * np.pi * midi(note) * tt) * np.exp(-tt * 18) * (1 - np.exp(-tt * 400))
-            place(music, tp, (0.025 + 0.035 * grow) * pluck, pan=0.35 if b % 2 else -0.35)
-            # shaker bem baixo a partir do segundo teste
-            if tp >= 19.0:  # a partir do teste 2
-                nn = int(0.06 * SR)
-                sh = rng.standard_normal(nn) * np.exp(-np.arange(nn) / SR * 70)
-                sh = sh - lowpass(sh, 5000)
-                place(music, tp, 0.018 * grow * sh * (1.0 if b % 2 else 0.6), pan=0.2)
-    t += BAR
-    bar += 1
+    place(buf, t, bass)
 
-# envelope geral: entra suave, cresce nos testes, desacelera no encerramento
-tt = np.arange(n) / SR
-env = np.interp(tt, [0, 1.5, TESTS_START, CLOSING, CLOSING + 2.5, DURATION], [0, 0.75, 0.8, 1.0, 0.7, 0])
-music *= env[:, None]
-music = np.stack([lowpass(music[:, 0], 7000), lowpass(music[:, 1], 7000)], axis=1)
-music *= 0.5 / np.max(np.abs(music))  # pico em -6 dBFS; o volume final é ajustado no Remotion
-write("trilha.wav", music)
+
+def encode(name, x):
+    """Grava WAV temporário e converte para AAC (.m4a)."""
+    tmp = f"{name}.tmp.wav"
+    write(tmp, x)
+    subprocess.run(
+        ["ffmpeg", "-v", "error", "-y", "-i", str(OUT / tmp), "-c:a", "aac", "-b:a", "160k", str(OUT / name)],
+        check=True,
+    )
+    (OUT / tmp).unlink()
+    print("gerado:", OUT / name)
+
+
+def finish(x):
+    x = np.stack([lowpass(x[:, 0], 7000), lowpass(x[:, 1], 7000)], axis=1)
+    return x
+
+
+# base: acordes contínuos + pulso em colcheias que cresce aos poucos durante os testes
+n = int((BODY_BARS * BAR + 2) * SR)
+music = np.zeros((n, 2))
+for bar in range(BODY_BARS):
+    t = bar * BAR
+    ci = bar % 4
+    chord(music, t, ci, BAR * 1.25)
+    for b in range(8):
+        tp = t + b * BEAT / 2
+        if tp < TESTS_START:
+            continue
+        grow = min(1.0, (tp - TESTS_START) / (GROW_FULL - TESTS_START))
+        note = chords[ci][[1, 3, 2, 4][b % 4]] + 12
+        tt = np.arange(int(0.25 * SR)) / SR
+        pluck = np.sin(2 * np.pi * midi(note) * tt) * np.exp(-tt * 18) * (1 - np.exp(-tt * 400))
+        place(music, tp, (0.025 + 0.035 * grow) * pluck, pan=0.35 if b % 2 else -0.35)
+        if tp >= SHAKER_FROM:  # shaker bem baixo na segunda metade
+            nn = int(0.06 * SR)
+            sh = rng.standard_normal(nn) * np.exp(-np.arange(nn) / SR * 70)
+            sh = sh - lowpass(sh, 5000)
+            place(music, tp, 0.018 * grow * sh * (1.0 if b % 2 else 0.6), pan=0.2)
+music = finish(music)
+peak = np.max(np.abs(music))
+music *= 0.5 / peak  # pico em -6 dBFS; o volume final é ajustado no Remotion
+encode("trilha.m4a", music)
+
+# encerramento: acorde de Fmaj7 que resolve em Cmaj7 e se apaga devagar
+final = np.zeros((int(7 * SR), 2))
+chord(final, 0.0, 1, BAR * 1.1)
+chord(final, BAR * 0.75, 2, BAR * 2.4)
+final = finish(final)
+final *= 0.5 / peak
+fade = np.interp(np.arange(len(final)) / SR, [0, 5.0, 7.0], [1, 1, 0])
+encode("trilha-final.m4a", final * fade[:, None])
 
 # clique de mouse: ruído curto filtrado + tique agudo
 m = int(0.05 * SR)

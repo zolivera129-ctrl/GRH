@@ -11,7 +11,7 @@ import {
   UserMessage,
 } from "../components/Messages";
 
-/** Cena 5 (29,5–42 s): mockup do post do evento -> menos adjetivos, mais evidências. */
+/** Cena 5 (teste 3): mockup do post do evento -> menos adjetivos, mais evidências. */
 export const Scene5Arte: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = TIMING.test3;

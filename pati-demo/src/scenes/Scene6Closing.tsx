@@ -4,7 +4,7 @@ import { COLORS, TEXTS, TIMING } from "../config";
 import { appear, fade, sec } from "../anim";
 
 /**
- * Cena 6 (42–45 s): o chat se afasta e fica atrás de um véu leve, ainda legível como histórico
+ * Cena 6 (últimos 3 s): o chat se afasta e fica atrás de um véu leve, ainda legível como histórico
  * (lista de análises com check na lateral). A mensagem final entra num cartão sobre a interface.
  */
 export const Scene6Closing: React.FC = () => {

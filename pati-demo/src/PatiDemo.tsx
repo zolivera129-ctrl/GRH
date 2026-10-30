@@ -2,6 +2,7 @@ import "./fonts";
 import React from "react";
 import {
   AbsoluteFill,
+  interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
@@ -138,6 +139,27 @@ export const PatiDemo: React.FC = () => {
       {/* Áudio: trilha instrumental sintetizada + sons suaves de interface */}
       <Audio
         src={staticFile(ASSETS.music)}
+        durationInFrames={sec(TIMING.closing.start + 0.6, fps)}
+        volume={(f) =>
+          VOLUME.music *
+          interpolate(
+            f,
+            [
+              0,
+              sec(1.5, fps),
+              sec(TIMING.test1.start, fps),
+              sec(TIMING.closing.start - 0.4, fps),
+              sec(TIMING.closing.start + 0.6, fps),
+            ],
+            [0, 0.75, 0.8, 1, 0],
+            { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+          )
+        }
+        premountFor={fps}
+      />
+      <Audio
+        src={staticFile(ASSETS.musicEnd)}
+        from={sec(TIMING.closing.start - 0.2, fps)}
         volume={VOLUME.music}
         premountFor={fps}
       />

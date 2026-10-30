@@ -5,7 +5,19 @@ export const VIDEO = {
   width: 1920,
   height: 1080,
   fps: 30,
-  durationInSeconds: 45,
+  // a duração total é calculada a partir do ritmo de leitura (DURATION_IN_SECONDS, abaixo)
+};
+
+// Ritmo de leitura. Os tempos de cada teste são calculados a partir do número de palavras
+// de cada texto. Para deixar tudo mais lento, diminua as palavras por segundo.
+export const READING = {
+  userWordsPerSecond: 3.6, // mensagens do usuário (as mais longas)
+  patiWordsPerSecond: 3, // cada bloco da resposta da PATI
+  minBlockSeconds: 1.6, // tempo mínimo de um bloco curto na tela
+  pauseSeconds: 0.35, // pausa entre um bloco e o próximo
+  userSettleSeconds: 0.8, // folga depois de ler a mensagem do usuário
+  finalHoldSeconds: 2.2, // tempo extra na recomendação final de cada teste
+  closingSeconds: 3, // encerramento (o último 1,5 s fica estático)
 };
 
 // Arquivos em public/. Para trocar uma imagem, substitua o arquivo mantendo o nome
@@ -15,7 +27,8 @@ export const ASSETS = {
   storyAspect: 1368 / 771, // largura / altura da miniatura
   artImage: "mockup-evento.png",
   artAspect: 1,
-  music: "audio/trilha.wav",
+  music: "audio/trilha.m4a", // base contínua (cortada no encerramento)
+  musicEnd: "audio/trilha-final.m4a", // acorde final
   sfxClick: "audio/clique.wav",
   sfxSend: "audio/envio.wav",
   sfxReveal: "audio/revela.wav",
@@ -131,7 +144,111 @@ export const TEXTS = {
 };
 
 // Linha do tempo, em segundos (absolutos no vídeo).
-// Cada teste dura do seu `start` até o `start` do próximo; o encerramento vai até o fim do vídeo.
+// A apresentação (0–9 s) tem tempos fixos. Os testes são montados em sequência a partir do
+// ritmo de leitura em READING: cada bloco só entra depois que o anterior pode ser lido.
+const words = (text: string) => text.split(/\s+/).filter(Boolean).length;
+const read = (text: string, wordsPerSecond = READING.patiWordsPerSecond) =>
+  Math.max(READING.minBlockSeconds, words(text) / wordsPerSecond);
+const userRead = (text: string) =>
+  words(text) / READING.userWordsPerSecond + READING.userSettleSeconds;
+// momento em que o leitor chega a um trecho da mensagem do usuário (para a marcação acompanhar)
+const reachAt = (text: string, phrase: string) =>
+  words(text.slice(0, Math.max(0, text.indexOf(phrase)))) /
+  READING.userWordsPerSecond;
+const round = (n: number) => Math.round(n * 100) / 100;
+const roundAll = <T extends Record<string, number>>(o: T) =>
+  Object.fromEntries(Object.entries(o).map(([k, v]) => [k, round(v)])) as T;
+
+const buildTest1 = (start: number) => {
+  const x = TEXTS.test1;
+  const send = start + 1.35;
+  const thinking = send + userRead(x.user);
+  const reply1 = thinking + 0.4;
+  const reply2 = reply1 + read(x.reply1) + READING.pauseSeconds;
+  const reco = reply2 + read(x.reply2) + READING.pauseSeconds;
+  const end = reco + read(x.reco) + READING.finalHoldSeconds;
+  return {
+    timing: roundAll({
+      start,
+      cursorIn: start,
+      attachClick: start + 0.5,
+      composerText: start + 0.75,
+      sendClick: start + 1.25,
+      send,
+      mark1: send + reachAt(x.user, x.userMarks[0]),
+      mark2: send + reachAt(x.user, x.userMarks[1]),
+      thinking,
+      reply1,
+      reply2,
+      reco,
+    }),
+    end,
+  };
+};
+
+const buildTest2 = (start: number) => {
+  const x = TEXTS.test2;
+  const user = [
+    x.userIntro,
+    x.optionA.label,
+    x.optionA.text,
+    x.optionB.label,
+    x.optionB.text,
+  ].join(" ");
+  const send = start + 0.85;
+  const thinking = send + userRead(user);
+  const reply1 = thinking + 0.4;
+  const reply2 = reply1 + read(x.reply1) + READING.pauseSeconds;
+  const solution = reply2 + read(x.reply2) + READING.pauseSeconds;
+  const solutionNote = solution + read(x.solution) + READING.pauseSeconds;
+  const end = solutionNote + read(x.solutionNote) + READING.finalHoldSeconds;
+  return {
+    timing: roundAll({
+      start,
+      cursorIn: start + 0.25,
+      composerText: start + 0.2,
+      sendClick: start + 0.75,
+      send,
+      thinking,
+      reply1,
+      reply2,
+      solution,
+      solutionNote,
+    }),
+    end,
+  };
+};
+
+const buildTest3 = (start: number) => {
+  const x = TEXTS.test3;
+  const send = start + 1.35;
+  const thinking = send + userRead(x.user);
+  const reply1 = thinking + 0.4;
+  const reply2 = reply1 + read(x.reply1) + READING.pauseSeconds;
+  const reco = reply2 + read(x.reply2) + READING.pauseSeconds;
+  const end = reco + read(x.reco) + READING.finalHoldSeconds;
+  return {
+    timing: roundAll({
+      start,
+      cursorIn: start,
+      attachClick: start + 0.5,
+      composerText: start + 0.75,
+      sendClick: start + 1.25,
+      send,
+      thinking,
+      reply1,
+      reply2,
+      reco,
+    }),
+    end,
+  };
+};
+
+const test1 = buildTest1(9);
+const test2 = buildTest2(round(test1.end));
+const test3 = buildTest3(round(test2.end));
+const closingStart = round(test3.end);
+
 export const TIMING = {
   browserIn: 0,
   introTitle: 0.4,
@@ -143,54 +260,20 @@ export const TIMING = {
   criteria: 5.8, // as três palavras entram com 0,4 s entre elas
   scrollToTest1: 7.9,
 
-  // Respostas da PATI: cada bloco fica sozinho na tela o tempo de leitura dele
-  // (cerca de 3 palavras por segundo) antes do próximo entrar.
-  test1: {
-    start: 9,
-    cursorIn: 9.0,
-    attachClick: 9.5,
-    composerText: 9.75,
-    sendClick: 10.25,
-    send: 10.35,
-    mark1: 10.9,
-    mark2: 11.4,
-    thinking: 12.0,
-    reply1: 12.4,
-    reply2: 13.5,
-    reco: 15.4, // recomendação fica 3,6 s na tela
-  },
-  test2: {
-    start: 19,
-    cursorIn: 19.25,
-    composerText: 19.2,
-    sendClick: 19.75,
-    send: 19.85,
-    thinking: 21.6,
-    reply1: 22.0,
-    reply2: 23.2,
-    solution: 25.0,
-    solutionNote: 25.9, // assunto sugerido fica 4,5 s na tela
-  },
-  test3: {
-    start: 29.5,
-    cursorIn: 29.5,
-    attachClick: 30.0,
-    composerText: 30.25,
-    sendClick: 30.75,
-    send: 30.85,
-    thinking: 31.9,
-    reply1: 32.3,
-    reply2: 34.8,
-    reco: 37.6, // recomendação fica 4,4 s na tela
-  },
+  test1: test1.timing,
+  test2: test2.timing,
+  test3: test3.timing,
   closing: {
-    start: 42,
-    line1: 42.3,
-    line2: 42.7, // três partes com 0,2 s entre elas
-    signature: 42.9,
-    // tudo termina até 43,5 s: o último 1,5 s fica estático
+    start: closingStart,
+    line1: closingStart + 0.3,
+    line2: closingStart + 0.7, // três partes com 0,2 s entre elas
+    signature: closingStart + 0.9,
+    // tudo termina até 1,5 s depois do início: o restante fica estático
   },
 };
+
+export const DURATION_IN_SECONDS =
+  Math.ceil((closingStart + READING.closingSeconds) * VIDEO.fps) / VIDEO.fps;
 
 // Medidas da interface (em pixels do quadro, antes do zoom da câmera).
 export const LAYOUT = {
@@ -222,12 +305,12 @@ const testCamera = (
   const highlight = t.reco ?? t.solution ?? t.reply1;
   return [
     [t.send + 0.15, 1.08, 1096, 540],
-    [t.send + 0.75, 1.14, 1250, 470], // leitura do prompt
-    [t.reply1 - 0.3, 1.14, 1250, 470],
+    [t.send + 0.75, 1.12, 1250, 470], // leitura do prompt, com aproximação lenta
+    [t.reply1 - 0.3, 1.16, 1250, 470],
     [t.reply1 + 0.4, 1.1, 1000, 600], // resposta da PATI
     [highlight - 0.7, 1.1, 1000, 600],
     [highlight, 1.15, 1000, 650], // recomendação
-    [next - 0.4, 1.15, 1000, 650],
+    [next - 0.4, 1.17, 1000, 650],
   ];
 };
 
