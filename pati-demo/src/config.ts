@@ -5,28 +5,28 @@ export const VIDEO = {
   width: 1920,
   height: 1080,
   fps: 30,
-  durationInSeconds: 38,
+  durationInSeconds: 45,
 };
 
 // Arquivos em public/. Para trocar uma imagem, substitua o arquivo mantendo o nome
 // ou altere o caminho aqui.
 export const ASSETS = {
   storyImage: "luis-justo-story.png",
-  storyAspect: 9 / 16, // largura / altura da miniatura
-  artImage: "mockup-pausa.png",
-  artAspect: 4 / 5,
+  storyAspect: 1368 / 771, // largura / altura da miniatura
+  artImage: "mockup-evento.png",
+  artAspect: 1,
   music: "audio/trilha.wav",
   sfxClick: "audio/clique.wav",
   sfxSend: "audio/envio.wav",
   sfxReveal: "audio/revela.wav",
 };
 
-// Áreas do story que ficam desfocadas e cobertas (em % da imagem).
-// Ajuste se a imagem real tiver nome, foto ou @ em outra posição.
-export const STORY_PRIVACY_MASKS = [
-  { left: 0, top: 0, width: 100, height: 10 }, // barra de progresso, foto e nome de usuário
-  { left: 0, top: 91, width: 100, height: 9 }, // campo de resposta
-];
+// Áreas da imagem do teste 1 que ficam desfocadas e cobertas (em % da imagem).
+// A imagem atual é só o slide, sem nome, foto ou @ de quem postou, então nada é coberto.
+// Se usar um print do story com a interface do Instagram, cubra o topo e a base, por exemplo:
+//   { left: 0, top: 0, width: 100, height: 10 }, // barra de progresso, foto e nome de usuário
+//   { left: 0, top: 91, width: 100, height: 9 },  // campo de resposta
+export const STORY_PRIVACY_MASKS: { left: number; top: number; width: number; height: number }[] = [];
 
 export const VOLUME = {
   music: 0.65,
@@ -129,6 +129,7 @@ export const TEXTS = {
 };
 
 // Linha do tempo, em segundos (absolutos no vídeo).
+// Cada teste dura do seu `start` até o `start` do próximo; o encerramento vai até o fim do vídeo.
 export const TIMING = {
   browserIn: 0,
   introTitle: 0.4,
@@ -140,6 +141,8 @@ export const TIMING = {
   criteria: 5.8, // as três palavras entram com 0,4 s entre elas
   scrollToTest1: 7.9,
 
+  // Respostas da PATI: cada bloco fica sozinho na tela o tempo de leitura dele
+  // (cerca de 3 palavras por segundo) antes do próximo entrar.
   test1: {
     start: 9,
     cursorIn: 9.0,
@@ -148,43 +151,43 @@ export const TIMING = {
     sendClick: 10.25,
     send: 10.35,
     mark1: 10.9,
-    mark2: 11.35,
-    thinking: 11.9,
+    mark2: 11.4,
+    thinking: 12.0,
     reply1: 12.4,
-    reply2: 13.1, // pausa curta entre diagnóstico e recomendação
-    reco: 14.3,
+    reply2: 13.5,
+    reco: 15.4, // recomendação fica 3,6 s na tela
   },
   test2: {
-    start: 17,
-    cursorIn: 17.25,
-    composerText: 17.2,
-    sendClick: 17.75,
-    send: 17.85,
-    thinking: 19.6,
-    reply1: 20.0,
-    reply2: 20.75,
-    solution: 21.9,
-    solutionNote: 22.55,
+    start: 19,
+    cursorIn: 19.25,
+    composerText: 19.2,
+    sendClick: 19.75,
+    send: 19.85,
+    thinking: 21.6,
+    reply1: 22.0,
+    reply2: 23.2,
+    solution: 25.0,
+    solutionNote: 25.9, // assunto sugerido fica 4,5 s na tela
   },
   test3: {
-    start: 25,
-    cursorIn: 25.0,
-    attachClick: 25.5,
-    composerText: 25.75,
-    sendClick: 26.25,
-    send: 26.35,
-    thinking: 27.4,
-    reply1: 27.85,
-    reply2: 28.95,
-    reco: 30.1,
-    suggestion: 31.6,
+    start: 29.5,
+    cursorIn: 29.5,
+    attachClick: 30.0,
+    composerText: 30.25,
+    sendClick: 30.75,
+    send: 30.85,
+    thinking: 31.9,
+    reply1: 32.3,
+    reply2: 34.0,
+    reco: 35.7,
+    suggestion: 37.8, // sugestão fica 4,2 s na tela
   },
   closing: {
-    start: 35,
-    line1: 35.3,
-    line2: 35.7, // três partes com 0,2 s entre elas
-    signature: 35.9,
-    // tudo termina até 36,5 s: o último 1,5 s fica estático
+    start: 42,
+    line1: 42.3,
+    line2: 42.7, // três partes com 0,2 s entre elas
+    signature: 42.9,
+    // tudo termina até 43,5 s: o último 1,5 s fica estático
   },
 };
 
@@ -210,32 +213,31 @@ export const LAYOUT = {
 
 // Enquadramento: [segundo, zoom, foco x, foco y]. O foco é o ponto do quadro (antes do zoom)
 // que fica no centro da tela; ele é limitado para nunca mostrar além da janela do navegador.
+// Os keyframes acompanham TIMING, então mudar um tempo lá move a câmera junto.
+const testCamera = (
+  t: { send: number; reply1: number; reco?: number; solution?: number },
+  next: number,
+): [number, number, number, number][] => {
+  const highlight = t.reco ?? t.solution ?? t.reply1;
+  return [
+    [t.send + 0.15, 1.08, 1096, 540],
+    [t.send + 0.75, 1.14, 1250, 470], // leitura do prompt
+    [t.reply1 - 0.3, 1.14, 1250, 470],
+    [t.reply1 + 0.4, 1.1, 1000, 600], // resposta da PATI
+    [highlight - 0.7, 1.1, 1000, 600],
+    [highlight, 1.15, 1000, 650], // recomendação
+    [next - 0.4, 1.15, 1000, 650],
+  ];
+};
+
 export const CAMERA: [number, number, number, number][] = [
   [0, 1, 960, 540],
-  [7.9, 1, 960, 540],
-  [8.9, 1.08, 1096, 540],
-  [10.5, 1.08, 1096, 540],
-  [11.1, 1.14, 1250, 470], // leitura do prompt e dos trechos destacados
-  [12.1, 1.14, 1250, 470],
-  [12.8, 1.1, 1000, 600], // resposta da PATI
-  [14.1, 1.1, 1000, 600],
-  [14.8, 1.15, 1000, 650], // recomendação
-  [16.6, 1.15, 1000, 650],
-  [17.2, 1.08, 1096, 540],
-  [18.2, 1.08, 1096, 540],
-  [18.8, 1.14, 1250, 450],
-  [19.6, 1.14, 1250, 450],
-  [20.2, 1.1, 1000, 600],
-  [21.7, 1.1, 1000, 600],
-  [22.4, 1.15, 1000, 650],
-  [24.6, 1.15, 1000, 650],
-  [25.2, 1.08, 1096, 540],
-  [26.6, 1.08, 1096, 540],
-  [27.2, 1.12, 1200, 480],
-  [27.7, 1.12, 1200, 480],
-  [28.3, 1.1, 1000, 600],
-  [29.9, 1.1, 1000, 600],
-  [30.6, 1.15, 1000, 650],
-  [35.0, 1.15, 1000, 650],
-  [36.0, 0.9, 960, 540], // o chat se afasta no encerramento
+  [TIMING.scrollToTest1, 1, 960, 540],
+  [TIMING.scrollToTest1 + 1, 1.08, 1096, 540],
+  ...testCamera(TIMING.test1, TIMING.test2.start),
+  [TIMING.test2.start + 0.2, 1.08, 1096, 540],
+  ...testCamera(TIMING.test2, TIMING.test3.start),
+  [TIMING.test3.start + 0.2, 1.08, 1096, 540],
+  ...testCamera(TIMING.test3, TIMING.closing.start + 0.4),
+  [TIMING.closing.start + 1, 0.9, 960, 540], // o chat se afasta no encerramento
 ];

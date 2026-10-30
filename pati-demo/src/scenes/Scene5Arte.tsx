@@ -11,7 +11,7 @@ import {
   UserMessage,
 } from "../components/Messages";
 
-/** Cena 5 (25–35 s): arte da fogueira -> emoção abre, linha de apoio prova substância. */
+/** Cena 5 (29,5–42 s): mockup da arte -> emoção abre, linha de apoio prova substância. */
 export const Scene5Arte: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = TIMING.test3;

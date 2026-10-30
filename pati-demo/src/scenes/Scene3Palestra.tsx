@@ -11,7 +11,7 @@ import {
   UserMessage,
 } from "../components/Messages";
 
-/** Cena 3 (9–17 s): story da palestra -> "Eu pararia nesse gancho." */
+/** Cena 3 (9–19 s): slide da palestra -> "Eu pararia nesse gancho." */
 export const Scene3Palestra: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();

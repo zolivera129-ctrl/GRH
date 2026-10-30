@@ -13,12 +13,12 @@ OUT = Path(__file__).resolve().parent.parent / "public" / "audio"
 OUT.mkdir(parents=True, exist_ok=True)
 rng = np.random.default_rng(3)
 
-DURATION = 39.0  # 38 s de vídeo + cauda
+DURATION = 46.0  # 45 s de vídeo + cauda (acompanhe VIDEO.durationInSeconds)
 BPM = 92
 BEAT = 60 / BPM
 BAR = 4 * BEAT
-# Marcos do vídeo (s): testes começam em 9, encerramento em 35.
-TESTS_START, CLOSING = 9.0, 35.0
+# Marcos do vídeo (s), iguais a TIMING.test1.start e TIMING.closing.start em src/config.ts.
+TESTS_START, CLOSING = 9.0, 42.0
 
 
 def write(name, x):
@@ -108,7 +108,7 @@ while t < CLOSING + BAR:
             pluck = np.sin(2 * np.pi * midi(note) * tt) * np.exp(-tt * 18) * (1 - np.exp(-tt * 400))
             place(music, tp, (0.025 + 0.035 * grow) * pluck, pan=0.35 if b % 2 else -0.35)
             # shaker bem baixo a partir do segundo teste
-            if tp >= 17.0:
+            if tp >= 19.0:  # a partir do teste 2
                 nn = int(0.06 * SR)
                 sh = rng.standard_normal(nn) * np.exp(-np.arange(nn) / SR * 70)
                 sh = sh - lowpass(sh, 5000)

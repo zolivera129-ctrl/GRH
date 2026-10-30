@@ -1,15 +1,16 @@
 import { Composition } from "remotion";
 import { PatiDemo } from "./PatiDemo";
+import { VIDEO } from "./config";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <Composition
       id="PatiDemo"
       component={PatiDemo}
-      durationInFrames={38 * 30}
-      fps={30}
-      width={1920}
-      height={1080}
+      durationInFrames={VIDEO.durationInSeconds * VIDEO.fps}
+      fps={VIDEO.fps}
+      width={VIDEO.width}
+      height={VIDEO.height}
     />
   );
 };

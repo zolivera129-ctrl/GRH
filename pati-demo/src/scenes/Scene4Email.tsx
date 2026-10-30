@@ -9,7 +9,7 @@ import {
   UserMessage,
 } from "../components/Messages";
 
-/** Cena 4 (17–25 s): dois assuntos de e-mail -> assunto sugerido. */
+/** Cena 4 (19–29,5 s): dois assuntos de e-mail -> assunto sugerido. */
 export const Scene4Email: React.FC = () => {
   const { fps } = useVideoConfig();
   const t = TIMING.test2;
